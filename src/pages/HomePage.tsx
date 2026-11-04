@@ -8,7 +8,6 @@ import { LabVideosSection } from '../components/LabVideosSection';
 import {
   Cascata,
   CascataItem,
-  MeandroVivo,
   Parallax,
   Revelar,
   SecaoViva,
@@ -99,42 +98,23 @@ export const HomePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Três camadas: meandro ao fundo, vídeo no meio, foto à frente */}
-          <div className="relative mx-auto w-full max-w-[600px] pb-16 lg:pb-0">
-            <Parallax velocidade={30} className="pointer-events-none absolute -top-10 right-0 w-[70%] text-wb-orange/50 lg:-right-6">
-              <MeandroVivo className="h-auto w-full" />
-              <MeandroVivo className="mt-2 h-auto w-full" />
-            </Parallax>
-            <Parallax velocidade={-20}>
-              <figure>
-                <div className="relative aspect-[4/3] overflow-hidden rounded-[22px] bg-black">
-                  <video
-                    src="/videos/DWCiTZDEavR.mp4"
-                    poster={IMAGE_ASSETS.real.canoasMarajoaras3d}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    preload="metadata"
-                    aria-label="Tour pelo laboratório"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <figcaption className="mt-3 text-[13.5px] text-wb-ink-3">Tour pelo laboratório</figcaption>
-              </figure>
-            </Parallax>
-            <Parallax
-              velocidade={-90}
-              className="absolute -bottom-2 left-0 w-[42%] sm:-left-10 lg:-bottom-14"
-            >
-              <img
-                src={IMAGE_ASSETS.real.medalhaJinsPronta}
-                alt="Medalha do IV JINs feita no laboratório"
-                loading="lazy"
-                className="aspect-square w-full rotate-[-4deg] rounded-[18px] object-cover ring-[6px] ring-wb-bench"
+          {/* Vídeo do tour, alinhado ao bloco de texto */}
+          <figure className="w-full">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[22px] bg-black">
+              <video
+                src="/videos/DWCiTZDEavR.mp4"
+                poster={IMAGE_ASSETS.real.canoasMarajoaras3d}
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                aria-label="Tour pelo laboratório"
+                className="h-full w-full object-cover"
               />
-            </Parallax>
-          </div>
+            </div>
+            <figcaption className="mt-3 text-[13.5px] text-wb-ink-3">Tour pelo laboratório</figcaption>
+          </figure>
         </div>
       </SecaoViva>
 
