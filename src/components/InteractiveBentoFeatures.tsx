@@ -93,8 +93,9 @@ export const InteractiveBentoFeatures: React.FC = () => {
         {/* Section Header (Exact Constructa `qi` header layout) */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-[1.3fr_1fr] md:items-end">
           <div>
-            <p className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
-              Experimente na prática · Cultura MAKER
+            <p className="rotulo">
+              <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+              Aprender fazendo · Prática no laboratório
             </p>
             <h2
               className="mt-3 font-brand font-bold text-wb-ink"
@@ -109,7 +110,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
           </div>
           <p className="text-[16px] leading-relaxed text-wb-ink-2 md:text-right max-w-[34em] md:ml-auto">
             Não fique apenas na teoria. Cada card abaixo é uma demonstração interativa do que você
-            encontra nas bancadas do nosso 5º Laboratório IF MAKER. Clique e teste agora.
+            encontra nas bancadas do Laboratório IFPA MAKER Marajó. Clique e teste agora.
           </p>
         </div>
 
@@ -547,8 +548,8 @@ export const InteractiveBentoFeatures: React.FC = () => {
               </div>
 
               <div className="flex items-center justify-between text-[11px] font-key text-wb-ink-2">
-                <span>5º Lab IFPA · Março/2026</span>
-                <span className="font-bold text-wb-green">● 10 Campi Conectados</span>
+                <span>IFPA Campus Breves · Marajó</span>
+                <span className="font-bold text-wb-green">● Ensino, Pesquisa e Extensão</span>
               </div>
             </div>
             <div className="p-6 sm:p-7">
@@ -559,8 +560,8 @@ export const InteractiveBentoFeatures: React.FC = () => {
                 Ensino, Pesquisa e Extensão.
               </h3>
               <p className="mt-2 text-[15px] leading-[1.55] text-wb-ink-2">
-                O 5º laboratório entregue pelo IFPA integra sala de aula, iniciação científica e
-                soluções para os desafios reais de Breves.
+                O laboratório integra sala de aula, iniciação científica e
+                soluções tecnológicas para os desafios reais de Breves e do Marajó.
               </p>
             </div>
           </article>

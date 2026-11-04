@@ -115,9 +115,9 @@ export const HomePage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-14 items-center">
             <div>
               <div className="inline-flex items-center gap-2">
-                <span aria-hidden="true" className="marajo-glifo text-wb-green" />
                 <span className="rotulo">
-                  Apresentação institucional · LabMaker Marajó
+                  <span aria-hidden="true" className="marajo-glifo text-wb-green" />
+                  Sobre o laboratório · IFPA Campus Breves
                 </span>
               </div>
 
@@ -129,15 +129,15 @@ export const HomePage: React.FC = () => {
                   letterSpacing: '-0.028em',
                 }}
               >
-                O 5º Laboratório IF MAKER do Pará, <span className="acento">em plena produção</span> em Breves.
+                Laboratório IFPA MAKER Marajó, <span className="acento">em plena produção</span> em Breves.
               </h2>
 
               <p className="mt-5 text-[16.5px] leading-[1.68] text-wb-ink-2">
-                Inaugurado pelo <strong>Instituto Federal do Pará (IFPA)</strong> em{' '}
-                <strong>março de 2026</strong> no <strong>Campus Breves</strong>, o{' '}
+                Instalado pelo <strong>Instituto Federal do Pará (IFPA)</strong> no{' '}
+                <strong>Campus Breves</strong>, o{' '}
                 <strong>Laboratório IFPA MAKER Marajó</strong> fortalece a cultura do{' '}
                 <strong className="text-wb-ink">“aprender fazendo” (learning by doing)</strong> com
-                infraestrutura real de ponta.
+                infraestrutura tecnológica de ponta.
               </p>
 
               <p className="mt-3.5 text-[16px] leading-[1.68] text-wb-ink-2">
@@ -226,8 +226,9 @@ export const HomePage: React.FC = () => {
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <p className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />
-                Parque tecnológico real · Páginas dedicadas
+              <p className="rotulo">
+                <span aria-hidden="true" className="marajo-glifo text-wb-green" />
+                Estrutura e máquinas · Equipamentos do laboratório
               </p>
               <h2
                 className="mt-3 font-brand font-bold text-wb-ink"
@@ -310,8 +311,9 @@ export const HomePage: React.FC = () => {
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-[1.3fr_1fr] md:items-end">
             <div>
-              <p className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
-                Registros reais do laboratório · LabMaker Marajó em imagens
+              <p className="rotulo">
+                <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                Galeria de fotos · Projetos e atividades
               </p>
               <h2
                 className="mt-3 font-brand font-bold text-wb-ink"
@@ -416,7 +418,7 @@ export const HomePage: React.FC = () => {
               <div>
                 <p className="rotulo !text-white/75">
                   <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
-                  Robot Soccer & agenda · em ação no lab
+                  Robótica e agenda · Atividades do mês
                 </p>
 
                 <h2
@@ -537,8 +539,9 @@ export const HomePage: React.FC = () => {
       >
         <div className="mx-auto grid max-w-[1320px] gap-12 px-5 sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
           <div className="lg:sticky lg:top-28 lg:self-start">
-            <p className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-ink-3" />
-              Dúvidas frequentes · FAQ
+            <p className="rotulo">
+              <span aria-hidden="true" className="marajo-glifo text-wb-ink-3" />
+              Perguntas frequentes · Tire suas dúvidas
             </p>
             <h2
               className="mt-4 font-brand font-bold text-wb-ink"
@@ -610,8 +613,9 @@ export const HomePage: React.FC = () => {
         </div>
         <div className="relative mx-auto max-w-[760px] px-5 sm:px-8">
           <div className="wb-panel flex flex-col items-center px-6 py-10 text-center sm:px-12 sm:py-14 bg-white/95 backdrop-blur">
-            <p className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
-              Venha aprender fazendo · LabMaker Marajó
+            <p className="rotulo">
+              <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+              Participe · Agende seu horário
             </p>
             <h2
               className="mt-4 font-brand font-bold text-wb-ink"

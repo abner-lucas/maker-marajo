@@ -46,7 +46,7 @@ export const ServicesPage: React.FC = () => {
       {/* Hero Header */}
       <section className="border-b border-wb-line bg-wb-bench py-16 sm:py-24">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />Carta de serviços · ensino, pesquisa e extensão</span>
+          <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />Serviços do laboratório · Ensino, Pesquisa e Extensão</span>
           <h1
             className="mt-4 font-brand font-bold text-wb-ink max-w-[15em]"
             style={{
@@ -157,8 +157,9 @@ export const ServicesPage: React.FC = () => {
           {/* Interactive Service Checklist & Estimator Widget */}
           <div className="mt-16 wb-panel p-6 sm:p-10 bg-wb-bench/60">
             <div className="max-w-[680px]">
-              <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
-                Assistente interativo de preparação
+              <span className="rotulo">
+                <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                Planejamento rápido · Prepare sua atividade
               </span>
               <h2 className="mt-2 font-brand text-2xl sm:text-3xl font-bold text-wb-ink">
                 Prepare seu Projeto antes de vir para a Bancada

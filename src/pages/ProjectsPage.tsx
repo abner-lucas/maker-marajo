@@ -33,7 +33,7 @@ export const ProjectsPage: React.FC = () => {
       {/* Header */}
       <section className="border-b border-wb-line bg-wb-bench py-16 sm:py-24">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />Vitrine de projetos · LabMaker Marajó</span>
+          <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />Portfólio do laboratório · Projetos e soluções</span>
           <h1
             className="mt-4 font-brand font-bold text-wb-ink max-w-[16em]"
             style={{

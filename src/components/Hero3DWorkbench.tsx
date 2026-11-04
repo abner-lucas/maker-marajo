@@ -510,13 +510,9 @@ export const Hero3DWorkbench: React.FC = () => {
           <div className="pointer-events-none relative z-10 mx-auto w-full max-w-[1320px] px-5 pt-[118px] pb-[440px] sm:px-8 sm:pt-[148px] min-[900px]:pb-[160px]">
             {/* Eyebrow Institutional Badge */}
             <div className="wb-rise pointer-events-auto flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span aria-hidden="true" className="marajo-glifo text-wb-green" />
               <span className="rotulo">
-                5º Lab IF MAKER do IFPA · Entregue em março/2026
-              </span>
-              <span className="hidden sm:inline text-wb-ink-3">·</span>
-              <span className="hidden sm:inline font-key text-[11.5px] text-wb-orange font-semibold">
-                Campus Breves (Marajó)
+                <span aria-hidden="true" className="marajo-glifo text-wb-green" />
+                Laboratório IFPA MAKER Marajó · Campus Breves
               </span>
             </div>
 
@@ -577,7 +573,7 @@ export const Hero3DWorkbench: React.FC = () => {
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-wb-ink text-white transition-transform group-hover:scale-110 group-hover:bg-wb-orange">
                   <Play className="h-4 w-4 translate-x-[1px] fill-current" />
                 </span>
-                <span className="underline decoration-wb-line underline-offset-4 group-hover:decoration-wb-orange">Conheça o 5º Lab</span>
+                <span className="underline decoration-wb-line underline-offset-4 group-hover:decoration-wb-orange">Conheça o Laboratório</span>
               </button>
             </div>
 
@@ -670,7 +666,7 @@ export const Hero3DWorkbench: React.FC = () => {
         </div>
       </section>
 
-      {/* Institutional Presentation Modal ("Conheça o 5º Lab IFPA") */}
+      {/* Institutional Presentation Modal ("Conheça o Laboratório IFPA") */}
       {tourModalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
@@ -704,14 +700,14 @@ export const Hero3DWorkbench: React.FC = () => {
 
               <div>
                 <span className="wb-key text-wb-green border-wb-green/30 bg-wb-green/10">
-                  Vídeo oficial da inauguração · março de 2026
+                  Vídeo oficial · Laboratório IFPA MAKER Marajó
                 </span>
                 <h2 className="mt-3 font-brand text-2xl sm:text-3xl font-bold text-wb-ink">
                   Laboratório IFPA MAKER Marajó — Campus Breves
                 </h2>
                 <p className="mt-3 text-[15.5px] leading-relaxed text-wb-ink-2">
-                  Entregue em <strong>março de 2026</strong> no{' '}
-                  <strong>IFPA Campus Breves</strong> (5º laboratório da rede IF MAKER no Pará), o
+                  Instalado no{' '}
+                  <strong>IFPA Campus Breves</strong>, o
                   espaço fortalece a cultura do{' '}
                   <strong>“aprender fazendo” (learning by doing)</strong> com impressoras 3D{' '}
                   <strong>Elegoo Centauri Carbon</strong>, cortadoras a laser CO2 e Diodo CNC,

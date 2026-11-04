@@ -71,7 +71,7 @@ export const MonthlyCalendarPage: React.FC = () => {
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />Programação mensal · sincronizada com o Google Agenda</span>
+              <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />Agenda de atividades · Programação mensal</span>
               <h1
                 className="mt-4 font-brand font-bold text-wb-ink"
                 style={{
@@ -174,8 +174,9 @@ export const MonthlyCalendarPage: React.FC = () => {
               <div className="wb-panel overflow-hidden">
                 <div className="flex items-center justify-between border-b border-wb-line bg-wb-bench/70 px-6 py-4">
                   <div>
-                    <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
-                      Agenda do laboratório · Fuso America/Belém
+                    <span className="rotulo">
+                      <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                      Calendário do laboratório · Horário de Belém
                     </span>
                     <h2 className="font-brand text-xl sm:text-2xl font-bold text-wb-ink">
                       Novembro de 2026
@@ -260,8 +261,9 @@ export const MonthlyCalendarPage: React.FC = () => {
               {/* Right Column: Selected Activity Inspector */}
               <div className="wb-panel p-6 lg:sticky lg:top-24 space-y-5">
                 <div className="flex items-center justify-between border-b border-wb-line pb-3">
-                  <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />
-                    Detalhes da ação selecionada
+                  <span className="rotulo">
+                    <span aria-hidden="true" className="marajo-glifo text-wb-green" />
+                    Atividade selecionada
                   </span>
                   <span className="wb-key">{selectedActivity.date}</span>
                 </div>
@@ -397,8 +399,9 @@ export const MonthlyCalendarPage: React.FC = () => {
             <div className="wb-panel p-6 sm:p-8 space-y-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-wb-line pb-5">
                 <div>
-                  <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
-                    Integração direta Google Workspace / agenda pública
+                  <span className="rotulo">
+                    <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                    Google Agenda · Calendário público
                   </span>
                   <h2 className="mt-1 font-brand text-2xl font-bold text-wb-ink">
                     Google Agenda Incorporado — IF MAKER Campus Breves
@@ -414,7 +417,7 @@ export const MonthlyCalendarPage: React.FC = () => {
                     type="text"
                     value={customCalendarId}
                     onChange={(e) => setCustomCalendarId(e.target.value)}
-                    placeholder="ID da Google Agenda (ex: ifmaker.breves@ifpa.edu.br)"
+                    placeholder="ID da Google Agenda (ex: makermarajo@ifpa.edu.br)"
                     className="rounded-xl border border-wb-line bg-wb-bench px-3.5 py-2 font-key text-[12.5px] text-wb-ink w-[270px]"
                   />
                 </div>

@@ -169,9 +169,9 @@ export const ScrollytellingSection: React.FC = () => {
           >
             <div className="mx-auto w-full max-w-[1320px] px-5 sm:px-8">
               <div className="inline-flex items-center gap-2 mb-5">
-                <Sparkles className="h-4 w-4 text-wb-orange" />
-                <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-ink" />
-                  Scrollytelling · Fluxo criativo IF MAKER Breves
+                <span className="rotulo">
+                  <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                  Como funciona · Da ideia ao protótipo
                 </span>
               </div>
               <h2
@@ -566,8 +566,9 @@ export const ScrollytellingSection: React.FC = () => {
               {activeStepIndex === 0 && (
                 <div className="wb-modal p-5 sm:p-6">
                   <div className="flex items-center justify-between">
-                    <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
-                      01 / Prototipagem 3D & CNC
+                    <span className="rotulo">
+                      <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                      Etapa 01 · Modelagem 3D e Corte a Laser
                     </span>
                     <span className="wb-key">CAD · STL · DXF</span>
                   </div>
@@ -614,8 +615,9 @@ export const ScrollytellingSection: React.FC = () => {
               {activeStepIndex === 1 && (
                 <div className="wb-modal p-5 sm:p-6">
                   <div className="flex items-center justify-between">
-                    <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-blue" />
-                      02 / Eletrônica & Arduino
+                    <span className="rotulo">
+                      <span aria-hidden="true" className="marajo-glifo text-wb-blue" />
+                      Etapa 02 · Eletrônica e Sensores
                     </span>
                     <span className="wb-key">UNO R3 · ESP32</span>
                   </div>
@@ -713,8 +715,9 @@ export const ScrollytellingSection: React.FC = () => {
               {activeStepIndex === 2 && (
                 <div className="wb-modal p-5 sm:p-6">
                   <div className="flex items-center justify-between">
-                    <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-purple" />
-                      03 / Robótica & código C++
+                    <span className="rotulo">
+                      <span aria-hidden="true" className="marajo-glifo text-wb-purple" />
+                      Etapa 03 · Programação e Robótica
                     </span>
                     <span className="wb-key">ARDUINO IDE · BLOCOS</span>
                   </div>

@@ -58,7 +58,7 @@ export const BookingPage: React.FC = () => {
     const datesParam = `${cleanDate}T${currentSlot.start}/${cleanDate}T${currentSlot.end}`;
     const title = `[IF MAKER Breves] Reserva: ${currentEq.shortName} — ${userName || 'Protótipo'}`;
     const details = [
-      `Laboratório IF MAKER — IFPA Campus Breves (5º Lab IFPA)`,
+      `Laboratório IFPA MAKER Marajó — IFPA Campus Breves`,
       `Equipamento Reservado: ${currentEq.name}`,
       `Serviço / Modalidade: ${selectedService}`,
       `Solicitante: ${userName || 'A preencher'} (${userProfile})`,
@@ -120,7 +120,7 @@ export const BookingPage: React.FC = () => {
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />Reserva de bancada e máquinas · Google Agenda</span>
+              <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />Agendamento online · Reserva de equipamentos</span>
               <h1
                 className="mt-4 font-brand font-bold text-wb-ink"
                 style={{

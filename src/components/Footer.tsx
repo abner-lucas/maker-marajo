@@ -12,9 +12,10 @@ export const Footer: React.FC = () => {
         <div className="col-span-2 md:col-span-1">
           <BrandLogo size="md" />
           <p className="mt-5 max-w-[32em] text-[14.5px] leading-[1.65] text-wb-ink-2">
-            Quinto <strong>Laboratório IF MAKER</strong> entregue pelo Instituto Federal do Pará em
-            março de 2026. Um espaço aberto de prototipagem, robótica, ensino, pesquisa e extensão
-            no coração do Marajó para fortalecer a cultura do <strong className="font-semibold text-wb-ink">“aprender fazendo”</strong>.
+            <strong>Laboratório IFPA MAKER Marajó</strong> — Instituto Federal do Pará, Campus
+            Breves. Um espaço aberto de prototipagem, robótica, ensino, pesquisa e extensão no
+            coração do Marajó para fortalecer a cultura do{' '}
+            <strong className="font-semibold text-wb-ink">“aprender fazendo”</strong>.
           </p>
           <div className="mt-5 space-y-2 text-[13.5px] text-wb-ink-2">
             <p className="flex items-center gap-2">
@@ -23,7 +24,12 @@ export const Footer: React.FC = () => {
             </p>
             <p className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-wb-orange shrink-0" />
-              <span>ifmaker.breves@ifpa.edu.br</span>
+              <a
+                href="mailto:makermarajo@ifpa.edu.br"
+                className="transition-colors hover:text-wb-orange"
+              >
+                makermarajo@ifpa.edu.br
+              </a>
             </p>
           </div>
         </div>
@@ -62,7 +68,7 @@ export const Footer: React.FC = () => {
                 to="/"
                 className="inline-block py-1.5 text-[14px] text-wb-ink-2 transition-colors hover:text-wb-ink"
               >
-                Apresentação & Scrollytelling
+                Apresentação do Laboratório
               </Link>
             </li>
             <li>
@@ -157,7 +163,7 @@ export const Footer: React.FC = () => {
             (IFPA) — Campus Breves
           </p>
           <p className="font-key text-[11.5px]">
-            5º Laboratório IF MAKER entregue em Março/2026 · Ensino, Pesquisa e Extensão
+            Laboratório IFPA MAKER Marajó · Ensino, Pesquisa e Extensão
           </p>
         </div>
       </div>

@@ -122,7 +122,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
               IFPA · BREVES
             </div>
             <div className="font-key text-[10px] font-medium text-wb-ink-3">
-              5º Lab · Mar/2026
+              Campus Breves
             </div>
           </div>
         </div>

@@ -61,8 +61,9 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
       <div className="wb-panel p-6 sm:p-8 bg-white">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-wb-line pb-4">
           <div>
-            <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
-              Simulador interativo de bancada
+            <span className="rotulo">
+              <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+              Simulador interativo · Impressão 3D
             </span>
             <h3 className="font-brand text-xl font-bold text-wb-ink">
               Configurador de Fatiamento 3D (Slicer)
@@ -176,8 +177,9 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
       <div className="wb-panel p-6 sm:p-8 bg-white">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-wb-line pb-4">
           <div>
-            <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-red" />
-              Calculadora de corte & gravação CNC
+            <span className="rotulo">
+              <span aria-hidden="true" className="marajo-glifo text-wb-red" />
+              Simulador interativo · Corte e Gravação a Laser
             </span>
             <h3 className="font-brand text-xl font-bold text-wb-ink">
               Tabela Dinâmica de Potência × Velocidade (Laser CO2 100W)
@@ -261,8 +263,9 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
       <div className="wb-panel p-6 sm:p-8 bg-white">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-wb-line pb-4">
           <div>
-            <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-blue" />
-              Inspeção de malha & nuvem de pontos
+            <span className="rotulo">
+              <span aria-hidden="true" className="marajo-glifo text-wb-blue" />
+              Simulador interativo · Digitalização 3D
             </span>
             <h3 className="font-brand text-xl font-bold text-wb-ink">
               Simulador de Digitalização 3D por Luz Estruturada
@@ -357,8 +360,9 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
       <div className="wb-panel p-6 sm:p-8 bg-white">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-wb-line pb-4">
           <div>
-            <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />
-              Cinemática direta · Braço robótico 6-DOF
+            <span className="rotulo">
+              <span aria-hidden="true" className="marajo-glifo text-wb-green" />
+              Simulador interativo · Robótica
             </span>
             <h3 className="font-brand text-xl font-bold text-wb-ink">
               Teste os Servomotores do Braço Robótico Educacional
@@ -475,8 +479,9 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
     <div className="wb-panel p-6 sm:p-8 bg-white">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-wb-line pb-4">
         <div>
-          <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-purple" />
-            Mapa de pinos interativo
+          <span className="rotulo">
+            <span aria-hidden="true" className="marajo-glifo text-wb-purple" />
+            Simulador interativo · Eletrônica e Arduino
           </span>
           <h3 className="font-brand text-xl font-bold text-wb-ink">
             Explorador de Barramentos Arduino Uno R3 & ESP32
@@ -633,8 +638,9 @@ export const EquipmentsPage: React.FC = () => {
               <div className="wb-panel p-6 sm:p-8 bg-white">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-wb-line pb-4">
                   <div>
-                    <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />
-                      Registros reais da bancada · LabMaker Marajó
+                    <span className="rotulo">
+                      <span aria-hidden="true" className="marajo-glifo text-wb-green" />
+                      Galeria do laboratório · Fotos e vídeos reais
                     </span>
                     <h2 className="font-brand text-xl font-bold text-wb-ink">
                       {selectedEquipment.shortName} em Operação no IFPA Campus Breves
@@ -776,7 +782,7 @@ export const EquipmentsPage: React.FC = () => {
     <div className="pt-[76px] bg-wb-canvas min-h-screen font-ui text-wb-ink">
       <section className="relative overflow-hidden border-b border-wb-line bg-wb-bench py-16 sm:py-24">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />Parque tecnológico · 5º Lab IF MAKER (mar/2026)</span>
+          <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />Equipamentos · IFPA Campus Breves</span>
           <h1
             className="mt-4 font-brand font-bold text-wb-ink max-w-[16em]"
             style={{

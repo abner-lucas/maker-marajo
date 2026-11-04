@@ -1,6 +1,6 @@
 # 🛠️ Laboratório IFPA MAKER Marajó — IFPA Campus Breves
 
-Portal interativo, imersivo e dinâmico do **Laboratório IFPA MAKER Marajó** (5º Laboratório IF MAKER entregue pelo Instituto Federal do Pará em março de 2026 no **Campus Breves**), voltado para **prototipagem, robótica, ensino, pesquisa e extensão** sob a filosofia do *"aprender fazendo" (learning by doing)*.
+Portal interativo, imersivo e dinâmico do **Laboratório IFPA MAKER Marajó** (**IFPA Campus Breves**), voltado para **prototipagem, robótica, ensino, pesquisa e extensão** sob a filosofia do *"aprender fazendo" (learning by doing)*. E-mail institucional: `makermarajo@ifpa.edu.br`.
 
 ---
 

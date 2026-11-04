@@ -301,7 +301,7 @@ export const LAB_VIDEOS: LabVideoItem[] = [
     category: 'Inauguração & Estrutura',
     accentColor: '#0092D6',
     summary:
-      'Registro histórico da entrega do 5º Laboratório IF MAKER do IFPA no Campus Breves em março de 2026. Apresenta a porta com laço inaugural, o espaço de convivência com iluminação RGB, o mural temático amazônico (Robótica, Impressão 3D, Prototipagem e Eletrônica), a bancada de impressoras Elegoo Centauri Carbon, as cortadoras a laser, as canetas 3D e os ribeirinhos em canoas impressos em 3D.',
+      'Registro da inauguração do Laboratório IFPA MAKER Marajó no IFPA Campus Breves. Apresenta a porta com laço inaugural, o espaço de convivência com iluminação RGB, o mural temático amazônico (Robótica, Impressão 3D, Prototipagem e Eletrônica), a bancada de impressoras Elegoo Centauri Carbon, as cortadoras a laser, as canetas 3D e os ribeirinhos em canoas impressos em 3D.',
     equipmentsSeen: [
       'Impressoras 3D CoreXY ELEGOO Centauri Carbon (Câmara Fechada)',
       'Cortadora a Laser CO2 Industrial Azul e Branca (CE/FDA)',
@@ -364,7 +364,7 @@ export const LAB_VIDEOS: LabVideoItem[] = [
 ];
 
 export const GOOGLE_CALENDAR_CONFIG = {
-  calendarId: 'ifmaker.breves@ifpa.edu.br',
+  calendarId: 'makermarajo@ifpa.edu.br',
   publicEmbedUrl:
     'https://calendar.google.com/calendar/embed?src=pt.brazilian%23holiday%40group.v.calendar.google.com&ctz=America%2FBelem&mode=MONTH&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=1&showCalendars=0',
   appointmentScheduleUrl: 'https://calendar.google.com/calendar/u/0/r/eventedit',
@@ -380,7 +380,7 @@ export const EQUIPMENTS: EquipmentItem[] = [
     tagline:
       'Bancada real equipada com impressoras CoreXY fechadas ELEGOO Centauri Carbon, fatiamento em monitor curvo e Canetas 3D.',
     category: 'impressoras-3d',
-    badge: 'Manufatura aditiva · Elegoo Centauri Carbon',
+    badge: 'Impressão 3D e Prototipagem',
     accentColor: '#FF6B35',
     unitsAvailable: 6,
     status: 'Operacional',
@@ -457,7 +457,7 @@ export const EQUIPMENTS: EquipmentItem[] = [
     tagline:
       'Duas estações reais de corte e gravação a laser: Laser CO2 Industrial com mesa colmeia e Gravadora Laser Diodo CNC com régua milimetrada.',
     category: 'cortadora-laser-cnc',
-    badge: 'Corte & gravação CNC · CO2 + diodo óptico',
+    badge: 'Corte e Gravação a Laser',
     accentColor: '#E5484D',
     unitsAvailable: 2,
     status: 'Operacional',
@@ -528,7 +528,7 @@ export const EQUIPMENTS: EquipmentItem[] = [
     tagline:
       'Digitalização tridimensional de objetos físicos e artefatos marajoaras para modelagem CAD e impressão 3D.',
     category: 'scanners-3d',
-    badge: 'Digitalização 3D · Luz estruturada',
+    badge: 'Digitalização e Modelagem 3D',
     accentColor: '#0092D6',
     unitsAvailable: 2,
     status: 'Operacional',
@@ -580,7 +580,7 @@ export const EQUIPMENTS: EquipmentItem[] = [
     tagline:
       'Arena própria de Futebol de Robôs (Robot Soccer) com 5 robôs impressos em 3D + LCD, kits educacionais e competições.',
     category: 'kits-robotica',
-    badge: 'Robot Soccer & mecatrônica · LabMaker Marajó',
+    badge: 'Robótica e Competição',
     accentColor: '#23963C',
     unitsAvailable: 12,
     status: 'Operacional',
@@ -651,7 +651,7 @@ export const EQUIPMENTS: EquipmentItem[] = [
     tagline:
       'Microcontroladores, displays LCD, sensores e instrumentação que dão vida aos robôs e projetos do LabMaker Marajó.',
     category: 'arduino-eletronica',
-    badge: 'Eletrônica & embarcados · Arduino / ESP32',
+    badge: 'Eletrônica e Programação',
     accentColor: '#70388E',
     unitsAvailable: 20,
     status: 'Operacional',
@@ -901,7 +901,7 @@ export const MAKER_PROJECTS: MakerProject[] = [
       IMAGE_ASSETS.real.vitrine3d,
     ],
     summary:
-      'Coleção inaugural produzida para celebrar a entrega do 5º Laboratório IF MAKER do IFPA em Breves. Representa o caboclo/ribeirinho marajoara com chapéu remando sua canoa tradicional, fatiada na estação Samsung e impressa em 3D em filamentos vibrantes (laranja, vermelho e cinza) sobre base oval de MDF cortada a laser.',
+      'Coleção inaugural produzida no Laboratório IFPA MAKER Marajó do IFPA Campus Breves. Representa o caboclo/ribeirinho marajoara com chapéu remando sua canoa tradicional, fatiada na estação Samsung e impressa em 3D em filamentos vibrantes (laranja, vermelho e cinza) sobre base oval de MDF cortada a laser.',
     impactMarajo:
       'Simboliza a união entre a tradição ribeirinha de Breves/Marajó e as tecnologias da Indústria 4.0.',
     authors: ['Equipe Inaugural Laboratório IFPA MAKER Marajó'],
@@ -915,7 +915,7 @@ export const MAKER_PROJECTS: MakerProject[] = [
     metrics: [
       { label: 'Impressora Usada', value: 'Elegoo Centauri Carbon' },
       { label: 'Base de Apoio', value: 'MDF Corte Laser' },
-      { label: 'Marco', value: 'Inauguração Mar/2026' },
+      { label: 'Identidade', value: 'Cultura Marajoara' },
     ],
   },
   {
@@ -999,11 +999,11 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Coordenação & Gestão do Laboratório IFPA MAKER Marajó',
     badge: 'Coordenação',
     area: 'Fabricação Digital (3D & Laser CNC), Robótica e Projetos de Inovação',
-    bio: 'À frente da estruturação, inauguração (março de 2026) e produção tecnológica do 5º Laboratório IF MAKER do IFPA no Campus Breves, coordenando projetos como o Robot Soccer, a produção das medalhas do IV JINs e as oficinas mão na massa.',
+    bio: 'À frente da estruturação, inauguração e produção tecnológica do Laboratório IFPA MAKER Marajó no IFPA Campus Breves, coordenando projetos como o Robot Soccer, a produção das medalhas do IV JINs e as oficinas mão na massa.',
     projectsCount: 18,
     avatarColor: '#FF6B35',
     initials: 'AL',
-    lattesOrEmail: 'ifmaker.breves@ifpa.edu.br',
+    lattesOrEmail: 'makermarajo@ifpa.edu.br',
   },
   {
     id: 'tm-2',
@@ -1015,7 +1015,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     projectsCount: 12,
     avatarColor: '#23963C',
     initials: 'ER',
-    lattesOrEmail: 'robotica.breves@ifpa.edu.br',
+    lattesOrEmail: 'makermarajo@ifpa.edu.br',
   },
   {
     id: 'tm-3',
@@ -1027,7 +1027,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     projectsCount: 25,
     avatarColor: '#0092D6',
     initials: 'MD',
-    lattesOrEmail: 'suporte.ifmaker.breves@ifpa.edu.br',
+    lattesOrEmail: 'makermarajo@ifpa.edu.br',
   },
   {
     id: 'tm-4',
@@ -1039,7 +1039,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     projectsCount: 15,
     avatarColor: '#F9B814',
     initials: 'EM',
-    lattesOrEmail: 'monitoria.ifmaker@ifpa.edu.br',
+    lattesOrEmail: 'makermarajo@ifpa.edu.br',
   },
   {
     id: 'tm-5',
@@ -1051,7 +1051,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     projectsCount: 14,
     avatarColor: '#70388E',
     initials: 'NE',
-    lattesOrEmail: 'extensao.ifmaker@ifpa.edu.br',
+    lattesOrEmail: 'makermarajo@ifpa.edu.br',
   },
 ];
 
@@ -1187,7 +1187,7 @@ export const CALENDAR_ACTIVITIES: CalendarActivity[] = [
 export const FAQ_ITEMS = [
   {
     q: 'O que já temos instalado e funcionando hoje no Laboratório IFPA MAKER Marajó?',
-    a: 'Inaugurado em março de 2026 (5º laboratório entregue pelo IFPA), o espaço já conta com bancada de Impressoras 3D CoreXY fechadas ELEGOO Centauri Carbon, Cortadora a Laser CO2 Industrial (azul e branca com mesa colmeia), Gravadora Laser Diodo CNC de bancada, Scanners 3D, Arena própria de Futebol de Robôs (Robot Soccer) com 5 robôs impressos em 3D equipados com display LCD, mesa de Canetas 3D, estação CAD com monitor curvo Samsung, micro-retíficas, ferramentas de precisão e espaço de convivência com iluminação RGB.',
+    a: 'O Laboratório IFPA MAKER Marajó já conta com bancada de Impressoras 3D CoreXY fechadas ELEGOO Centauri Carbon, Cortadora a Laser CO2 Industrial (azul e branca com mesa colmeia), Gravadora Laser Diodo CNC de bancada, Scanners 3D, Arena própria de Futebol de Robôs (Robot Soccer) com 5 robôs impressos em 3D equipados com display LCD, mesa de Canetas 3D, estação CAD com monitor curvo Samsung, micro-retíficas, ferramentas de precisão e espaço de convivência com iluminação RGB.',
   },
   {
     q: 'Quais projetos e ações já foram produzidos no laboratório até o momento?',

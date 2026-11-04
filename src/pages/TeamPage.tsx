@@ -19,7 +19,7 @@ export const TeamPage: React.FC = () => {
       {/* Header */}
       <section className="border-b border-wb-line bg-wb-bench py-16 sm:py-24">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />Quem faz acontecer · IFPA Campus Breves</span>
+          <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />Nossa equipe · IFPA Campus Breves</span>
           <h1
             className="mt-4 font-brand font-bold text-wb-ink max-w-[16em]"
             style={{
@@ -85,8 +85,9 @@ export const TeamPage: React.FC = () => {
           <div className="mt-16 wb-panel overflow-hidden grid grid-cols-1 lg:grid-cols-[1.2fr_1fr]">
             <div className="p-7 sm:p-10 flex flex-col justify-between">
               <div>
-                <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
-                  Oportunidades para estudantes & servidores
+                <span className="rotulo">
+                  <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                  Participe da equipe · Monitoria e pesquisa
                 </span>
                 <h2 className="mt-2 font-brand text-2xl sm:text-3xl font-bold text-wb-ink">
                   Faça parte da Equipe de Monitores e Pesquisadores Maker

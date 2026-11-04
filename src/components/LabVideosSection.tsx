@@ -83,9 +83,9 @@ export const LabVideosSection: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div>
             <div className="inline-flex items-center gap-2">
-              <Film className="h-4 w-4 text-wb-orange" />
-              <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-ink" />
-                Vídeos reais & inspeção quadro a quadro · LabMaker Marajó
+              <span className="rotulo">
+                <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                Vídeos do laboratório · Produção em ação
               </span>
             </div>
             <h2
