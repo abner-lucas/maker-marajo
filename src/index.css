@@ -1,0 +1,284 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --surface-1: #fff6f0;
+  --surface-2: #ffefe4;
+  --foreground: #141a17;
+  --text-secondary: #48524d;
+  --text-tertiary: #6b7570;
+  --border: #111111;
+  --border-hover: #ff6b35;
+  --accent: #ff6b35;
+  --accent-glow: #ff6b352e;
+  --ink: #111111;
+  --sky: #29abe2;
+
+  /* Constructa Workbench Design Tokens + IF MAKER Palette */
+  --wb-canvas: #ffffff;
+  --wb-bench: #f4f7f5;
+  --wb-ink: #141a17;
+  --wb-ink-2: #48524d;
+  --wb-ink-3: #6b7570;
+  --wb-line: #e1e7e3;
+  --wb-grid: #cfe8d6;
+  --wb-axis: #2fb36b;
+  --wb-orange: #ff6b35;
+  --wb-blue: #29abe2;
+  --wb-green: #2fb36b;
+  --wb-red: #e5484d;
+  --wb-yellow: #f5c518;
+  --wb-purple: #7c3aed;
+  --wb-teal: #0f8a8a;
+
+  --font-display: 'Unbounded', 'Figtree', sans-serif;
+  --font-ui: 'Figtree', system-ui, sans-serif;
+  --font-key: 'JetBrains Mono', monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-ui);
+  background-color: var(--wb-canvas);
+  color: var(--wb-ink);
+}
+
+/* Workbench Panel & Cards (Exact Constructa style) */
+.wb-panel {
+  background: var(--wb-canvas);
+  border: 1px solid var(--wb-line);
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(28, 36, 33, 0.06), 0 18px 40px -18px rgba(28, 36, 33, 0.22);
+}
+
+.wb-panel-hover {
+  transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.22s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.22s;
+}
+
+.wb-panel-hover:hover {
+  transform: translateY(-3px);
+  border-color: #c2d1c8;
+  box-shadow: 0 4px 12px rgba(28, 36, 33, 0.08), 0 24px 48px -18px rgba(28, 36, 33, 0.28);
+}
+
+/* Workbench Tactile Buttons */
+.wb-btn {
+  font-family: var(--font-ui);
+  border-radius: 14px;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  transition: transform 0.14s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.14s cubic-bezier(0.2, 0.7, 0.2, 1), background-color 0.14s;
+  display: inline-flex;
+}
+
+.wb-btn-primary {
+  background: var(--wb-orange);
+  color: #ffffff;
+  box-shadow: inset 0 -3px rgba(120, 32, 0, 0.22), 0 10px 24px -10px rgba(255, 107, 53, 0.7);
+}
+
+.wb-btn-primary:hover {
+  background: #ff7a49;
+  transform: translateY(-1px);
+}
+
+.wb-btn-primary:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 -1px rgba(120, 32, 0, 0.22), 0 4px 10px -6px rgba(255, 107, 53, 0.7);
+}
+
+.wb-btn-green {
+  background: var(--wb-green);
+  color: #ffffff;
+  box-shadow: inset 0 -3px rgba(12, 74, 42, 0.28), 0 10px 24px -10px rgba(47, 179, 107, 0.65);
+}
+
+.wb-btn-green:hover {
+  background: #36c175;
+  transform: translateY(-1px);
+}
+
+.wb-btn-dark {
+  background: var(--wb-ink);
+  color: #ffffff;
+  box-shadow: inset 0 -3px rgba(0, 0, 0, 0.4), 0 10px 24px -10px rgba(20, 26, 23, 0.45);
+}
+
+.wb-btn-dark:hover {
+  background: #232d28;
+  transform: translateY(-1px);
+}
+
+/* Workbench Technical Keycap */
+.wb-key {
+  min-width: 1.5em;
+  font-family: var(--font-key);
+  color: var(--wb-ink-2);
+  background: var(--wb-canvas);
+  border: 1px solid var(--wb-line);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  justify-content: center;
+  align-items: center;
+  padding: 0.12em 0.45em;
+  font-size: 0.75em;
+  font-weight: 500;
+  display: inline-flex;
+}
+
+/* 3D Perspective Workbench CAD Grid Floor */
+.wb-floor {
+  background-image:
+    linear-gradient(var(--wb-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--wb-grid) 1px, transparent 1px);
+  transform-origin: top;
+  pointer-events: none;
+  background-position: top;
+  background-size: 56px 56px;
+  height: 120%;
+  position: absolute;
+  bottom: -62%;
+  left: -50%;
+  right: -50%;
+  transform: perspective(700px) rotateX(62deg);
+  -webkit-mask-image: linear-gradient(transparent 0%, #000 22% 55%, transparent 92%);
+  mask-image: linear-gradient(transparent 0%, #000 22% 55%, transparent 92%);
+}
+
+/* 2D Technical Grid Background for Interactive Cards */
+.wb-grid-bg {
+  background-image:
+    linear-gradient(var(--wb-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--wb-grid) 1px, transparent 1px);
+  background-size: 26px 26px;
+  background-position: center;
+}
+
+.halftone {
+  background-image: radial-gradient(var(--accent-glow) 1.4px, transparent 1.5px);
+  background-size: 14px 14px;
+}
+
+/* Animations & Keyframes from Constructa */
+@keyframes wb-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.wb-marquee {
+  animation: wb-marquee 38s linear infinite;
+}
+
+.wb-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes wb-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes wb-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes wb-floor-in {
+  0% {
+    opacity: 0;
+    transform: perspective(700px) rotateX(75deg);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(700px) rotateX(62deg);
+  }
+}
+
+@keyframes word-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes servo-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.wb-rise {
+  opacity: 0;
+  animation: 0.72s cubic-bezier(0.2, 0.8, 0.2, 1) forwards wb-rise;
+}
+
+.wb-pop {
+  opacity: 0;
+  animation: 0.52s cubic-bezier(0.3, 1.4, 0.5, 1) forwards wb-pop;
+}
+
+.wb-floor-in {
+  animation: 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) both wb-floor-in;
+}
+
+.word-rise {
+  opacity: 0;
+  animation: 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards word-rise;
+  display: inline-block;
+}
+
+.servo-float {
+  animation: 3.4s ease-in-out infinite servo-float;
+}
+
+.reveal {
+  opacity: 0;
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(16px);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .word-rise,
+  .wb-rise,
+  .wb-pop,
+  .wb-floor-in {
+    opacity: 1;
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+}
+
