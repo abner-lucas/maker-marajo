@@ -3,7 +3,6 @@ import {
   ArrowRight,
   ExternalLink,
   Film,
-  Image as ImageIcon,
   Play,
   X,
 } from 'lucide-react';
@@ -14,7 +13,6 @@ export const ProjectsPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<'Todos' | 'Produzido' | 'Em Andamento'>('Todos');
   const [pillarFilter, setPillarFilter] = useState<string>('Todos');
   const [selectedProject, setSelectedProject] = useState<MakerProject | null>(null);
-  const [customImages, setCustomImages] = useState<Record<string, string>>({});
   const [playingVideoCards, setPlayingVideoCards] = useState<Record<string, boolean>>({
     'proj-jins-medalhas': true,
     'proj-robot-soccer': true,
@@ -26,14 +24,6 @@ export const ProjectsPage: React.FC = () => {
     return matchStatus && matchPillar;
   });
 
-  const handleImagePreviewUpload = (projId: string, e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    setCustomImages((prev) => ({ ...prev, [projId]: url }));
-    setPlayingVideoCards((prev) => ({ ...prev, [projId]: false }));
-  };
-
   const toggleCardVideo = (projId: string) => {
     setPlayingVideoCards((prev) => ({ ...prev, [projId]: !prev[projId] }));
   };
@@ -43,15 +33,13 @@ export const ProjectsPage: React.FC = () => {
       {/* Header */}
       <section className="border-b border-wb-line bg-wb-bench py-16 sm:py-24">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <span className="wb-key text-wb-orange font-bold">
-            VITRINE REAL DE INOVAÇÃO · LABMAKER MARAJÓ (IFPA BREVES)
-          </span>
+          <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />Vitrine de projetos · LabMaker Marajó</span>
           <h1
             className="mt-4 font-brand font-bold text-wb-ink max-w-[16em]"
             style={{
               fontSize: 'clamp(34px, 4.4vw, 58px)',
               lineHeight: 1.04,
-              letterSpacing: '-0.045em',
+              letterSpacing: '-0.028em',
             }}
           >
             <WordRise text="Projetos Produzidos e em Andamento." />
@@ -66,7 +54,7 @@ export const ProjectsPage: React.FC = () => {
 
           {/* Filters */}
           <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-            <div className="inline-flex rounded-2xl border border-wb-line bg-white p-1 shadow-sm">
+            <div className="inline-flex border-t border-wb-line py-1">
               {(['Todos', 'Produzido', 'Em Andamento'] as const).map((st) => (
                 <button
                   key={st}
@@ -112,7 +100,7 @@ export const ProjectsPage: React.FC = () => {
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
             {filtered.map((proj) => {
-              const imgSrc = customImages[proj.id] || proj.image;
+              const imgSrc = proj.image;
               const showVideo = Boolean(proj.videoSrc && playingVideoCards[proj.id]);
 
               return (
@@ -149,11 +137,11 @@ export const ProjectsPage: React.FC = () => {
                         }`}
                       >
                         {proj.status === 'Produzido'
-                          ? '✓ PRODUZIDO NO LAB'
-                          : `⚡ EM ANDAMENTO · ${proj.progress}%`}
+                          ? 'Produzido no lab'
+                          : `Em andamento · ${proj.progress}%`}
                       </span>
-                      <span className="rounded-full bg-white/92 backdrop-blur px-3 py-1 font-key text-[11px] font-bold text-wb-ink shadow-sm">
-                        PILAR: {proj.pillar.toUpperCase()}
+                      <span className="rounded-full bg-white/92 backdrop-blur px-3 py-1 font-key text-[11px] font-bold text-wb-ink">
+                        Pilar: {proj.pillar}
                       </span>
                     </div>
 
@@ -163,35 +151,22 @@ export const ProjectsPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => toggleCardVideo(proj.id)}
-                          className="inline-flex items-center gap-1.5 rounded-xl bg-wb-orange px-3 py-1.5 font-key text-[11px] font-bold text-white shadow hover:bg-wb-orange/90"
+                          className="wb-btn wb-btn-primary h-11 px-4 text-[13.5px]"
                         >
                           <Film className="h-3.5 w-3.5" />
-                          <span>{showVideo ? 'Ver Foto de Capa' : 'Assistir Vídeo Real'}</span>
+                          <span>{showVideo ? 'Ver foto de capa' : 'Assistir vídeo real'}</span>
                         </button>
                       ) : (
                         <span />
                       )}
 
-                      <label
-                        title="Testar substituição por outra foto"
-                        className="cursor-pointer inline-flex items-center gap-1.5 rounded-xl bg-black/75 px-3 py-1.5 font-key text-[11px] font-semibold text-white backdrop-blur hover:bg-wb-ink transition-colors"
-                      >
-                        <ImageIcon className="h-3.5 w-3.5" />
-                        <span>Trocar Foto</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => handleImagePreviewUpload(proj.id, e)}
-                          className="hidden"
-                        />
-                      </label>
                     </div>
                   </div>
 
                   {/* Card Body */}
                   <div className="flex flex-1 flex-col justify-between p-6 sm:p-7">
                     <div>
-                      <div className="flex items-center justify-between font-key text-[11px] font-bold uppercase text-wb-ink-3">
+                      <div className="flex items-center justify-between font-key text-[11px] font-bold text-wb-ink-3">
                         <span>
                           {proj.category} · {proj.year}
                         </span>
@@ -200,9 +175,9 @@ export const ProjectsPage: React.FC = () => {
                             href={proj.instagramUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-wb-orange hover:underline"
+                            className="inline-flex min-h-[44px] items-center gap-1 text-[13px] text-wb-orange hover:underline"
                           >
-                            <span>Reel Oficial</span>
+                            <span>Reel oficial</span>
                             <ExternalLink className="h-3 w-3" />
                           </a>
                         )}
@@ -265,7 +240,7 @@ export const ProjectsPage: React.FC = () => {
                         {proj.metrics.map((m) => (
                           <div
                             key={m.label}
-                            className="rounded-xl border border-wb-line bg-wb-bench/60 p-2.5"
+                            className="border-t border-wb-line py-2.5"
                           >
                             <div className="font-key text-[10px] text-wb-ink-3 truncate">
                               {m.label}
@@ -291,7 +266,7 @@ export const ProjectsPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setSelectedProject(proj)}
-                        className="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-wb-orange hover:underline"
+                        className="inline-flex min-h-[44px] items-center gap-1.5 text-[14px] font-semibold text-wb-orange hover:underline"
                       >
                         <span>Ver Vídeo & Fotos</span>
                         <ArrowRight className="h-4 w-4" />
@@ -312,7 +287,7 @@ export const ProjectsPage: React.FC = () => {
           onClick={() => setSelectedProject(null)}
         >
           <div
-            className="wb-pop relative max-h-[90vh] w-[min(900px,95vw)] overflow-y-auto rounded-[24px] border border-wb-line bg-white p-6 sm:p-8 shadow-2xl"
+            className="wb-pop relative max-h-[90vh] w-[min(900px,95vw)] overflow-y-auto border-t border-wb-line py-6 sm:py-8"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -324,7 +299,7 @@ export const ProjectsPage: React.FC = () => {
             </button>
 
             <span className="wb-key text-wb-orange font-bold">
-              {selectedProject.status.toUpperCase()} · {selectedProject.pillar.toUpperCase()}
+              {selectedProject.status} · {selectedProject.pillar}
             </span>
             <h2 className="mt-3 font-brand text-2xl sm:text-3xl font-bold text-wb-ink">
               {selectedProject.title}
@@ -349,7 +324,7 @@ export const ProjectsPage: React.FC = () => {
                 </div>
               ) : (
                 <img
-                  src={customImages[selectedProject.id] || selectedProject.image}
+                  src={selectedProject.image}
                   alt={selectedProject.title}
                   className="w-full rounded-2xl border border-wb-line object-cover"
                 />
@@ -369,8 +344,8 @@ export const ProjectsPage: React.FC = () => {
                   </div>
                 )}
 
-                <div className="rounded-2xl border border-wb-line bg-wb-bench/60 p-4">
-                  <h3 className="font-key text-[11px] font-bold uppercase text-wb-ink-3">
+                <div className="border-t border-wb-line py-4">
+                  <h3 className="font-key text-[11px] font-bold text-wb-ink-3">
                     Resumo Técnico
                   </h3>
                   <p className="mt-1.5 text-[14px] text-wb-ink leading-relaxed">
@@ -378,8 +353,8 @@ export const ProjectsPage: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-wb-line bg-wb-bench/60 p-4">
-                  <h3 className="font-key text-[11px] font-bold uppercase text-wb-green">
+                <div className="border-t border-wb-line py-4">
+                  <h3 className="font-key text-[11px] font-bold text-wb-green">
                     Impacto no Campus Breves / Marajó
                   </h3>
                   <p className="mt-1.5 text-[14px] text-wb-ink leading-relaxed">

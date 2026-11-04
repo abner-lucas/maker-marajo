@@ -3,131 +3,166 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --surface-1: #fff6f0;
-  --surface-2: #ffefe4;
-  --foreground: #141a17;
-  --text-secondary: #48524d;
-  --text-tertiary: #6b7570;
-  --border: #111111;
-  --border-hover: #ff6b35;
   --accent: #ff6b35;
   --accent-glow: #ff6b352e;
-  --ink: #111111;
-  --sky: #29abe2;
 
-  /* Constructa Workbench Design Tokens + IF MAKER Palette */
-  --wb-canvas: #ffffff;
-  --wb-bench: #f4f7f5;
-  --wb-ink: #141a17;
-  --wb-ink-2: #48524d;
-  --wb-ink-3: #6b7570;
-  --wb-line: #e1e7e3;
-  --wb-grid: #cfe8d6;
+  /* Paleta IF MAKER sobre "papel" levemente quente (barro marajoara) */
+  --wb-canvas: #fbfaf7;
+  --wb-bench: #f3efe8;
+  --wb-ink: #16130f;
+  --wb-ink-2: #4a453e;
+  --wb-ink-3: #6e675d;
+  --wb-line: #e2dcd2;
+  --wb-grid: #e6dfd3;
   --wb-axis: #2fb36b;
-  --wb-orange: #ff6b35;
-  --wb-blue: #29abe2;
-  --wb-green: #2fb36b;
+  --wb-orange: #f2622e;
+  --wb-blue: #1f9bd1;
+  --wb-green: #23a35e;
   --wb-red: #e5484d;
   --wb-yellow: #f5c518;
   --wb-purple: #7c3aed;
   --wb-teal: #0f8a8a;
 
-  --font-display: 'Unbounded', 'Figtree', sans-serif;
-  --font-ui: 'Figtree', system-ui, sans-serif;
-  --font-key: 'JetBrains Mono', monospace;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --glifo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 0 16 8 8 16 0 8Z M8 4.2 4.2 8 8 11.8 11.8 8Z M8 6.4 9.6 8 8 9.6 6.4 8Z' fill-rule='evenodd'/%3E%3C/svg%3E");
+  --meandro: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='10' viewBox='0 0 28 10'%3E%3Cpath d='M0 9h6V1h10v6h-5V4' fill='none' stroke='black' stroke-width='1.4'/%3E%3Cpath d='M16 9h12' fill='none' stroke='black' stroke-width='1.4'/%3E%3C/svg%3E");
 }
 
 html {
   scroll-behavior: smooth;
-  font-family: var(--font-ui);
+  overflow-x: clip;
+  font-family: 'Hanken Grotesk Variable', system-ui, sans-serif;
   background-color: var(--wb-canvas);
   color: var(--wb-ink);
+  text-rendering: optimizeLegibility;
 }
 
-/* Workbench Panel & Cards (Exact Constructa style) */
+body {
+  background-color: var(--wb-canvas);
+  font-feature-settings: 'ss01';
+}
+
+h1, h2, h3, .font-brand {
+  font-feature-settings: 'ss01', 'ss02';
+  text-wrap: balance;
+}
+
+p { text-wrap: pretty; }
+
+/* Rótulos: mesma família do texto, algarismos tabulares, sem caixa alta forçada */
+.font-key {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.005em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--wb-orange);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ------------------------------------------------------------------
+   Sem caixas: o conteúdo fica direto na página, separado por fios finos.
+   (.wb-panel continua existindo para não quebrar a marcação, mas não
+   desenha mais borda, sombra nem fundo.)
+------------------------------------------------------------------- */
 .wb-panel {
-  background: var(--wb-canvas);
-  border: 1px solid var(--wb-line);
-  border-radius: 18px;
-  box-shadow: 0 1px 2px rgba(28, 36, 33, 0.06), 0 18px 40px -18px rgba(28, 36, 33, 0.22);
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--wb-ink);
+  border-radius: 0;
+  box-shadow: none;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
 
 .wb-panel-hover {
-  transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.22s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.22s;
+  transition: border-color 0.3s var(--ease);
 }
 
 .wb-panel-hover:hover {
-  transform: translateY(-3px);
-  border-color: #c2d1c8;
-  box-shadow: 0 4px 12px rgba(28, 36, 33, 0.08), 0 24px 48px -18px rgba(28, 36, 33, 0.28);
+  border-top-color: var(--wb-orange);
 }
 
-/* Workbench Tactile Buttons */
-.wb-btn {
-  font-family: var(--font-ui);
+.wb-panel-hover img {
   border-radius: 14px;
+}
+
+/* ------------------------------------------------------------------
+   Botões: planos, cantos discretos, sem brilho nem sombra colorida.
+------------------------------------------------------------------- */
+.wb-btn {
+  font-family: 'Hanken Grotesk Variable', system-ui, sans-serif;
+  border-radius: 10px;
   justify-content: center;
   align-items: center;
-  gap: 0.6rem;
-  font-weight: 700;
-  transition: transform 0.14s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.14s cubic-bezier(0.2, 0.7, 0.2, 1), background-color 0.14s;
+  gap: 0.55rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  min-height: 44px;
+  transition: transform 0.25s var(--ease), background-color 0.25s var(--ease), color 0.25s var(--ease);
   display: inline-flex;
+  box-shadow: none !important;
 }
 
-.wb-btn-primary {
-  background: var(--wb-orange);
-  color: #ffffff;
-  box-shadow: inset 0 -3px rgba(120, 32, 0, 0.22), 0 10px 24px -10px rgba(255, 107, 53, 0.7);
+.wb-btn:active { transform: scale(0.97); }
+
+.wb-btn > svg:last-child:not(:first-child) {
+  transition: transform 0.3s var(--ease);
+}
+.wb-btn:hover > svg:last-child:not(:first-child) {
+  transform: translateX(3px);
 }
 
-.wb-btn-primary:hover {
-  background: #ff7a49;
-  transform: translateY(-1px);
-}
+.wb-btn-primary { background: var(--wb-orange); color: #fff; }
+.wb-btn-primary:hover { background: #d9521f; }
 
-.wb-btn-primary:active {
-  transform: translateY(1px);
-  box-shadow: inset 0 -1px rgba(120, 32, 0, 0.22), 0 4px 10px -6px rgba(255, 107, 53, 0.7);
-}
+.wb-btn-green { background: var(--wb-green); color: #fff; }
+.wb-btn-green:hover { background: #1b8a4e; }
 
-.wb-btn-green {
-  background: var(--wb-green);
-  color: #ffffff;
-  box-shadow: inset 0 -3px rgba(12, 74, 42, 0.28), 0 10px 24px -10px rgba(47, 179, 107, 0.65);
-}
+.wb-btn-dark { background: var(--wb-ink); color: #fff; }
+.wb-btn-dark:hover { background: #2c2720; }
 
-.wb-btn-green:hover {
-  background: #36c175;
-  transform: translateY(-1px);
-}
-
-.wb-btn-dark {
-  background: var(--wb-ink);
-  color: #ffffff;
-  box-shadow: inset 0 -3px rgba(0, 0, 0, 0.4), 0 10px 24px -10px rgba(20, 26, 23, 0.45);
-}
-
-.wb-btn-dark:hover {
-  background: #232d28;
-  transform: translateY(-1px);
-}
-
-/* Workbench Technical Keycap */
+/* Etiqueta técnica: vira texto pequeno com sublinhado pontilhado, sem caixinha */
 .wb-key {
-  min-width: 1.5em;
-  font-family: var(--font-key);
+  font-variant-numeric: tabular-nums;
   color: var(--wb-ink-2);
-  background: var(--wb-canvas);
-  border: 1px solid var(--wb-line);
-  border-bottom-width: 2px;
-  border-radius: 6px;
-  justify-content: center;
-  align-items: center;
-  padding: 0.12em 0.45em;
-  font-size: 0.75em;
-  font-weight: 500;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px dotted currentColor !important;
+  border-radius: 0;
+  padding: 0 0.05em;
+  font-size: 0.78em;
+  font-weight: 600;
   display: inline-flex;
+  align-items: center;
+}
+
+/* ------------------------------------------------------------------
+   Linguagem gráfica marajoara: losango concêntrico (glifo) e meandro.
+------------------------------------------------------------------- */
+.marajo-glifo {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  flex: none;
+  background-color: currentColor;
+  -webkit-mask: var(--glifo) center / contain no-repeat;
+  mask: var(--glifo) center / contain no-repeat;
+  animation: glifo-gira 9s linear infinite;
+}
+
+@keyframes glifo-gira { to { transform: rotate(360deg); } }
+
+.marajo-meandro {
+  display: block;
+  height: 10px;
+  background-color: currentColor;
+  -webkit-mask: var(--meandro) left center / 28px 10px repeat-x;
+  mask: var(--meandro) left center / 28px 10px repeat-x;
+  opacity: 0.55;
 }
 
 /* 3D Perspective Workbench CAD Grid Floor */
@@ -270,6 +305,7 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .marajo-glifo { animation: none; }
   .reveal,
   .word-rise,
   .wb-rise,
@@ -282,3 +318,24 @@ html {
   }
 }
 
+
+/* Rótulo de seção: glifo marajoara + texto discreto (substitui as "pílulas") */
+.rotulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--wb-ink-2);
+  letter-spacing: 0;
+}
+.rotulo .marajo-glifo { width: 0.85rem; height: 0.85rem; }
+
+/* Acento editorial em itálico serifado dentro de títulos */
+.acento {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}

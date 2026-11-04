@@ -93,15 +93,15 @@ export const InteractiveBentoFeatures: React.FC = () => {
         {/* Section Header (Exact Constructa `qi` header layout) */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-[1.3fr_1fr] md:items-end">
           <div>
-            <p className="font-key text-[12px] font-bold uppercase tracking-[0.14em] text-wb-orange">
-              EXPERIMENTE NA PRÁTICA · CULTURA MAKER
+            <p className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+              Experimente na prática · Cultura MAKER
             </p>
             <h2
               className="mt-3 font-brand font-bold text-wb-ink"
               style={{
                 fontSize: 'clamp(32px, 4.2vw, 56px)',
                 lineHeight: 1.04,
-                letterSpacing: '-0.045em',
+                letterSpacing: '-0.028em',
               }}
             >
               Por que criar no IF MAKER Breves.
@@ -220,7 +220,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
                   )}
                 </button>
 
-                <p className="mt-3 font-key text-[10.5px] uppercase tracking-wider text-wb-ink-3">
+                <p className="mt-3 font-key text-[10.5px] text-wb-ink-3">
                   Ambiente de Teste
                 </p>
                 <div className="mt-1.5 grid grid-cols-2 gap-1.5">
@@ -257,7 +257,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
             <div className="p-6 sm:p-7">
               <h3
                 className="font-brand text-[22px] font-bold leading-tight text-wb-ink"
-                style={{ letterSpacing: '-0.035em' }}
+                style={{ letterSpacing: '-0.028em' }}
               >
                 Robótica e Física que contam a verdade.
               </h3>
@@ -272,7 +272,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
           {/* === CARD 2: ZERO COST FOR STUDENTS & PUBLIC SCHOOLS === */}
           <article className="wb-panel flex flex-col overflow-hidden rounded-[22px]">
             <div className="relative overflow-hidden border-b border-wb-line bg-wb-bench wb-grid-bg h-[230px] p-4 flex items-center justify-center">
-              <div className="w-full max-w-[290px] rounded-2xl border border-wb-line bg-white p-3.5 shadow-sm text-[12px]">
+              <div className="w-full max-w-[290px] border-t border-wb-line py-3.5 text-[12px]">
                 <div className="flex items-center justify-between border-b border-wb-line pb-2">
                   <span className="font-bold text-wb-ink">Custo Comercial Externo</span>
                   <span className="wb-key text-[10px]">PROTOTIPAGEM</span>
@@ -294,7 +294,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
                 <div className="mt-2.5 flex items-center justify-between border-t border-wb-line pt-2">
                   <span className="font-bold text-wb-ink">No IF MAKER Breves:</span>
                   <span className="rounded-full bg-wb-green px-2.5 py-0.5 font-key text-[12px] font-extrabold text-white">
-                    R$ 0,00 · GRATUITO
+                    R$ 0,00 · Gratuito
                   </span>
                 </div>
               </div>
@@ -302,7 +302,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
             <div className="p-6 sm:p-7">
               <h3
                 className="font-brand text-[21px] font-bold leading-tight text-wb-ink"
-                style={{ letterSpacing: '-0.035em' }}
+                style={{ letterSpacing: '-0.028em' }}
               >
                 Acesso público e gratuito.
               </h3>
@@ -316,11 +316,11 @@ export const InteractiveBentoFeatures: React.FC = () => {
           {/* === CARD 3: INTERACTIVE ARDUINO ULTRASONIC SENSOR === */}
           <article className="wb-panel flex flex-col overflow-hidden rounded-[22px]">
             <div className="relative overflow-hidden border-b border-wb-line bg-wb-bench wb-grid-bg h-[230px] p-4 flex flex-col justify-between">
-              <div className="flex items-center justify-between rounded-xl border border-wb-line bg-white px-3 py-2 shadow-sm">
+              <div className="flex items-center justify-between border-t border-wb-line py-2">
                 <div className="flex items-center gap-2">
                   <Cpu className="h-4 w-4 text-wb-purple" />
-                  <span className="font-key text-[11.5px] font-bold text-wb-ink">
-                    ARDUINO · HC-SR04
+                  <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-ink" />
+                    Arduino · HC-SR04
                   </span>
                 </div>
                 <span
@@ -337,7 +337,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
               {/* Visual Ultrasonic Beam */}
               <div className="my-auto flex items-center gap-3 px-2">
                 <div className="rounded-xl bg-[#0092D6] px-3 py-3 text-white font-key text-[10px] font-bold shadow">
-                  SONAR
+                  Sonar
                 </div>
                 <div className="flex-1 relative h-3 rounded-full bg-wb-line overflow-hidden">
                   <div
@@ -349,11 +349,11 @@ export const InteractiveBentoFeatures: React.FC = () => {
                   />
                 </div>
                 <div className="rounded-lg border-2 border-wb-ink bg-wb-orange px-2.5 py-2 font-key text-[10px] font-bold text-white">
-                  ALVO
+                  Alvo
                 </div>
               </div>
 
-              <div className="rounded-xl border border-wb-line bg-white px-3 py-2">
+              <div className="border-t border-wb-line py-2">
                 <label className="flex items-center justify-between text-[11px] font-key text-wb-ink-2">
                   <span>Arraste o obstáculo:</span>
                   <span className="font-bold text-wb-ink">{distanceCm} cm</span>
@@ -371,7 +371,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
             <div className="p-6 sm:p-7">
               <h3
                 className="font-brand text-[21px] font-bold leading-tight text-wb-ink"
-                style={{ letterSpacing: '-0.035em' }}
+                style={{ letterSpacing: '-0.028em' }}
               >
                 Eletrônica que você enxerga.
               </h3>
@@ -387,7 +387,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
             <div className="relative overflow-hidden border-b border-wb-line bg-wb-bench wb-grid-bg h-[230px] p-4 flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <span className="wb-key bg-white">FATIADOR 3D · CAMADAS</span>
-                <span className="font-key text-[12px] font-bold text-wb-orange">
+                <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
                   Camada {layerPct}/100
                 </span>
               </div>
@@ -416,7 +416,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
                 })}
               </div>
 
-              <div className="rounded-xl border border-wb-line bg-white px-3 py-2">
+              <div className="border-t border-wb-line py-2">
                 <input
                   type="range"
                   min={10}
@@ -431,7 +431,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
             <div className="p-6 sm:p-7">
               <h3
                 className="font-brand text-[21px] font-bold leading-tight text-wb-ink"
-                style={{ letterSpacing: '-0.035em' }}
+                style={{ letterSpacing: '-0.028em' }}
               >
                 Impressão 3D e Laser ao vivo.
               </h3>
@@ -446,7 +446,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
           <article className="wb-panel flex flex-col overflow-hidden rounded-[22px]">
             <div className="relative overflow-hidden border-b border-wb-line bg-wb-bench wb-grid-bg h-[230px] p-4 flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <div className="inline-flex rounded-lg border border-wb-line bg-white p-0.5">
+                <div className="inline-flex border-t border-wb-line py-0.5">
                   <button
                     type="button"
                     onClick={() => setCodeMode('blocks')}
@@ -471,13 +471,13 @@ export const InteractiveBentoFeatures: React.FC = () => {
 
               {codeMode === 'blocks' ? (
                 <div className="my-auto space-y-1.5 font-ui text-[12px] font-bold text-white">
-                  <div className="rounded-lg bg-[#FF6B35] px-3 py-1.5 shadow-sm w-fit">
+                  <div className="rounded-lg bg-[#FF6B35] px-3 py-1.5 w-fit">
                     ⚡ quando o robô iniciar
                   </div>
-                  <div className="rounded-lg bg-[#0092D6] px-3 py-1.5 shadow-sm ml-4 w-fit">
+                  <div className="rounded-lg bg-[#0092D6] px-3 py-1.5 ml-4 w-fit">
                     📏 se distância sonar &lt; 20 cm então
                   </div>
-                  <div className="rounded-lg bg-[#23963C] px-3 py-1.5 shadow-sm ml-8 w-fit">
+                  <div className="rounded-lg bg-[#23963C] px-3 py-1.5 ml-8 w-fit">
                     🔄 girar motores 90° para esquerda
                   </div>
                 </div>
@@ -494,7 +494,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
             <div className="p-6 sm:p-7">
               <h3
                 className="font-brand text-[21px] font-bold leading-tight text-wb-ink"
-                style={{ letterSpacing: '-0.035em' }}
+                style={{ letterSpacing: '-0.028em' }}
               >
                 Dos blocos ao código C++ real.
               </h3>
@@ -508,7 +508,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
           {/* === CARD 6: 5TH LAB DELIVERED IN MARCH 2026 (ENSINO, PESQUISA, EXTENSÃO) === */}
           <article className="wb-panel flex flex-col overflow-hidden rounded-[22px]">
             <div className="relative overflow-hidden border-b border-wb-line bg-wb-bench wb-grid-bg h-[230px] p-4 flex flex-col justify-between">
-              <div className="flex gap-1 rounded-xl border border-wb-line bg-white p-1">
+              <div className="flex gap-1 border-t border-wb-line py-1">
                 {(['Ensino', 'Pesquisa', 'Extensão'] as const).map((pillar) => (
                   <button
                     key={pillar}
@@ -525,7 +525,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
                 ))}
               </div>
 
-              <div className="my-auto rounded-xl border border-wb-line bg-white p-3.5 shadow-sm">
+              <div className="my-auto border-t border-wb-line py-3.5">
                 {activePillar === 'Ensino' && (
                   <p className="text-[12.5px] text-wb-ink leading-snug">
                     <strong>Aulas Práticas Multidisciplinares:</strong> Física, Biologia, Geografia,
@@ -554,7 +554,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
             <div className="p-6 sm:p-7">
               <h3
                 className="font-brand text-[21px] font-bold leading-tight text-wb-ink"
-                style={{ letterSpacing: '-0.035em' }}
+                style={{ letterSpacing: '-0.028em' }}
               >
                 Ensino, Pesquisa e Extensão.
               </h3>

@@ -54,8 +54,8 @@ export const Hero3DWorkbench: React.FC = () => {
       const h = Math.max(1, container.clientHeight);
       camera.aspect = w / h;
       if (w < 900) {
-        camera.position.set(0, 3.8, 10.2);
-        camera.lookAt(0, 1.1, 0);
+        camera.position.set(0, 3.4, 10.6);
+        camera.lookAt(0, 0.1, 0);
       } else {
         camera.position.set(-1.9, 3.1, 8.8);
         camera.lookAt(-1.2, 0.35, 0);
@@ -502,45 +502,48 @@ export const Hero3DWorkbench: React.FC = () => {
           {/* Interactive Three.js 3D Viewport */}
           <div
             ref={mountRef}
-            className="absolute inset-0 z-0"
+            className="absolute inset-x-0 bottom-0 z-0 h-[440px] min-[900px]:top-0 min-[900px]:h-auto"
             title="Arraste para girar em 3D · Clique para desmontar ou remontar as peças"
           />
 
           {/* Main Hero Copy Overlay (Left Column) */}
-          <div className="pointer-events-none relative z-10 mx-auto w-full max-w-[1320px] px-5 pt-[118px] pb-[360px] sm:px-8 sm:pt-[148px] min-[900px]:pb-[160px]">
+          <div className="pointer-events-none relative z-10 mx-auto w-full max-w-[1320px] px-5 pt-[118px] pb-[440px] sm:px-8 sm:pt-[148px] min-[900px]:pb-[160px]">
             {/* Eyebrow Institutional Badge */}
-            <div className="wb-rise pointer-events-auto inline-flex flex-wrap items-center gap-2 rounded-full border border-wb-line bg-white/90 px-3.5 py-1.5 shadow-sm backdrop-blur">
-              <span className="inline-flex h-2 w-2 rounded-full bg-wb-green" />
-              <span className="font-key text-[11.5px] font-bold uppercase tracking-wider text-wb-ink">
-                5º LAB IF MAKER DO IFPA · ENTREGUE EM MARÇO/2026
+            <div className="wb-rise pointer-events-auto flex flex-wrap items-center gap-x-2 gap-y-1">
+              <span aria-hidden="true" className="marajo-glifo text-wb-green" />
+              <span className="rotulo">
+                5º Lab IF MAKER do IFPA · Entregue em março/2026
               </span>
               <span className="hidden sm:inline text-wb-ink-3">·</span>
               <span className="hidden sm:inline font-key text-[11.5px] text-wb-orange font-semibold">
-                CAMPUS BREVES (MARAJÓ)
+                Campus Breves (Marajó)
               </span>
             </div>
 
             {/* Constructa-style Giant Display Headline */}
             <h1
-              className="mt-5 max-w-[13.5em] font-brand font-bold text-wb-ink"
+              className="mt-6 max-w-[13em] font-brand font-semibold text-wb-ink"
               style={{
-                fontSize: 'clamp(34px, 4.7vw, 68px)',
-                lineHeight: 1.04,
-                letterSpacing: '-0.045em',
+                fontSize: 'clamp(40px, 5.6vw, 84px)',
+                lineHeight: 0.98,
+                letterSpacing: '-0.028em',
               }}
             >
-              <WordRise text="Aquela solução na sua cabeça? Construa aqui." />
+              <WordRise text="Aquela solução na sua cabeça?" />{' '}
+              <span className="acento text-wb-orange">
+                <WordRise text="Construa aqui." delayOffset={0.3} />
+              </span>
             </h1>
 
             {/* Lead Paragraph */}
             <p
-              className="mt-5 max-w-[33em] text-wb-ink-2 bg-white/65 backdrop-blur-sm rounded-2xl p-2 -ml-2 sm:bg-transparent sm:backdrop-blur-none sm:p-0 sm:ml-0"
+              className="mt-6 max-w-[33em] text-wb-ink-2"
               style={{
                 fontSize: 'clamp(16.5px, 1.3vw, 19px)',
                 lineHeight: 1.6,
               }}
             >
-              <span className="font-bold text-wb-ink">
+              <span className="font-semibold text-wb-ink">
                 Fortalecendo a cultura do “aprender fazendo” (learning by doing) no coração do
                 Marajó.
               </span>{' '}
@@ -552,34 +555,34 @@ export const Hero3DWorkbench: React.FC = () => {
             <div className="pointer-events-auto mt-8 flex w-fit flex-wrap items-center gap-x-5 gap-y-3.5">
               <Link
                 to="/agendamento"
-                className="wb-btn wb-btn-primary h-13 sm:h-14 px-6 sm:px-7 text-[16px] sm:text-[17px]"
+                className="wb-btn wb-btn-primary h-13 px-6 text-[16px]"
               >
                 <Calendar className="h-5 w-5" />
-                <span>Agendar Equipamento</span>
+                <span>Agendar equipamento</span>
               </Link>
 
               <Link
                 to="/equipamentos"
-                className="wb-btn wb-btn-dark h-13 sm:h-14 px-6 text-[15.5px]"
+                className="wb-btn wb-btn-dark h-13 px-6 text-[16px]"
               >
                 <Wrench className="h-4 w-4 text-wb-orange" />
-                <span>Explorar Máquinas</span>
+                <span>Explorar máquinas</span>
               </Link>
 
               <button
                 type="button"
                 onClick={() => setTourModalOpen(true)}
-                className="group inline-flex items-center gap-2.5 rounded-full py-1.5 pe-3 text-[15px] font-bold text-wb-ink transition-colors hover:text-wb-orange bg-white/80 backdrop-blur px-2 border border-wb-line shadow-sm"
+                className="group inline-flex min-h-[44px] items-center gap-2.5 text-[15.5px] font-semibold text-wb-ink transition-colors hover:text-wb-orange"
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-wb-orange/10 text-wb-orange transition-transform group-hover:scale-105">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-wb-ink text-white transition-transform group-hover:scale-110 group-hover:bg-wb-orange">
                   <Play className="h-4 w-4 translate-x-[1px] fill-current" />
                 </span>
-                <span>Conheça o 5º Lab IFPA</span>
+                <span className="underline decoration-wb-line underline-offset-4 group-hover:decoration-wb-orange">Conheça o 5º Lab</span>
               </button>
             </div>
 
             {/* Quick Pillar Counters */}
-            <div className="pointer-events-auto mt-9 grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-[600px]">
+            <div className="pointer-events-auto mt-10 grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-4 max-w-[640px]">
               {[
                 { label: 'Impressão 3D & Resina', val: '6 Máquinas', color: '#FF6B35' },
                 { label: 'Corte a Laser CNC', val: '100W CO2', color: '#E5484D' },
@@ -588,15 +591,15 @@ export const Hero3DWorkbench: React.FC = () => {
               ].map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-xl border border-wb-line bg-white/90 px-3 py-2 backdrop-blur shadow-sm"
+                  className="border-t border-wb-ink/80 pt-2.5"
                 >
                   <div
-                    className="font-brand text-[15px] font-bold"
-                    style={{ color: stat.color }}
+                    className="flex items-center gap-1.5 font-brand text-[24px] font-semibold leading-none text-wb-ink"
                   >
+                    <span aria-hidden="true" className="h-2 w-2 rotate-45" style={{ backgroundColor: stat.color }} />
                     {stat.val}
                   </div>
-                  <div className="text-[11.5px] font-medium text-wb-ink-2 truncate">
+                  <div className="mt-1.5 text-[13px] text-wb-ink-2">
                     {stat.label}
                   </div>
                 </div>
@@ -611,7 +614,7 @@ export const Hero3DWorkbench: React.FC = () => {
               <div
                 role="group"
                 aria-label="Escolher protótipo 3D na bancada"
-                className="pointer-events-auto flex items-center gap-1 rounded-[14px] border border-wb-line bg-white/90 p-1 backdrop-blur shadow-sm overflow-x-auto max-w-full"
+                className="pointer-events-auto flex min-w-0 items-center gap-5 overflow-x-auto max-w-full [scrollbar-width:none]"
               >
                 {(Object.keys(MODEL_LABELS) as ModelType[]).map((m) => (
                   <button
@@ -619,10 +622,10 @@ export const Hero3DWorkbench: React.FC = () => {
                     type="button"
                     aria-pressed={activeModel === m}
                     onClick={() => setActiveModel(m)}
-                    className={`whitespace-nowrap rounded-[10px] px-3 py-2 text-[12.5px] sm:text-[13px] font-bold transition-colors sm:px-3.5 ${
+                    className={`whitespace-nowrap border-b-2 py-2.5 text-[14px] font-semibold transition-colors ${
                       activeModel === m
-                        ? 'bg-wb-ink text-white shadow-sm'
-                        : 'text-wb-ink-2 hover:bg-wb-bench hover:text-wb-ink'
+                        ? 'border-wb-orange text-wb-ink'
+                        : 'border-transparent text-wb-ink-3 hover:text-wb-ink'
                     }`}
                   >
                     {MODEL_LABELS[m]}
@@ -641,15 +644,15 @@ export const Hero3DWorkbench: React.FC = () => {
                       type="button"
                       onClick={() => setRebuildTrigger((c) => c + 1)}
                       disabled={phase === 'rebuilding'}
-                      className="pointer-events-auto inline-flex items-center gap-2 whitespace-nowrap rounded-[12px] border border-wb-orange bg-white px-4 py-2.5 text-[13.5px] font-bold text-wb-orange shadow-sm transition-colors hover:bg-wb-orange hover:text-white disabled:opacity-50"
+                      className="wb-btn wb-btn-primary pointer-events-auto h-11 px-4 text-[14px] disabled:opacity-50"
                     >
                       <RotateCcw className="h-4 w-4" />
-                      <span>Remontar Protótipo</span>
+                      <span>Remontar protótipo</span>
                     </button>
                   </>
                 ) : (
                   <div className="flex items-center gap-3">
-                    <p className="hidden font-key text-[12px] text-wb-ink-2 sm:block bg-white/85 px-3 py-1.5 rounded-full border border-wb-line">
+                    <p className="hidden font-key text-[12px] text-wb-ink-2 sm:block">
                       Arraste para girar 3D ·{' '}
                       <button
                         type="button"
@@ -674,7 +677,7 @@ export const Hero3DWorkbench: React.FC = () => {
           onClick={() => setTourModalOpen(false)}
         >
           <div
-            className="wb-pop relative max-h-[90vh] w-[min(980px,95vw)] overflow-y-auto rounded-[24px] border border-wb-line bg-white p-6 sm:p-8 shadow-2xl"
+            className="wb-pop relative max-h-[90vh] w-[min(980px,95vw)] overflow-y-auto border-t border-wb-line py-6 sm:py-8"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -701,7 +704,7 @@ export const Hero3DWorkbench: React.FC = () => {
 
               <div>
                 <span className="wb-key text-wb-green border-wb-green/30 bg-wb-green/10">
-                  VÍDEO OFICIAL DA INAUGURAÇÃO · MARÇO DE 2026
+                  Vídeo oficial da inauguração · março de 2026
                 </span>
                 <h2 className="mt-3 font-brand text-2xl sm:text-3xl font-bold text-wb-ink">
                   Laboratório IFPA MAKER Marajó — Campus Breves
@@ -716,7 +719,7 @@ export const Hero3DWorkbench: React.FC = () => {
                 </p>
 
                 <div className="mt-4 space-y-2.5">
-                  <div className="rounded-xl border border-wb-line bg-wb-bench/60 p-3">
+                  <div className="border-t border-wb-line py-3">
                     <p className="text-[13.5px] font-bold text-wb-ink">
                       🎯 Objetivo Institucional
                     </p>
@@ -727,7 +730,7 @@ export const Hero3DWorkbench: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-wb-line bg-wb-bench/60 p-3">
+                  <div className="border-t border-wb-line py-3">
                     <p className="text-[13.5px] font-bold text-wb-ink">
                       🛠️ Tríade Ensino, Pesquisa e Extensão
                     </p>

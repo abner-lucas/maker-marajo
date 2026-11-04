@@ -71,15 +71,13 @@ export const MonthlyCalendarPage: React.FC = () => {
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="wb-key text-wb-green font-bold">
-                PROGRAMAÇÃO MENSAL · SINCRONIZADA VIA GOOGLE AGENDA
-              </span>
+              <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />Programação mensal · sincronizada com o Google Agenda</span>
               <h1
                 className="mt-4 font-brand font-bold text-wb-ink"
                 style={{
                   fontSize: 'clamp(32px, 4.2vw, 54px)',
                   lineHeight: 1.04,
-                  letterSpacing: '-0.045em',
+                  letterSpacing: '-0.028em',
                 }}
               >
                 <WordRise text="Visualização Mensal de Ações e Atividades." />
@@ -103,7 +101,7 @@ export const MonthlyCalendarPage: React.FC = () => {
           {/* View Mode & Category Filter Bar */}
           <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
             {/* View Switcher */}
-            <div className="inline-flex rounded-2xl border border-wb-line bg-white p-1 shadow-sm">
+            <div className="flex max-w-full flex-wrap gap-x-1 border-t border-wb-line py-1">
               <button
                 type="button"
                 onClick={() => setViewMode('grid')}
@@ -176,8 +174,8 @@ export const MonthlyCalendarPage: React.FC = () => {
               <div className="wb-panel overflow-hidden">
                 <div className="flex items-center justify-between border-b border-wb-line bg-wb-bench/70 px-6 py-4">
                   <div>
-                    <span className="font-key text-[11px] font-bold uppercase text-wb-orange">
-                      AGENDA DO LABORATÓRIO · FUSO AMERICA/BELEM
+                    <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                      Agenda do laboratório · Fuso America/Belém
                     </span>
                     <h2 className="font-brand text-xl sm:text-2xl font-bold text-wb-ink">
                       Novembro de 2026
@@ -224,7 +222,7 @@ export const MonthlyCalendarPage: React.FC = () => {
                             {day}
                           </span>
                           {isToday && (
-                            <span className="hidden sm:inline font-key text-[9px] font-bold text-wb-orange uppercase">
+                            <span className="hidden sm:inline font-key text-[9px] font-bold text-wb-orange">
                               Hoje
                             </span>
                           )}
@@ -262,8 +260,8 @@ export const MonthlyCalendarPage: React.FC = () => {
               {/* Right Column: Selected Activity Inspector */}
               <div className="wb-panel p-6 lg:sticky lg:top-24 space-y-5">
                 <div className="flex items-center justify-between border-b border-wb-line pb-3">
-                  <span className="font-key text-[11px] font-bold uppercase text-wb-green">
-                    DETALHES DA AÇÃO SELECIONADA
+                  <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />
+                    Detalhes da ação selecionada
                   </span>
                   <span className="wb-key">{selectedActivity.date}</span>
                 </div>
@@ -284,7 +282,7 @@ export const MonthlyCalendarPage: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="space-y-2.5 rounded-2xl border border-wb-line bg-wb-bench/60 p-4 text-[13px]">
+                <div className="space-y-2.5 border-t border-wb-line py-4 text-[13px]">
                   <div className="flex items-center gap-2 text-wb-ink">
                     <Clock className="h-4 w-4 text-wb-orange shrink-0" />
                     <span>
@@ -347,8 +345,8 @@ export const MonthlyCalendarPage: React.FC = () => {
                     className="wb-panel p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-5"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border border-wb-line bg-wb-bench font-key">
-                        <span className="text-[11px] font-bold uppercase text-wb-orange">NOV</span>
+                      <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center border-t border-wb-line font-key">
+                        <span className="text-[11px] font-bold text-wb-orange">nov</span>
                         <span className="text-2xl font-extrabold text-wb-ink">
                           {String(act.dayOfMonth).padStart(2, '0')}
                         </span>
@@ -399,8 +397,8 @@ export const MonthlyCalendarPage: React.FC = () => {
             <div className="wb-panel p-6 sm:p-8 space-y-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-wb-line pb-5">
                 <div>
-                  <span className="font-key text-[11px] font-bold uppercase text-wb-orange">
-                    INTEGRAÇÃO DIRETA GOOGLE WORKSPACE / AGENDA PÚBLICA
+                  <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                    Integração direta Google Workspace / agenda pública
                   </span>
                   <h2 className="mt-1 font-brand text-2xl font-bold text-wb-ink">
                     Google Agenda Incorporado — IF MAKER Campus Breves
@@ -422,7 +420,7 @@ export const MonthlyCalendarPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="overflow-hidden rounded-2xl border border-wb-line bg-white shadow-inner">
+              <div className="overflow-hidden border-t border-wb-line">
                 <iframe
                   title="Google Agenda Mensal do Laboratório IF MAKER Breves"
                   src={GOOGLE_CALENDAR_CONFIG.publicEmbedUrl}

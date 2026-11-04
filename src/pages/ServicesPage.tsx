@@ -46,15 +46,13 @@ export const ServicesPage: React.FC = () => {
       {/* Hero Header */}
       <section className="border-b border-wb-line bg-wb-bench py-16 sm:py-24">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <span className="wb-key text-wb-green font-bold">
-            CARTA DE SERVIÇOS · ENSINO, PESQUISA E EXTENSÃO
-          </span>
+          <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />Carta de serviços · ensino, pesquisa e extensão</span>
           <h1
             className="mt-4 font-brand font-bold text-wb-ink max-w-[15em]"
             style={{
               fontSize: 'clamp(34px, 4.4vw, 58px)',
               lineHeight: 1.04,
-              letterSpacing: '-0.045em',
+              letterSpacing: '-0.028em',
             }}
           >
             <WordRise text="O que pode ser realizado no IF MAKER Breves." />
@@ -95,7 +93,7 @@ export const ServicesPage: React.FC = () => {
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-wb-line bg-wb-bench">
+                    <div className="flex h-12 w-12 items-center justify-center border-t border-wb-line">
                       {serviceIconMap[srv.iconName]}
                     </div>
                     <span
@@ -126,7 +124,7 @@ export const ServicesPage: React.FC = () => {
                   </div>
 
                   <div className="mt-4">
-                    <span className="font-key text-[10.5px] uppercase text-wb-ink-3 font-bold">
+                    <span className="font-key text-[10.5px] text-wb-ink-3 font-bold">
                       Entregáveis na Bancada:
                     </span>
                     <ul className="mt-1.5 space-y-1">
@@ -159,8 +157,8 @@ export const ServicesPage: React.FC = () => {
           {/* Interactive Service Checklist & Estimator Widget */}
           <div className="mt-16 wb-panel p-6 sm:p-10 bg-wb-bench/60">
             <div className="max-w-[680px]">
-              <span className="font-key text-[11.5px] font-bold uppercase text-wb-orange">
-                ASSISTENTE INTERATIVO DE PREPARAÇÃO
+              <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                Assistente interativo de preparação
               </span>
               <h2 className="mt-2 font-brand text-2xl sm:text-3xl font-bold text-wb-ink">
                 Prepare seu Projeto antes de vir para a Bancada
@@ -199,7 +197,7 @@ export const ServicesPage: React.FC = () => {
                   <label className="block text-[13.5px] font-bold text-wb-ink mb-2">
                     2. Porte ou Complexidade do Protótipo / Turma:
                   </label>
-                  <div className="inline-flex rounded-xl border border-wb-line bg-white p-1">
+                  <div className="inline-flex border-t border-wb-line py-1">
                     {(['Pequeno', 'Médio', 'Grande'] as const).map((sc) => (
                       <button
                         key={sc}
@@ -218,12 +216,12 @@ export const ServicesPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-wb-line bg-white p-6 shadow-sm">
+              <div className="border-t border-wb-line py-6">
                 <div className="flex items-center justify-between border-b border-wb-line pb-3">
-                  <span className="font-key text-[11px] font-bold uppercase text-wb-green">
-                    CHECKLIST DE ATENDIMENTO
+                  <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />
+                    Checklist de atendimento
                   </span>
-                  <span className="wb-key">PORTE {estimatorScale.toUpperCase()}</span>
+                  <span className="wb-key">Porte {estimatorScale}</span>
                 </div>
 
                 <h3 className="mt-4 font-brand text-lg font-bold text-wb-ink">

@@ -1,321 +1,263 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import {
-  Calendar,
-  ChevronDown,
-  Cpu,
-  Layers,
-  Menu,
-  Printer,
-  Scan,
-  Sparkles,
-  Wrench,
-  X,
-  Zap,
-  Bot,
-} from 'lucide-react';
+import { ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
 import { EQUIPMENTS } from '../data/labData';
 
-const eqIcons: Record<string, React.ReactNode> = {
-  'impressoras-3d': <Printer className="h-4 w-4 text-[#FF6B35]" />,
-  'cortadora-laser-cnc': <Zap className="h-4 w-4 text-[#E5484D]" />,
-  'scanners-3d': <Scan className="h-4 w-4 text-[#0092D6]" />,
-  'kits-robotica': <Bot className="h-4 w-4 text-[#23963C]" />,
-  'arduino-eletronica': <Cpu className="h-4 w-4 text-[#70388E]" />,
-};
+const LINKS = [
+  { to: '/', label: 'Início' },
+  { to: '/servicos', label: 'Serviços' },
+  { to: '/projetos', label: 'Projetos' },
+  { to: '/agenda-mensal', label: 'Agenda' },
+  { to: '/equipe', label: 'Equipe' },
+];
 
 export const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
-  const [eqDropdownOpen, setEqDropdownOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [eqOpen, setEqOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuBtnRef = useRef<HTMLButtonElement>(null);
   const location = useLocation();
 
+  // Cabeçalho some ao descer e volta ao subir (mais área útil no celular)
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 12);
+      if (y > 240 && y > last + 4) setHidden(true);
+      else if (y < last - 4 || y <= 240) setHidden(false);
+      last = y;
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
-    setEqDropdownOpen(false);
-    setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setEqOpen(false);
+    setMenuOpen(false);
+    window.scrollTo({ top: 0 });
   }, [location.pathname]);
 
   useEffect(() => {
-    if (!eqDropdownOpen) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setEqDropdownOpen(false);
+    if (!eqOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) setEqOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setEqOpen(false);
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [eqOpen]);
+
+  // Menu móvel: trava a rolagem, fecha com Esc e devolve o foco ao botão
+  useEffect(() => {
+    if (!menuOpen) return;
+    const html = document.documentElement;
+    html.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMenuOpen(false);
+        menuBtnRef.current?.focus();
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [eqDropdownOpen]);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      html.style.overflow = '';
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [menuOpen]);
 
-  const isActive = (path: string) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
-  };
+  const isActive = (path: string) =>
+    path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
+
+  const linkCls = (active: boolean) =>
+    `relative py-2 text-[15px] font-medium transition-colors after:absolute after:left-0 after:right-0 after:bottom-0.5 after:h-[2px] after:origin-left after:bg-wb-orange after:transition-transform after:duration-300 ${
+      active
+        ? 'text-wb-ink after:scale-x-100'
+        : 'text-wb-ink-2 hover:text-wb-ink after:scale-x-0 hover:after:scale-x-100'
+    }`;
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 font-ui transition-all duration-300 ease-out-soft ${
-        scrolled || mobileMenuOpen
-          ? 'bg-white/90 backdrop-blur-md border-b border-wb-line shadow-[0_4px_24px_-12px_rgba(20,26,23,0.12)]'
-          : 'bg-white/65 backdrop-blur-sm border-b border-transparent'
-      }`}
-    >
-      <div className="mx-auto flex h-[76px] max-w-[1340px] items-center justify-between gap-3 px-4 sm:gap-5 sm:px-8">
-        {/* Brand Logo */}
-        <Link to="/" aria-label="Início Laboratório IF MAKER Breves" className="group flex items-center">
-          <BrandLogo size="md" />
-        </Link>
-
-        {/* Primary Desktop Navigation (Constructa Pill Style) */}
-        <nav aria-label="Navegação Principal" className="hidden lg:flex items-center gap-0.5">
+    <>
+      <a
+        href="#conteudo"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-wb-ink focus:px-4 focus:py-2 focus:text-white"
+      >
+        Pular para o conteúdo
+      </a>
+      <header
+        className={`fixed inset-x-0 top-0 z-50 font-ui transition-[transform,background-color,border-color] duration-500 ease-out-soft ${
+          hidden && !menuOpen ? '-translate-y-full' : 'translate-y-0'
+        } ${
+          scrolled || menuOpen
+            ? 'border-b border-wb-line bg-wb-canvas/90 backdrop-blur-md'
+            : 'border-b border-transparent bg-wb-canvas/0'
+        }`}
+      >
+        <div className="mx-auto flex h-[68px] max-w-[1340px] items-center justify-between gap-4 px-4 sm:h-[76px] sm:px-8">
           <Link
             to="/"
-            className={`relative inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-[14.5px] font-semibold transition-colors ${
-              isActive('/')
-                ? 'bg-wb-bench text-wb-ink'
-                : 'text-wb-ink-2 hover:bg-wb-bench hover:text-wb-ink'
-            }`}
+            aria-label="Início — Laboratório IF MAKER Breves"
+            className="flex min-w-0 shrink items-center"
           >
-            Apresentação
+            <BrandLogo size="md" />
           </Link>
 
-          {/* Equipamentos Dropdown + Page Link */}
-          <div
-            ref={dropdownRef}
-            className="relative"
-            onMouseEnter={() => setEqDropdownOpen(true)}
-            onMouseLeave={() => setEqDropdownOpen(false)}
-          >
-            <div className="flex items-center">
-              <Link
-                to="/equipamentos"
-                className={`relative inline-flex items-center gap-1.5 whitespace-nowrap rounded-l-full pl-3.5 pr-1.5 py-2 text-[14.5px] font-semibold transition-colors ${
-                  isActive('/equipamentos')
-                    ? 'bg-wb-bench text-wb-ink'
-                    : 'text-wb-ink-2 hover:bg-wb-bench hover:text-wb-ink'
-                }`}
-              >
-                Equipamentos
-              </Link>
+          <nav aria-label="Navegação principal" className="hidden items-center gap-7 lg:flex">
+            <Link to="/" className={linkCls(isActive('/'))}>
+              Início
+            </Link>
+
+            <div ref={dropdownRef} className="relative" onMouseLeave={() => setEqOpen(false)}>
               <button
                 type="button"
-                onClick={() => setEqDropdownOpen((v) => !v)}
-                aria-label="Abrir páginas de equipamentos"
-                className={`inline-flex items-center rounded-r-full pr-3 pl-1 py-2 text-[14.5px] font-semibold transition-colors ${
-                  isActive('/equipamentos')
-                    ? 'bg-wb-bench text-wb-ink'
-                    : 'text-wb-ink-2 hover:bg-wb-bench hover:text-wb-ink'
-                }`}
+                aria-expanded={eqOpen}
+                aria-controls="menu-equipamentos"
+                onClick={() => setEqOpen((v) => !v)}
+                onMouseEnter={() => setEqOpen(true)}
+                className={`${linkCls(isActive('/equipamentos'))} inline-flex items-center gap-1`}
               >
+                Equipamentos
                 <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
-                    eqDropdownOpen ? 'rotate-180' : ''
-                  }`}
+                  className={`h-3.5 w-3.5 transition-transform duration-300 ${eqOpen ? 'rotate-180' : ''}`}
                 />
               </button>
-            </div>
 
-            {eqDropdownOpen && (
-              <div className="wb-pop absolute left-0 top-full pt-2 w-[340px] z-50">
-                <div className="rounded-[18px] border border-wb-line bg-white p-2 shadow-[0_20px_48px_-16px_rgba(20,26,23,0.28)]">
-                  <div className="px-3 py-2 border-b border-wb-line mb-1 flex items-center justify-between">
-                    <span className="font-key text-[11px] uppercase tracking-wider text-wb-ink-3 font-semibold">
-                      Páginas de Equipamentos
-                    </span>
+              {eqOpen && (
+                <div
+                  id="menu-equipamentos"
+                  className="wb-pop absolute -left-6 top-full z-50 w-[380px] pt-3"
+                >
+                  <div className="rounded-2xl bg-wb-ink p-3 text-white">
+                    <ul>
+                      {EQUIPMENTS.map((eq, i) => (
+                        <li key={eq.id}>
+                          <Link
+                            to={`/equipamentos/${eq.slug}`}
+                            className="group flex items-baseline gap-4 rounded-xl px-3 py-2.5 transition-colors hover:bg-white/10"
+                          >
+                            <span className="font-key text-[12px] text-white/45">0{i + 1}</span>
+                            <span className="min-w-0 flex-1">
+                              <span className="block font-brand text-[17px] font-semibold leading-tight">
+                                {eq.shortName}
+                              </span>
+                              <span className="mt-0.5 block truncate text-[13px] text-white/60">
+                                {eq.tagline}
+                              </span>
+                            </span>
+                            <ArrowUpRight className="h-4 w-4 shrink-0 self-center text-white/40 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-wb-orange" />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
                     <Link
                       to="/equipamentos"
-                      className="text-[12px] font-bold text-wb-orange hover:underline"
+                      className="mt-1 flex items-center justify-between border-t border-white/15 px-3 pb-1 pt-3 text-[14px] font-medium text-white/80 hover:text-white"
                     >
-                      Ver Todos →
+                      Ver o parque completo
+                      <ArrowUpRight className="h-4 w-4" />
                     </Link>
                   </div>
-                  <div className="space-y-1">
-                    {EQUIPMENTS.map((eq) => (
-                      <Link
-                        key={eq.id}
-                        to={`/equipamentos/${eq.slug}`}
-                        className="flex items-start gap-3 rounded-[12px] p-2.5 transition-colors hover:bg-wb-bench group"
-                      >
-                        <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-wb-line bg-white shadow-sm group-hover:scale-105 transition-transform">
-                          {eqIcons[eq.slug]}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center justify-between gap-2">
-                            <p className="text-[13.5px] font-bold text-wb-ink group-hover:text-wb-orange transition-colors">
-                              {eq.shortName}
-                            </p>
-                            <span className="wb-key text-[10px]">{eq.unitsAvailable} un.</span>
-                          </div>
-                          <p className="text-[12px] text-wb-ink-3 line-clamp-1 mt-0.5">
-                            {eq.tagline}
-                          </p>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-
-          <Link
-            to="/servicos"
-            className={`relative inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-[14.5px] font-semibold transition-colors ${
-              isActive('/servicos')
-                ? 'bg-wb-bench text-wb-ink'
-                : 'text-wb-ink-2 hover:bg-wb-bench hover:text-wb-ink'
-            }`}
-          >
-            Serviços
-          </Link>
-
-          <Link
-            to="/projetos"
-            className={`relative inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-[14.5px] font-semibold transition-colors ${
-              isActive('/projetos')
-                ? 'bg-wb-bench text-wb-ink'
-                : 'text-wb-ink-2 hover:bg-wb-bench hover:text-wb-ink'
-            }`}
-          >
-            Projetos
-          </Link>
-
-          <Link
-            to="/agenda-mensal"
-            className={`relative inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-[14.5px] font-semibold transition-colors ${
-              isActive('/agenda-mensal')
-                ? 'bg-wb-bench text-wb-ink'
-                : 'text-wb-ink-2 hover:bg-wb-bench hover:text-wb-ink'
-            }`}
-          >
-            Agenda Mensal
-            <span
-              aria-label="Atividades do mês"
-              className="h-2 w-2 rounded-full bg-wb-orange animate-pulse"
-            />
-          </Link>
-
-          <Link
-            to="/equipe"
-            className={`relative inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-[14.5px] font-semibold transition-colors ${
-              isActive('/equipe')
-                ? 'bg-wb-bench text-wb-ink'
-                : 'text-wb-ink-2 hover:bg-wb-bench hover:text-wb-ink'
-            }`}
-          >
-            Equipe
-          </Link>
-        </nav>
-
-        {/* Right Actions: Google Calendar Booking CTA */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden xl:flex items-center gap-1.5 rounded-full border border-wb-line bg-wb-bench/80 px-3 py-1.5 text-[12px] font-key text-wb-ink-2">
-            <span className="h-2 w-2 rounded-full bg-wb-green animate-ping" />
-            <span className="h-2 w-2 rounded-full bg-wb-green -ml-3.5" />
-            <span>Lab Aberto · Breves</span>
-          </div>
-
-          <Link
-            to="/agendamento"
-            className="wb-btn wb-btn-primary h-10 sm:h-11 whitespace-nowrap px-3.5 sm:px-5 text-[13.5px] sm:text-[14.5px]"
-          >
-            <Calendar className="h-4 w-4 shrink-0" />
-            <span>Agendar Bancada</span>
-          </Link>
-
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen((v) => !v)}
-            aria-label="Menu de navegação"
-            className="inline-flex lg:hidden h-10 w-10 items-center justify-center rounded-full border border-wb-line bg-white text-wb-ink hover:bg-wb-bench"
-          >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Navigation Drawer */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-wb-line bg-white px-5 py-5 shadow-xl max-h-[82vh] overflow-y-auto">
-          <div className="flex flex-col gap-1.5">
-            <Link
-              to="/"
-              className="rounded-xl px-3.5 py-2.5 text-[15px] font-bold text-wb-ink hover:bg-wb-bench"
-            >
-              Apresentação (Início)
-            </Link>
-
-            <div className="rounded-xl bg-wb-bench/70 p-3 my-1">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-key text-[11px] uppercase tracking-wider text-wb-ink-3 font-bold">
-                  Páginas de Equipamentos
-                </span>
-                <Link
-                  to="/equipamentos"
-                  className="text-[12px] font-bold text-wb-orange underline"
-                >
-                  Visão Geral
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                {EQUIPMENTS.map((eq) => (
-                  <Link
-                    key={eq.id}
-                    to={`/equipamentos/${eq.slug}`}
-                    className="flex items-center gap-2.5 rounded-lg bg-white p-2 border border-wb-line text-[13.5px] font-semibold text-wb-ink"
-                  >
-                    {eqIcons[eq.slug]}
-                    <span>{eq.shortName}</span>
-                  </Link>
-                ))}
-              </div>
+              )}
             </div>
 
-            <Link
-              to="/servicos"
-              className="rounded-xl px-3.5 py-2.5 text-[15px] font-bold text-wb-ink hover:bg-wb-bench"
-            >
-              Serviços Realizados
-            </Link>
-            <Link
-              to="/projetos"
-              className="rounded-xl px-3.5 py-2.5 text-[15px] font-bold text-wb-ink hover:bg-wb-bench"
-            >
-              Projetos Produzidos & Em Andamento
-            </Link>
+            {LINKS.slice(1).map((l) => (
+              <Link key={l.to} to={l.to} className={linkCls(isActive(l.to))}>
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex shrink-0 items-center gap-2">
             <Link
               to="/agendamento"
-              className="rounded-xl px-3.5 py-2.5 text-[15px] font-bold text-wb-orange hover:bg-wb-bench flex items-center justify-between"
+              className="wb-btn wb-btn-dark hidden h-11 px-5 text-[14.5px] sm:inline-flex"
             >
-              <span>Agendamento (Google Agenda)</span>
-              <span className="wb-key">Reservar</span>
+              Agendar bancada
+              <ArrowUpRight className="h-4 w-4" />
             </Link>
-            <Link
-              to="/agenda-mensal"
-              className="rounded-xl px-3.5 py-2.5 text-[15px] font-bold text-wb-ink hover:bg-wb-bench flex items-center justify-between"
+
+            <button
+              ref={menuBtnRef}
+              type="button"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-expanded={menuOpen}
+              aria-controls="menu-movel"
+              aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+              className="inline-flex h-11 items-center gap-2 rounded-[10px] px-3 text-[14.5px] font-semibold text-wb-ink hover:bg-wb-bench lg:hidden"
             >
-              <span>Agenda Mensal de Ações</span>
-              <span className="h-2 w-2 rounded-full bg-wb-orange" />
-            </Link>
-            <Link
-              to="/equipe"
-              className="rounded-xl px-3.5 py-2.5 text-[15px] font-bold text-wb-ink hover:bg-wb-bench"
-            >
-              Nossa Equipe
-            </Link>
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              <span className="max-[359px]:hidden">{menuOpen ? 'Fechar' : 'Menu'}</span>
+            </button>
           </div>
         </div>
-      )}
-    </header>
+
+        {menuOpen && (
+          <div
+            id="menu-movel"
+            className="wb-rise h-[calc(100dvh-68px)] overflow-y-auto bg-wb-canvas px-5 pb-10 pt-4 sm:h-[calc(100dvh-76px)] sm:px-8 lg:hidden"
+          >
+            <nav aria-label="Navegação móvel">
+              <ul className="divide-y divide-wb-line border-b border-wb-line">
+                {LINKS.map((l) => (
+                  <li key={l.to}>
+                    <Link
+                      to={l.to}
+                      className={`flex items-center justify-between py-4 font-brand text-[28px] font-semibold leading-none ${
+                        isActive(l.to) ? 'text-wb-orange' : 'text-wb-ink'
+                      }`}
+                    >
+                      {l.label}
+                      <ArrowUpRight className="h-5 w-5 text-wb-ink-3" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              <p className="mt-8 flex items-center gap-2 text-[13px] font-medium text-wb-ink-3">
+                <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                Equipamentos
+              </p>
+              <ul className="mt-2">
+                {EQUIPMENTS.map((eq) => (
+                  <li key={eq.id}>
+                    <Link
+                      to={`/equipamentos/${eq.slug}`}
+                      className="flex items-center justify-between py-2.5 text-[17px] font-medium text-wb-ink"
+                    >
+                      {eq.shortName}
+                      <span className="font-key text-[13px] text-wb-ink-3">
+                        {eq.unitsAvailable} un.
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+                <li>
+                  <Link
+                    to="/equipamentos"
+                    className="inline-block py-2.5 text-[15px] font-semibold text-wb-orange underline underline-offset-4"
+                  >
+                    Ver todos
+                  </Link>
+                </li>
+              </ul>
+
+              <Link to="/agendamento" className="wb-btn wb-btn-primary mt-8 h-13 w-full text-[16px]">
+                Agendar bancada
+                <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </nav>
+          </div>
+        )}
+      </header>
+    </>
   );
 };
-

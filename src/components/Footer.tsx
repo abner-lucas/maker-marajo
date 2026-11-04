@@ -35,7 +35,7 @@ export const Footer: React.FC = () => {
             <li>
               <Link
                 to="/equipamentos"
-                className="text-[14px] font-semibold text-wb-orange transition-colors hover:text-wb-ink"
+                className="inline-block py-1.5 text-[14px] font-semibold text-wb-orange transition-colors hover:text-wb-ink"
               >
                 Parque Tecnológico Completo
               </Link>
@@ -44,7 +44,7 @@ export const Footer: React.FC = () => {
               <li key={eq.id}>
                 <Link
                   to={`/equipamentos/${eq.slug}`}
-                  className="text-[14px] text-wb-ink-2 transition-colors hover:text-wb-ink"
+                  className="inline-block py-1.5 text-[14px] text-wb-ink-2 transition-colors hover:text-wb-ink"
                 >
                   {eq.shortName}
                 </Link>
@@ -60,7 +60,7 @@ export const Footer: React.FC = () => {
             <li>
               <Link
                 to="/"
-                className="text-[14px] text-wb-ink-2 transition-colors hover:text-wb-ink"
+                className="inline-block py-1.5 text-[14px] text-wb-ink-2 transition-colors hover:text-wb-ink"
               >
                 Apresentação & Scrollytelling
               </Link>
@@ -68,7 +68,7 @@ export const Footer: React.FC = () => {
             <li>
               <Link
                 to="/servicos"
-                className="text-[14px] text-wb-ink-2 transition-colors hover:text-wb-ink"
+                className="inline-block py-1.5 text-[14px] text-wb-ink-2 transition-colors hover:text-wb-ink"
               >
                 Serviços Realizados & Estimador
               </Link>
@@ -76,7 +76,7 @@ export const Footer: React.FC = () => {
             <li>
               <Link
                 to="/projetos"
-                className="text-[14px] text-wb-ink-2 transition-colors hover:text-wb-ink"
+                className="inline-block py-1.5 text-[14px] text-wb-ink-2 transition-colors hover:text-wb-ink"
               >
                 Projetos Produzidos & Em Andamento
               </Link>
@@ -84,7 +84,7 @@ export const Footer: React.FC = () => {
             <li>
               <Link
                 to="/equipe"
-                className="text-[14px] text-wb-ink-2 transition-colors hover:text-wb-ink"
+                className="inline-block py-1.5 text-[14px] text-wb-ink-2 transition-colors hover:text-wb-ink"
               >
                 Equipe, Docentes & Monitores
               </Link>
@@ -99,7 +99,7 @@ export const Footer: React.FC = () => {
             <li>
               <Link
                 to="/agendamento"
-                className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-wb-green transition-colors hover:text-wb-ink"
+                className="inline-flex items-center gap-1.5 py-1.5 text-[14px] font-semibold text-wb-green transition-colors hover:text-wb-ink"
               >
                 <Calendar className="h-3.5 w-3.5" />
                 Agendar Máquina / Bancada
@@ -108,7 +108,7 @@ export const Footer: React.FC = () => {
             <li>
               <Link
                 to="/agenda-mensal"
-                className="text-[14px] text-wb-ink-2 transition-colors hover:text-wb-ink"
+                className="inline-block py-1.5 text-[14px] text-wb-ink-2 transition-colors hover:text-wb-ink"
               >
                 Calendário Mensal de Atividades
               </Link>
@@ -137,10 +137,10 @@ export const Footer: React.FC = () => {
             </li>
           </ul>
 
-          <div className="mt-6 rounded-2xl border border-wb-line bg-white p-3.5">
+          <div className="mt-6 border-t border-wb-line py-3.5">
             <div className="flex items-center gap-2 text-[12px] font-key font-bold text-wb-ink">
               <Sparkles className="h-3.5 w-3.5 text-wb-orange" />
-              CULTURA LEARNING BY DOING
+              Cultura learning by doing
             </div>
             <p className="mt-1 text-[12px] text-wb-ink-3 leading-snug">
               Horário de funcionamento: Seg a Sex, das 08h às 12h e das 14h às 18h.

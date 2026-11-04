@@ -114,10 +114,10 @@ export const HomePage: React.FC = () => {
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-14 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-wb-line bg-white px-3.5 py-1.5 shadow-sm">
-                <span className="h-2 w-2 rounded-full bg-wb-green" />
-                <span className="font-key text-[11.5px] font-bold uppercase tracking-wider text-wb-ink">
-                  APRESENTAÇÃO INSTITUCIONAL · LABMAKER MARAJÓ
+              <div className="inline-flex items-center gap-2">
+                <span aria-hidden="true" className="marajo-glifo text-wb-green" />
+                <span className="rotulo">
+                  Apresentação institucional · LabMaker Marajó
                 </span>
               </div>
 
@@ -126,10 +126,10 @@ export const HomePage: React.FC = () => {
                 style={{
                   fontSize: 'clamp(30px, 3.8vw, 50px)',
                   lineHeight: 1.06,
-                  letterSpacing: '-0.04em',
+                  letterSpacing: '-0.028em',
                 }}
               >
-                O 5º Laboratório IF MAKER do Pará em plena produção em Breves.
+                O 5º Laboratório IF MAKER do Pará, <span className="acento">em plena produção</span> em Breves.
               </h2>
 
               <p className="mt-5 text-[16.5px] leading-[1.68] text-wb-ink-2">
@@ -162,7 +162,7 @@ export const HomePage: React.FC = () => {
                 ].map((item) => (
                   <div
                     key={item.title}
-                    className="rounded-2xl border border-wb-line bg-white p-4 shadow-sm"
+                    className="border-t border-wb-line py-4"
                   >
                     <div className="flex items-center gap-2 font-bold text-[15px] text-wb-ink">
                       <CheckCircle2 className="h-4 w-4 text-wb-green shrink-0" />
@@ -181,13 +181,13 @@ export const HomePage: React.FC = () => {
                   className="wb-btn wb-btn-primary h-12 px-6 text-[15px]"
                 >
                   <Film className="h-4 w-4" />
-                  <span>Assistir Vídeos Quadro a Quadro</span>
+                  <span>Assistir vídeos quadro a quadro</span>
                 </a>
                 <Link
                   to="/projetos"
                   className="wb-btn wb-btn-green h-12 px-6 text-[15px]"
                 >
-                  <span>Ver Projetos Produzidos</span>
+                  <span>Ver projetos produzidos</span>
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -195,8 +195,8 @@ export const HomePage: React.FC = () => {
 
             {/* Right: Real Video Loop + Official Poster Thumbnail */}
             <div className="relative">
-              <div className="wb-panel overflow-hidden p-2.5 bg-white">
-                <div className="relative overflow-hidden rounded-[14px] aspect-[4/3] bg-black">
+              <figure>
+                <div className="relative overflow-hidden rounded-[20px] aspect-[4/3] bg-black">
                   <video
                     src="/videos/DWCiTZDEavR.mp4"
                     poster={IMAGE_ASSETS.real.canoasMarajoaras3d}
@@ -206,36 +206,13 @@ export const HomePage: React.FC = () => {
                     playsInline
                     className="h-full w-full object-cover"
                   />
-                  <div className="absolute bottom-3 left-3 right-3 rounded-xl bg-white/92 backdrop-blur px-4 py-2.5 border border-wb-line flex items-center justify-between">
-                    <div>
-                      <p className="text-[12.5px] font-bold text-wb-ink">
-                        Tour Real — Laboratório IFPA MAKER Marajó
-                      </p>
-                      <p className="font-key text-[11px] text-wb-ink-3">
-                        Elegoo Centauri Carbon · Laser CO2 · Canetas 3D · Canoas Marajoaras
-                      </p>
-                    </div>
-                    <span className="wb-key text-wb-green font-bold">VÍDEO REAL</span>
-                  </div>
                 </div>
-              </div>
+                <figcaption className="mt-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-[13.5px]">
+                  <span className="font-semibold text-wb-ink">Tour pelo laboratório — vídeo real</span>
+                  <span className="text-wb-ink-3">Elegoo Centauri Carbon · Laser CO2 · Canetas 3D</span>
+                </figcaption>
+              </figure>
 
-              {/* Floating Official IFPA Poster Thumbnail Card */}
-              <div className="hidden sm:flex items-center gap-3.5 rounded-2xl border border-wb-line bg-white p-3 shadow-xl absolute -bottom-6 -left-6 max-w-[310px]">
-                <img
-                  src={IMAGE_ASSETS.real.inauguracaoPorta}
-                  alt="Porta de Inauguração Laboratório IFPA MAKER"
-                  className="h-16 w-16 rounded-xl object-cover border border-wb-line shrink-0"
-                />
-                <div>
-                  <span className="font-key text-[10px] font-bold uppercase text-wb-orange">
-                    INAUGURADO EM MARÇO/2026
-                  </span>
-                  <p className="text-[12.5px] font-bold text-wb-ink leading-tight mt-0.5">
-                    5º Laboratório IF MAKER entregue pelo IFPA
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -249,18 +226,18 @@ export const HomePage: React.FC = () => {
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <p className="font-key text-[12px] font-bold uppercase tracking-[0.14em] text-wb-green">
-                PARQUE TECNOLÓGICO REAL · PÁGINAS DEDICADAS
+              <p className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />
+                Parque tecnológico real · Páginas dedicadas
               </p>
               <h2
                 className="mt-3 font-brand font-bold text-wb-ink"
                 style={{
                   fontSize: 'clamp(30px, 4vw, 54px)',
                   lineHeight: 1.05,
-                  letterSpacing: '-0.045em',
+                  letterSpacing: '-0.028em',
                 }}
               >
-                Nossos Equipamentos.
+                Nossos <span className="acento">equipamentos</span>.
               </h2>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
@@ -272,7 +249,7 @@ export const HomePage: React.FC = () => {
                 to="/equipamentos"
                 className="wb-btn wb-btn-dark h-11 px-5 text-[14px] shrink-0"
               >
-                <span>Ver Parque Completo</span>
+                <span>Ver parque completo</span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -284,28 +261,23 @@ export const HomePage: React.FC = () => {
               <Link
                 key={eq.id}
                 to={`/equipamentos/${eq.slug}`}
-                className="wb-panel wb-panel-hover group flex flex-col overflow-hidden"
+                className="group flex flex-col"
               >
-                <div className="relative h-48 overflow-hidden bg-wb-bench border-b border-wb-line">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[16px] bg-wb-bench">
                   <img
                     src={eq.image}
                     alt={eq.name}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <span
-                    className="absolute top-3 left-3 rounded-full px-2.5 py-1 font-key text-[10px] font-bold text-white shadow"
-                    style={{ backgroundColor: eq.accentColor }}
-                  >
-                    {eq.unitsAvailable} UNIDADES
-                  </span>
                 </div>
 
-                <div className="flex flex-1 flex-col justify-between p-5">
+                <div className="flex flex-1 flex-col justify-between pt-4">
                   <div>
-                    <span className="font-key text-[10.5px] font-bold text-wb-ink-3 uppercase">
-                      {eq.badge.split('·')[0]}
+                    <span className="flex items-center gap-2 font-key text-[12.5px] font-semibold text-wb-ink-3">
+                      <span aria-hidden="true" className="h-2.5 w-2.5 rotate-45" style={{ backgroundColor: eq.accentColor }} />
+                      {eq.badge.split('·')[0].trim()} · {eq.unitsAvailable} un.
                     </span>
-                    <h3 className="mt-1 font-brand text-[18px] font-bold text-wb-ink group-hover:text-wb-orange transition-colors">
+                    <h3 className="mt-1.5 font-brand text-[21px] font-semibold text-wb-ink group-hover:text-wb-orange transition-colors">
                       {eq.shortName}
                     </h3>
                     <p className="mt-2 text-[13.5px] text-wb-ink-2 line-clamp-3 leading-relaxed">
@@ -313,8 +285,8 @@ export const HomePage: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-wb-line flex items-center justify-between text-[13px] font-bold text-wb-ink group-hover:text-wb-orange">
-                    <span>Abrir Página & Simulador</span>
+                  <div className="mt-4 flex items-center gap-2 text-[14px] font-semibold text-wb-ink group-hover:text-wb-orange">
+                    <span>Abrir página e simulador</span>
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>
@@ -338,18 +310,18 @@ export const HomePage: React.FC = () => {
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-[1.3fr_1fr] md:items-end">
             <div>
-              <p className="font-key text-[12px] font-bold uppercase tracking-[0.14em] text-wb-orange">
-                REGISTROS REAIS DO LABORATÓRIO · LABMAKER MARAJÓ EM IMAGENS
+              <p className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                Registros reais do laboratório · LabMaker Marajó em imagens
               </p>
               <h2
                 className="mt-3 font-brand font-bold text-wb-ink"
                 style={{
                   fontSize: 'clamp(32px, 4.2vw, 54px)',
                   lineHeight: 1.04,
-                  letterSpacing: '-0.045em',
+                  letterSpacing: '-0.028em',
                 }}
               >
-                O que já fizemos nas nossas bancadas.
+                O que já fizemos <span className="acento">nas nossas bancadas</span>.
               </h2>
             </div>
             <div className="md:text-right">
@@ -361,7 +333,7 @@ export const HomePage: React.FC = () => {
                 to="/projetos"
                 className="mt-3 inline-flex items-center gap-1.5 font-bold text-[14.5px] text-wb-orange hover:underline"
               >
-                <span>Ver Detalhes de Todos os Projetos</span>
+                <span>Ver todos os projetos</span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -442,25 +414,24 @@ export const HomePage: React.FC = () => {
             {/* Left Copy */}
             <div className="relative z-10 flex flex-col justify-between p-7 sm:p-11">
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 font-key text-[11px] font-bold text-wb-orange">
-                  <span>ROBOT SOCCER & AGENDA GOOGLE</span>
-                  <span className="text-white/40">·</span>
-                  <span className="text-emerald-400">EM AÇÃO NO LAB</span>
-                </div>
+                <p className="rotulo !text-white/75">
+                  <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                  Robot Soccer & agenda · em ação no lab
+                </p>
 
                 <h2
                   className="mt-5 font-brand font-bold text-white"
                   style={{
                     fontSize: 'clamp(28px, 3.6vw, 46px)',
                     lineHeight: 1.06,
-                    letterSpacing: '-0.04em',
+                    letterSpacing: '-0.028em',
                   }}
                 >
-                  Robot Soccer · Futebol de Robôs & Oficinas Mensais
+                  Robot Soccer, <span className="acento text-wb-orange">futebol de robôs</span> e oficinas do mês
                 </h2>
 
                 <p className="mt-4 text-[15.5px] leading-relaxed text-white/75">
-                  Assim como as arenas de robótica do Constructa, o{' '}
+                  O{' '}
                   <strong className="text-white">LabMaker Marajó</strong> já conta com sua própria{' '}
                   <strong className="text-white">Arena Robot Soccer</strong> com 5 robôs impressos
                   em 3D e display LCD! Confira os próximos eventos sincronizados via{' '}
@@ -472,7 +443,7 @@ export const HomePage: React.FC = () => {
                   {CALENDAR_ACTIVITIES.slice(0, 3).map((act) => (
                     <div
                       key={act.id}
-                      className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5"
+                      className="flex items-center justify-between gap-3 border-t border-white/10 py-2.5"
                     >
                       <div className="min-w-0">
                         <p className="truncate text-[13.5px] font-bold text-white">{act.title}</p>
@@ -494,13 +465,13 @@ export const HomePage: React.FC = () => {
                   className="wb-btn wb-btn-primary h-12 px-6 text-[14.5px]"
                 >
                   <Calendar className="h-4 w-4" />
-                  <span>Ver Agenda Mensal Completa</span>
+                  <span>Ver agenda do mês</span>
                 </Link>
                 <Link
                   to="/agendamento"
                   className="wb-btn border border-white/20 bg-white/10 h-12 px-6 text-[14.5px] text-white hover:bg-white/20"
                 >
-                  <span>Agendar Horário de Bancada</span>
+                  <span>Agendar horário de bancada</span>
                 </Link>
               </div>
             </div>
@@ -528,7 +499,7 @@ export const HomePage: React.FC = () => {
               </div>
 
               {/* Embedded Real Robot Soccer Video Card */}
-              <div className="relative z-10 w-full max-w-[300px] overflow-hidden rounded-[22px] border border-white/20 bg-black shadow-2xl">
+              <div className="relative z-10 w-full max-w-[300px] overflow-hidden rounded-[22px] border border-white/20 bg-black">
                 <video
                   src="/videos/DYOI0SHRQBN.mp4"
                   poster={IMAGE_ASSETS.real.robotSoccerDisputa}
@@ -541,7 +512,7 @@ export const HomePage: React.FC = () => {
                 />
                 <div className="bg-black/90 px-4 py-2.5 flex items-center justify-between text-[11.5px]">
                   <span className="font-key font-bold text-emerald-400">
-                    ● ROBOT SOCCER · LABMAKER MARAJÓ
+                    Robot Soccer · LabMaker Marajó
                   </span>
                   <a
                     href="https://www.instagram.com/reel/DYOI0SHRQBN/"
@@ -566,18 +537,18 @@ export const HomePage: React.FC = () => {
       >
         <div className="mx-auto grid max-w-[1320px] gap-12 px-5 sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
           <div className="lg:sticky lg:top-28 lg:self-start">
-            <p className="font-key text-[12px] font-bold uppercase tracking-[0.14em] text-wb-ink-3">
-              DÚVIDAS FREQUENTES · FAQ
+            <p className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-ink-3" />
+              Dúvidas frequentes · FAQ
             </p>
             <h2
               className="mt-4 font-brand font-bold text-wb-ink"
               style={{
                 fontSize: 'clamp(32px, 4.2vw, 56px)',
                 lineHeight: 1.05,
-                letterSpacing: '-0.045em',
+                letterSpacing: '-0.028em',
               }}
             >
-              Perguntas, respondidas.
+              Perguntas, <span className="acento">respondidas</span>.
             </h2>
             <p className="mt-4 text-[15.5px] text-wb-ink-2 leading-relaxed">
               Tudo o que você precisa saber sobre os equipamentos e produções do Laboratório IFPA
@@ -639,15 +610,15 @@ export const HomePage: React.FC = () => {
         </div>
         <div className="relative mx-auto max-w-[760px] px-5 sm:px-8">
           <div className="wb-panel flex flex-col items-center px-6 py-10 text-center sm:px-12 sm:py-14 bg-white/95 backdrop-blur">
-            <p className="font-key text-[12px] font-bold uppercase tracking-[0.14em] text-wb-orange">
-              VENHA APRENDER FAZENDO · LABMAKER MARAJÓ
+            <p className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+              Venha aprender fazendo · LabMaker Marajó
             </p>
             <h2
               className="mt-4 font-brand font-bold text-wb-ink"
               style={{
                 fontSize: 'clamp(32px, 4.6vw, 58px)',
                 lineHeight: 1.03,
-                letterSpacing: '-0.045em',
+                letterSpacing: '-0.028em',
               }}
             >
               <WordRise text="Pronto para tirar seu protótipo do papel?" />
@@ -662,14 +633,14 @@ export const HomePage: React.FC = () => {
                 className="wb-btn wb-btn-primary h-13 px-7 text-[16px]"
               >
                 <Calendar className="h-5 w-5" />
-                <span>Agendar via Google Agenda</span>
+                <span>Agendar pelo Google Agenda</span>
               </Link>
               <Link
                 to="/equipamentos"
                 className="wb-btn wb-btn-dark h-13 px-6 text-[15.5px]"
               >
                 <Wrench className="h-4 w-4 text-wb-orange" />
-                <span>Explorar Equipamentos</span>
+                <span>Explorar equipamentos</span>
               </Link>
             </div>
           </div>

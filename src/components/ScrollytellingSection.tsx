@@ -168,10 +168,10 @@ export const ScrollytellingSection: React.FC = () => {
             }}
           >
             <div className="mx-auto w-full max-w-[1320px] px-5 sm:px-8">
-              <div className="inline-flex items-center gap-2 rounded-full border border-wb-line bg-wb-bench px-3.5 py-1.5 mb-5">
+              <div className="inline-flex items-center gap-2 mb-5">
                 <Sparkles className="h-4 w-4 text-wb-orange" />
-                <span className="font-key text-[12px] font-bold uppercase tracking-wider text-wb-ink">
-                  SCROLLYTELLING · FLUXO CRIATIVO IF MAKER BREVES
+                <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-ink" />
+                  Scrollytelling · Fluxo criativo IF MAKER Breves
                 </span>
               </div>
               <h2
@@ -179,7 +179,7 @@ export const ScrollytellingSection: React.FC = () => {
                 style={{
                   fontSize: 'clamp(38px, 6.4vw, 98px)',
                   lineHeight: 0.98,
-                  letterSpacing: '-0.048em',
+                  letterSpacing: '-0.028em',
                 }}
               >
                 Tudo para aprender fazendo, em um só lugar.
@@ -205,7 +205,7 @@ export const ScrollytellingSection: React.FC = () => {
               transform: `scale(${0.95 + hudFadeIn * 0.05})`,
             }}
           >
-            <div className="relative w-full max-w-[760px] aspect-[16/11] rounded-[24px] border border-wb-line bg-white/90 shadow-[0_24px_60px_-20px_rgba(20,26,23,0.22)] backdrop-blur overflow-hidden flex flex-col">
+            <div className="relative w-full max-w-[760px] aspect-[16/11] border-t border-wb-line overflow-hidden flex flex-col">
               {/* Workbench Stage Header Bar */}
               <div className="flex items-center justify-between border-b border-wb-line bg-wb-bench/80 px-4 py-2.5">
                 <div className="flex items-center gap-2">
@@ -564,10 +564,10 @@ export const ScrollytellingSection: React.FC = () => {
             <div className="pointer-events-auto absolute left-4 right-4 bottom-20 sm:left-8 sm:right-auto top-auto lg:top-[96px] lg:bottom-auto lg:w-[390px]">
               {/* STEP 01 CARD: CAD 3D & LASER */}
               {activeStepIndex === 0 && (
-                <div className="wb-panel p-5 sm:p-6 bg-white/95 backdrop-blur">
+                <div className="rounded-[18px] bg-wb-canvas p-5 sm:p-6">
                   <div className="flex items-center justify-between">
-                    <span className="font-key text-[12px] font-bold text-wb-orange">
-                      01 / PROTOTIPAGEM 3D & CNC
+                    <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                      01 / Prototipagem 3D & CNC
                     </span>
                     <span className="wb-key">CAD · STL · DXF</span>
                   </div>
@@ -612,10 +612,10 @@ export const ScrollytellingSection: React.FC = () => {
 
               {/* STEP 02 CARD: ARDUINO & SENSORS WIRING */}
               {activeStepIndex === 1 && (
-                <div className="wb-panel p-5 sm:p-6 bg-white/95 backdrop-blur">
+                <div className="rounded-[18px] bg-wb-canvas p-5 sm:p-6">
                   <div className="flex items-center justify-between">
-                    <span className="font-key text-[12px] font-bold text-wb-blue">
-                      02 / ELETRÔNICA & ARDUINO
+                    <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-blue" />
+                      02 / Eletrônica & Arduino
                     </span>
                     <span className="wb-key">UNO R3 · ESP32</span>
                   </div>
@@ -628,7 +628,7 @@ export const ScrollytellingSection: React.FC = () => {
                   </p>
 
                   {/* Interactive SVG Pin-to-Pin Mini Widget */}
-                  <div className="mt-4 rounded-xl border border-wb-line bg-wb-bench/70 p-3">
+                  <div className="mt-4 border-t border-wb-line py-3">
                     <svg viewBox="0 0 380 125" className="w-full h-24">
                       <rect
                         x="10"
@@ -696,7 +696,7 @@ export const ScrollytellingSection: React.FC = () => {
                     </svg>
                     <div className="mt-2 flex items-center justify-between text-[11px] font-key text-wb-ink-2">
                       <span className="flex items-center gap-1.5">
-                        <span className="h-2 w-2 rounded-full bg-wb-red" /> 5V
+                        <span aria-hidden="true" className="marajo-glifo text-wb-red" /> 5V
                         <span className="h-2 w-2 rounded-full bg-wb-ink ml-1" /> GND
                         <span className="h-2 w-2 rounded-full bg-wb-orange ml-1" /> Sinal
                       </span>
@@ -711,10 +711,10 @@ export const ScrollytellingSection: React.FC = () => {
 
               {/* STEP 03 CARD: CODE & SIMULATION */}
               {activeStepIndex === 2 && (
-                <div className="wb-panel p-5 sm:p-6 bg-white/95 backdrop-blur">
+                <div className="rounded-[18px] bg-wb-canvas p-5 sm:p-6">
                   <div className="flex items-center justify-between">
-                    <span className="font-key text-[12px] font-bold text-wb-purple">
-                      03 / ROBÓTICA & CÓDIGO C++
+                    <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-purple" />
+                      03 / Robótica & código C++
                     </span>
                     <span className="wb-key">ARDUINO IDE · BLOCOS</span>
                   </div>
@@ -750,7 +750,7 @@ export const ScrollytellingSection: React.FC = () => {
             <div
               role="group"
               aria-label="Etapas do fluxo criativo IF MAKER"
-              className="relative flex items-center gap-1 rounded-[16px] border border-wb-line bg-white/95 p-1.5 shadow-lg backdrop-blur"
+              className="relative flex items-center gap-1 border-t border-wb-line py-1.5"
             >
               {[
                 { idx: 0, num: '01', label: 'Modelar 3D & Laser' },

@@ -61,8 +61,8 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
       <div className="wb-panel p-6 sm:p-8 bg-white">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-wb-line pb-4">
           <div>
-            <span className="font-key text-[11px] font-bold uppercase text-wb-orange">
-              SIMULADOR INTERATIVO DE BANCADA
+            <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+              Simulador interativo de bancada
             </span>
             <h3 className="font-brand text-xl font-bold text-wb-ink">
               Configurador de Fatiamento 3D (Slicer)
@@ -176,8 +176,8 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
       <div className="wb-panel p-6 sm:p-8 bg-white">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-wb-line pb-4">
           <div>
-            <span className="font-key text-[11px] font-bold uppercase text-wb-red">
-              CALCULADORA DE CORTE & GRAVAÇÃO CNC
+            <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-red" />
+              Calculadora de corte & gravação CNC
             </span>
             <h3 className="font-brand text-xl font-bold text-wb-ink">
               Tabela Dinâmica de Potência × Velocidade (Laser CO2 100W)
@@ -214,7 +214,7 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
               <label className="block text-[13px] font-bold text-wb-ink mb-2">
                 Tipo de Operação no Vetor:
               </label>
-              <div className="inline-flex rounded-xl border border-wb-line bg-wb-bench p-1">
+              <div className="inline-flex border-t border-wb-line py-1">
                 {(['Corte', 'Gravação'] as const).map((mode) => (
                   <button
                     key={mode}
@@ -235,7 +235,7 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
 
           <div className="rounded-2xl border border-wb-line bg-[#141112] p-5 text-white font-key">
             <div className="text-[11px] text-rose-400 font-bold">
-              CONFIGURAÇÃO RECOMENDADA NO RDWORKS / LIGHTBURN
+              Configuração recomendada no RDWorks / LightBurn
             </div>
             <div className="mt-4 grid grid-cols-2 gap-4">
               <div className="rounded-xl bg-white/5 p-3.5">
@@ -261,8 +261,8 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
       <div className="wb-panel p-6 sm:p-8 bg-white">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-wb-line pb-4">
           <div>
-            <span className="font-key text-[11px] font-bold uppercase text-wb-blue">
-              INSPEÇÃO DE MALHA & NUVEM DE PONTOS
+            <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-blue" />
+              Inspeção de malha & nuvem de pontos
             </span>
             <h3 className="font-brand text-xl font-bold text-wb-ink">
               Simulador de Digitalização 3D por Luz Estruturada
@@ -357,8 +357,8 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
       <div className="wb-panel p-6 sm:p-8 bg-white">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-wb-line pb-4">
           <div>
-            <span className="font-key text-[11px] font-bold uppercase text-wb-green">
-              CINEMÁTICA DIRETA · BRAÇO ROBÓTICO 6-DOF
+            <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />
+              Cinemática direta · Braço robótico 6-DOF
             </span>
             <h3 className="font-brand text-xl font-bold text-wb-ink">
               Teste os Servomotores do Braço Robótico Educacional
@@ -408,7 +408,7 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
             </button>
           </div>
 
-          <div className="rounded-2xl border border-wb-line bg-wb-bench wb-grid-bg h-52 flex items-center justify-center">
+          <div className="border-t border-wb-line wb-grid-bg h-52 flex items-center justify-center">
             <svg viewBox="0 0 280 190" className="h-full w-auto">
               <rect x="85" y="155" width="90" height="18" rx="5" fill="#141A17" />
               <g transform={`translate(130, 155) rotate(${shoulderDeg})`}>
@@ -475,8 +475,8 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
     <div className="wb-panel p-6 sm:p-8 bg-white">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-wb-line pb-4">
         <div>
-          <span className="font-key text-[11px] font-bold uppercase text-wb-purple">
-            MAPA DE PINOS INTERATIVO
+          <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-purple" />
+            Mapa de pinos interativo
           </span>
           <h3 className="font-brand text-xl font-bold text-wb-ink">
             Explorador de Barramentos Arduino Uno R3 & ESP32
@@ -509,7 +509,7 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
         ))}
       </div>
 
-      <div className="mt-5 rounded-2xl border border-wb-line bg-wb-bench/70 p-5">
+      <div className="mt-5 border-t border-wb-line py-5">
         <h4 className="font-brand text-lg font-bold text-wb-ink">
           {pinDetails[selectedPin].title}
         </h4>
@@ -575,7 +575,7 @@ export const EquipmentsPage: React.FC = () => {
                   style={{
                     fontSize: 'clamp(30px, 4vw, 52px)',
                     lineHeight: 1.05,
-                    letterSpacing: '-0.04em',
+                    letterSpacing: '-0.028em',
                   }}
                 >
                   <WordRise text={selectedEquipment.name} />
@@ -586,16 +586,16 @@ export const EquipmentsPage: React.FC = () => {
                 </p>
 
                 <div className="mt-6 flex flex-wrap items-center gap-3">
-                  <div className="rounded-xl border border-wb-line bg-white px-4 py-2.5">
-                    <span className="font-key text-[11px] text-wb-ink-3 block">DISPONIBILIDADE</span>
+                  <div className="border-t border-wb-line py-2.5">
+                    <span className="font-key text-[11px] text-wb-ink-3 block">Disponibilidade</span>
                     <span className="font-bold text-[15px] text-wb-green">
                       ● {selectedEquipment.unitsAvailable} Unidades Operacionais
                     </span>
                   </div>
 
-                  <div className="rounded-xl border border-wb-line bg-white px-4 py-2.5">
+                  <div className="border-t border-wb-line py-2.5">
                     <span className="font-key text-[11px] text-wb-ink-3 block">
-                      FORMATOS ACEITOS
+                      Formatos aceitos
                     </span>
                     <span className="font-key font-bold text-[13.5px] text-wb-ink">
                       {selectedEquipment.fileFormats.join(' · ')}
@@ -633,8 +633,8 @@ export const EquipmentsPage: React.FC = () => {
               <div className="wb-panel p-6 sm:p-8 bg-white">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-wb-line pb-4">
                   <div>
-                    <span className="font-key text-[11px] font-bold uppercase text-wb-green">
-                      REGISTROS REAIS DA BANCADA · LABMAKER MARAJÓ
+                    <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-green" />
+                      Registros reais da bancada · LabMaker Marajó
                     </span>
                     <h2 className="font-brand text-xl font-bold text-wb-ink">
                       {selectedEquipment.shortName} em Operação no IFPA Campus Breves
@@ -645,7 +645,7 @@ export const EquipmentsPage: React.FC = () => {
 
                 <div className="mt-6 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
                   {selectedEquipment.videoSrc && (
-                    <div className="rounded-2xl overflow-hidden border border-wb-line bg-black aspect-[9/15] max-w-[280px] mx-auto w-full shadow-lg">
+                    <div className="overflow-hidden border-t border-wb-line bg-black aspect-[9/15] max-w-[280px] mx-auto w-full">
                       <video
                         src={selectedEquipment.videoSrc}
                         poster={selectedEquipment.image}
@@ -663,7 +663,7 @@ export const EquipmentsPage: React.FC = () => {
                       {selectedEquipment.realGallery.map((img, i) => (
                         <figure
                           key={i}
-                          className="overflow-hidden rounded-2xl border border-wb-line bg-wb-bench flex flex-col"
+                          className="overflow-hidden border-t border-wb-line flex flex-col"
                         >
                           <img
                             src={img.src}
@@ -695,7 +695,7 @@ export const EquipmentsPage: React.FC = () => {
                 <dl className="mt-4 space-y-3 divide-y divide-wb-line">
                   {selectedEquipment.specs.map((s) => (
                     <div key={s.label} className="pt-3 first:pt-0">
-                      <dt className="font-key text-[11.5px] text-wb-ink-3 uppercase">{s.label}</dt>
+                      <dt className="font-key text-[11.5px] text-wb-ink-3">{s.label}</dt>
                       <dd className="mt-0.5 text-[14.5px] font-bold text-wb-ink">{s.value}</dd>
                     </div>
                   ))}
@@ -717,7 +717,7 @@ export const EquipmentsPage: React.FC = () => {
                   ))}
                 </ul>
 
-                <h3 className="mt-6 font-key text-[11.5px] font-bold uppercase text-wb-ink-3">
+                <h3 className="mt-6 font-key text-[11.5px] font-bold text-wb-ink-3">
                   Insumos / Componentes Suportados
                 </h3>
                 <div className="mt-2.5 flex flex-wrap gap-1.5">
@@ -740,7 +740,7 @@ export const EquipmentsPage: React.FC = () => {
                     {selectedEquipment.modelsInLab.map((m) => (
                       <div
                         key={m.modelName}
-                        className="rounded-xl border border-wb-line bg-wb-bench/60 p-3"
+                        className="border-t border-wb-line py-3"
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-[13.5px] font-bold text-wb-ink">{m.modelName}</span>
@@ -776,15 +776,13 @@ export const EquipmentsPage: React.FC = () => {
     <div className="pt-[76px] bg-wb-canvas min-h-screen font-ui text-wb-ink">
       <section className="relative overflow-hidden border-b border-wb-line bg-wb-bench py-16 sm:py-24">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <span className="wb-key text-wb-orange font-bold">
-            PARQUE TECNOLÓGico · 5º LAB IF MAKER (MAR/2026)
-          </span>
+          <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />Parque tecnológico · 5º Lab IF MAKER (mar/2026)</span>
           <h1
             className="mt-4 font-brand font-bold text-wb-ink max-w-[16em]"
             style={{
               fontSize: 'clamp(34px, 4.5vw, 60px)',
               lineHeight: 1.04,
-              letterSpacing: '-0.045em',
+              letterSpacing: '-0.028em',
             }}
           >
             <WordRise text="Páginas de Equipamentos do IF MAKER Breves." />
@@ -818,14 +816,14 @@ export const EquipmentsPage: React.FC = () => {
                   className="absolute top-4 left-4 rounded-full px-3 py-1 font-key text-[11px] font-bold text-white shadow"
                   style={{ backgroundColor: eq.accentColor }}
                 >
-                  {eq.unitsAvailable} UNIDADES NO LAB
+                  {eq.unitsAvailable} unidades no lab
                 </span>
               </div>
 
               <div className="p-6 sm:p-9 flex flex-col justify-between">
                 <div>
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="font-key text-[11.5px] font-bold text-wb-ink-3 uppercase">
+                    <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-ink-3" />
                       {eq.badge}
                     </span>
                     <span className="wb-key text-wb-green font-bold">● {eq.status}</span>
@@ -843,9 +841,9 @@ export const EquipmentsPage: React.FC = () => {
                     {eq.specs.slice(0, 4).map((sp) => (
                       <div
                         key={sp.label}
-                        className="rounded-xl border border-wb-line bg-wb-bench/60 px-3.5 py-2.5"
+                        className="border-t border-wb-line py-2.5"
                       >
-                        <div className="font-key text-[10.5px] text-wb-ink-3 uppercase">
+                        <div className="font-key text-[10.5px] text-wb-ink-3">
                           {sp.label}
                         </div>
                         <div className="text-[13.5px] font-bold text-wb-ink mt-0.5">{sp.value}</div>

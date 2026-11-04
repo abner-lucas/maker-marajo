@@ -34,7 +34,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           x="116"
           y="20"
           fill="#141A17"
-          fontFamily="'Figtree', sans-serif"
+          fontFamily="'Hanken Grotesk Variable', sans-serif"
           fontSize="12.5"
           fontWeight="500"
           letterSpacing="2.2"
@@ -103,7 +103,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       </svg>
 
       {showCampus && (
-        <div className="hidden sm:flex items-center gap-2 pl-2.5 border-l border-wb-line">
+        <div className="hidden xl:flex items-center gap-2 pl-2.5 border-l border-wb-line">
           {/* Official IFPA Grid Mark */}
           <svg viewBox="0 0 28 38" className="h-7 w-auto shrink-0" aria-hidden="true">
             <circle cx="5" cy="5" r="4.5" fill="#DC1F26" />
@@ -118,7 +118,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
             <rect x="11" y="29.5" width="7.5" height="7.5" rx="1.2" fill="#23963C" />
           </svg>
           <div className="leading-tight">
-            <div className="font-ui text-[11px] font-extrabold tracking-tight text-wb-ink">
+            <div className="font-ui text-[11px] font-bold text-wb-ink">
               IFPA · BREVES
             </div>
             <div className="font-key text-[10px] font-medium text-wb-ink-3">

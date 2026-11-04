@@ -82,10 +82,10 @@ export const LabVideosSection: React.FC = () => {
         {/* Section Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-wb-line bg-white px-3.5 py-1.5 shadow-sm">
+            <div className="inline-flex items-center gap-2">
               <Film className="h-4 w-4 text-wb-orange" />
-              <span className="font-key text-[11.5px] font-bold uppercase tracking-wider text-wb-ink">
-                VÍDEOS REAIS & INSPEÇÃO QUADRO A QUADRO · LABMAKER MARAJÓ
+              <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-ink" />
+                Vídeos reais & inspeção quadro a quadro · LabMaker Marajó
               </span>
             </div>
             <h2
@@ -93,7 +93,7 @@ export const LabVideosSection: React.FC = () => {
               style={{
                 fontSize: 'clamp(30px, 4vw, 52px)',
                 lineHeight: 1.04,
-                letterSpacing: '-0.045em',
+                letterSpacing: '-0.028em',
               }}
             >
               Assista ao que já foi produzido no laboratório.
@@ -108,7 +108,7 @@ export const LabVideosSection: React.FC = () => {
         </div>
 
         {/* Video Selector Tabs */}
-        <div className="mt-9 grid grid-cols-1 md:grid-cols-3 gap-3.5">
+        <div className="mt-9 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-2">
           {LAB_VIDEOS.map((vid) => {
             const isSelected = vid.id === activeVideo.id;
             return (
@@ -116,21 +116,20 @@ export const LabVideosSection: React.FC = () => {
                 key={vid.id}
                 type="button"
                 onClick={() => handleSelectVideo(vid)}
-                className={`text-left rounded-[18px] border p-4 transition-all flex items-start gap-3.5 ${
-                  isSelected
-                    ? 'border-wb-ink bg-wb-ink text-white shadow-lg scale-[1.01]'
-                    : 'border-wb-line bg-white text-wb-ink hover:bg-wb-canvas'
+                aria-pressed={isSelected}
+                className={`text-left border-t-2 pt-4 pb-2 transition-colors flex items-start gap-3.5 text-wb-ink ${
+                  isSelected ? 'border-wb-orange' : 'border-wb-line hover:border-wb-ink opacity-70 hover:opacity-100'
                 }`}
               >
                 <img
                   src={vid.posterSrc}
                   alt={vid.title}
-                  className="h-16 w-14 rounded-xl object-cover shrink-0 border border-white/20"
+                  className="h-16 w-14 rounded-lg object-cover shrink-0"
                 />
                 <div className="min-w-0 flex-1">
                   <span
-                    className="inline-block rounded-full px-2 py-0.5 font-key text-[10px] font-bold text-white"
-                    style={{ backgroundColor: vid.accentColor }}
+                    className="inline-block font-key text-[12px] font-semibold"
+                    style={{ color: vid.accentColor }}
                   >
                     {vid.category}
                   </span>
@@ -139,7 +138,7 @@ export const LabVideosSection: React.FC = () => {
                   </h3>
                   <p
                     className={`mt-0.5 text-[12px] line-clamp-1 ${
-                      isSelected ? 'text-white/75' : 'text-wb-ink-3'
+                      'text-wb-ink-3'
                     }`}
                   >
                     {vid.date} · {vid.author}
@@ -151,10 +150,10 @@ export const LabVideosSection: React.FC = () => {
         </div>
 
         {/* Main Interactive Video Stage + Frame-by-Frame Inspector */}
-        <div className="mt-8 wb-panel overflow-hidden bg-white grid grid-cols-1 lg:grid-cols-[380px_1fr]">
+        <div className="mt-8 overflow-hidden grid grid-cols-1 gap-8 lg:grid-cols-[380px_1fr] lg:gap-12">
           {/* Left: Vertical 9:16 Video Player with Frame Step Controls */}
-          <div className="bg-[#0E1311] p-5 flex flex-col items-center justify-between border-b lg:border-b-0 lg:border-r border-wb-line">
-            <div className="relative w-full max-w-[310px] aspect-[9/16] rounded-[20px] overflow-hidden border border-white/15 shadow-2xl bg-black">
+          <div className="rounded-[20px] bg-[#14110d] p-5 flex flex-col items-center justify-between">
+            <div className="relative w-full max-w-[310px] aspect-[9/16] overflow-hidden rounded-[14px] bg-black">
               <video
                 ref={videoRef}
                 key={activeVideo.videoSrc}
@@ -182,7 +181,7 @@ export const LabVideosSection: React.FC = () => {
               {/* Top Overlay Badge */}
               <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
                 <span className="rounded-full bg-black/70 px-3 py-1 font-key text-[10.5px] font-bold text-white backdrop-blur">
-                  REEL · {activeVideo.reelCode}
+                  Reel · {activeVideo.reelCode}
                 </span>
                 <button
                   type="button"
@@ -233,12 +232,12 @@ export const LabVideosSection: React.FC = () => {
           </div>
 
           {/* Right: Frame-by-Frame Breakdown & Equipment Identified */}
-          <div className="p-6 sm:p-8 flex flex-col justify-between">
+          <div className="flex min-w-0 flex-col justify-between">
             <div>
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-wb-line pb-4">
                 <div>
-                  <span className="font-key text-[11px] font-bold uppercase text-wb-orange">
-                    ANÁLISE QUADRO A QUADRO DO VÍDEO
+                  <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                    Análise quadro a quadro do vídeo
                   </span>
                   <h3 className="mt-1 font-brand text-2xl font-bold text-wb-ink">
                     {activeVideo.title}
@@ -249,7 +248,7 @@ export const LabVideosSection: React.FC = () => {
                   href={activeVideo.instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-wb-line bg-wb-bench px-3.5 py-1.5 text-[12.5px] font-bold text-wb-ink hover:border-wb-orange hover:text-wb-orange"
+                  className="inline-flex min-h-[44px] items-center gap-1.5 text-[14px] font-semibold text-wb-ink underline decoration-wb-line underline-offset-4 hover:text-wb-orange hover:decoration-wb-orange"
                 >
                   <span>Abrir Reel no Instagram</span>
                   <ExternalLink className="h-3.5 w-3.5" />
@@ -263,7 +262,7 @@ export const LabVideosSection: React.FC = () => {
               {/* Interactive Frame Cards Grid */}
               <div className="mt-6">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="font-key text-[11.5px] font-bold uppercase text-wb-ink-3">
+                  <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-ink-3" />
                     Clique em qualquer quadro abaixo para pular para o momento exato no vídeo:
                   </span>
                 </div>
@@ -276,20 +275,20 @@ export const LabVideosSection: React.FC = () => {
                         key={hl.timeLabel + idx}
                         type="button"
                         onClick={() => handleSeekToHighlight(hl.seconds, idx)}
-                        className={`flex items-start gap-3 rounded-2xl border p-2.5 text-left transition-all ${
+                        className={`flex items-start gap-3 border-t-2 py-3 text-left transition-colors ${
                           isCurrent
-                            ? 'border-wb-orange bg-wb-orange/10 ring-2 ring-wb-orange/30'
-                            : 'border-wb-line bg-wb-bench/50 hover:bg-wb-bench'
+                            ? 'border-wb-orange'
+                            : 'border-wb-line hover:border-wb-ink'
                         }`}
                       >
                         <img
                           src={hl.thumbSrc}
                           alt={hl.title}
-                          className="h-16 w-16 rounded-xl object-cover shrink-0 border border-wb-line"
+                          className="h-16 w-16 rounded-lg object-cover shrink-0"
                         />
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
-                            <span className="rounded bg-wb-ink px-1.5 py-0.5 font-key text-[10px] font-bold text-white">
+                            <span className="font-key text-[12px] font-semibold text-wb-orange">
                               {hl.timeLabel}
                             </span>
                             <span className="truncate text-[13px] font-bold text-wb-ink">
@@ -309,7 +308,7 @@ export const LabVideosSection: React.FC = () => {
 
             {/* Bottom: Equipment & Tools Seen in this Video */}
             <div className="mt-7 pt-5 border-t border-wb-line">
-              <div className="flex items-center gap-2 font-key text-[11px] font-bold uppercase text-wb-green">
+              <div className="flex items-center gap-2 font-key text-[11px] font-bold text-wb-green">
                 <Wrench className="h-3.5 w-3.5" />
                 <span>Equipamentos e Bancadas Identificados neste Vídeo:</span>
               </div>

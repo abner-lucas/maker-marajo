@@ -380,7 +380,7 @@ export const EQUIPMENTS: EquipmentItem[] = [
     tagline:
       'Bancada real equipada com impressoras CoreXY fechadas ELEGOO Centauri Carbon, fatiamento em monitor curvo e Canetas 3D.',
     category: 'impressoras-3d',
-    badge: 'MANUFATURA ADITIVA · ELEGOO CENTAURI CARBON',
+    badge: 'Manufatura aditiva · Elegoo Centauri Carbon',
     accentColor: '#FF6B35',
     unitsAvailable: 6,
     status: 'Operacional',
@@ -457,7 +457,7 @@ export const EQUIPMENTS: EquipmentItem[] = [
     tagline:
       'Duas estações reais de corte e gravação a laser: Laser CO2 Industrial com mesa colmeia e Gravadora Laser Diodo CNC com régua milimetrada.',
     category: 'cortadora-laser-cnc',
-    badge: 'CORTE & GRAVAÇÃO CNC · CO2 + DIODO ÓPTICO',
+    badge: 'Corte & gravação CNC · CO2 + diodo óptico',
     accentColor: '#E5484D',
     unitsAvailable: 2,
     status: 'Operacional',
@@ -528,7 +528,7 @@ export const EQUIPMENTS: EquipmentItem[] = [
     tagline:
       'Digitalização tridimensional de objetos físicos e artefatos marajoaras para modelagem CAD e impressão 3D.',
     category: 'scanners-3d',
-    badge: 'DIGITALIZAÇÃO 3D · LUZ ESTRUTURADA',
+    badge: 'Digitalização 3D · Luz estruturada',
     accentColor: '#0092D6',
     unitsAvailable: 2,
     status: 'Operacional',
@@ -580,7 +580,7 @@ export const EQUIPMENTS: EquipmentItem[] = [
     tagline:
       'Arena própria de Futebol de Robôs (Robot Soccer) com 5 robôs impressos em 3D + LCD, kits educacionais e competições.',
     category: 'kits-robotica',
-    badge: 'ROBOT SOCCER & MECATRÔNICA · LABMAKER MARAJÓ',
+    badge: 'Robot Soccer & mecatrônica · LabMaker Marajó',
     accentColor: '#23963C',
     unitsAvailable: 12,
     status: 'Operacional',
@@ -651,7 +651,7 @@ export const EQUIPMENTS: EquipmentItem[] = [
     tagline:
       'Microcontroladores, displays LCD, sensores e instrumentação que dão vida aos robôs e projetos do LabMaker Marajó.',
     category: 'arduino-eletronica',
-    badge: 'ELETRÔNICA & EMBARCADOS · ARDUINO / ESP32',
+    badge: 'Eletrônica & embarcados · Arduino / ESP32',
     accentColor: '#70388E',
     unitsAvailable: 20,
     status: 'Operacional',

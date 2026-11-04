@@ -15,7 +15,7 @@ export const App: React.FC = () => {
     <BrowserRouter>
       <div className="min-h-screen flex flex-col bg-wb-canvas text-wb-ink">
         <Navbar />
-        <main className="flex-1">
+        <main id="conteudo" className="flex-1">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/equipamentos" element={<EquipmentsPage />} />

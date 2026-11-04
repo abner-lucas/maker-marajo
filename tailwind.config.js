@@ -1,15 +1,20 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       fontFamily: {
-        brand: ['"Unbounded"', '"Figtree"', 'sans-serif'],
-        ui: ['"Figtree"', 'system-ui', 'sans-serif'],
-        key: ['"JetBrains Mono"', 'monospace'],
+        // Títulos: grotesca de traço editorial, menos "arredondada" que a anterior
+        brand: ['"Familjen Grotesk"', '"Hanken Grotesk Variable"', 'system-ui', 'sans-serif'],
+        // Texto corrido e interface
+        ui: ['"Hanken Grotesk Variable"', 'system-ui', 'sans-serif'],
+        // Rótulos e números: mesma família do texto, com algarismos tabulares (sem monoespaçada)
+        key: ['"Hanken Grotesk Variable"', 'system-ui', 'sans-serif'],
+        // Acento editorial em itálico
+        serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+      },
+      spacing: {
+        13: '3.25rem',
       },
       colors: {
         wb: {
@@ -28,13 +33,12 @@ export default {
           yellow: 'var(--wb-yellow)',
           purple: 'var(--wb-purple)',
           teal: 'var(--wb-teal)',
-        }
+        },
       },
       transitionTimingFunction: {
-        'out-soft': 'cubic-bezier(0.4, 0, 0.2, 1)',
-      }
+        'out-soft': 'cubic-bezier(0.16, 1, 0.3, 1)',
+      },
     },
   },
   plugins: [],
 };
-

@@ -120,15 +120,13 @@ export const BookingPage: React.FC = () => {
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="wb-key text-wb-orange font-bold">
-                RESERVA DE BANCADA & MÁQUINAS · INTEGRAÇÃO GOOGLE AGENDA
-              </span>
+              <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />Reserva de bancada e máquinas · Google Agenda</span>
               <h1
                 className="mt-4 font-brand font-bold text-wb-ink"
                 style={{
                   fontSize: 'clamp(32px, 4.2vw, 54px)',
                   lineHeight: 1.04,
-                  letterSpacing: '-0.045em',
+                  letterSpacing: '-0.028em',
                 }}
               >
                 <WordRise text="Agendamento no Laboratório IF MAKER." />
@@ -399,11 +397,11 @@ export const BookingPage: React.FC = () => {
             <div className="wb-panel overflow-hidden">
               <div className="bg-wb-ink text-white p-5">
                 <div className="flex items-center justify-between">
-                  <span className="font-key text-[11px] uppercase tracking-wider text-wb-orange font-bold">
-                    TICKET DE RESERVA · GOOGLE AGENDA
+                  <span className="font-key text-[11px] text-wb-orange font-bold">
+                    Ticket de reserva · Google Agenda
                   </span>
                   <span className="wb-key bg-white/15 text-white border-white/20 text-[10px]">
-                    IFPA BREVES
+                    IFPA Breves
                   </span>
                 </div>
                 <h2 className="mt-2 font-brand text-xl font-bold">{currentEq.name}</h2>
