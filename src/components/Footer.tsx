@@ -14,7 +14,7 @@ export const Footer: React.FC = () => {
           <p className="mt-5 max-w-[32em] text-[14.5px] leading-[1.65] text-wb-ink-2">
             Quinto <strong>Laboratório IF MAKER</strong> entregue pelo Instituto Federal do Pará em
             março de 2026. Um espaço aberto de prototipagem, robótica, ensino, pesquisa e extensão
-            no coração do Marajó para fortalecer a cultura do <em>“aprender fazendo”</em>.
+            no coração do Marajó para fortalecer a cultura do <strong className="font-semibold text-wb-ink">“aprender fazendo”</strong>.
           </p>
           <div className="mt-5 space-y-2 text-[13.5px] text-wb-ink-2">
             <p className="flex items-center gap-2">

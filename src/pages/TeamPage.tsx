@@ -33,7 +33,7 @@ export const TeamPage: React.FC = () => {
           <p className="mt-4 max-w-[42em] text-[17px] leading-relaxed text-wb-ink-2">
             Uma equipe multidisciplinar formada por coordenadores, professores pesquisadores,
             técnicos de laboratório e estudantes monitores dedicados a fortalecer a cultura do{' '}
-            <em>“aprender fazendo”</em> no arquipélago do Marajó.
+            <strong className="font-semibold text-wb-ink">“aprender fazendo”</strong> no arquipélago do Marajó.
           </p>
         </div>
       </section>

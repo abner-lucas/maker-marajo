@@ -287,7 +287,7 @@ export const ProjectsPage: React.FC = () => {
           onClick={() => setSelectedProject(null)}
         >
           <div
-            className="wb-pop relative max-h-[90vh] w-[min(900px,95vw)] overflow-y-auto border-t border-wb-line py-6 sm:py-8"
+            className="wb-modal wb-pop relative max-h-[90vh] w-[min(920px,95vw)] overflow-y-auto p-6 sm:p-9"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -344,7 +344,7 @@ export const ProjectsPage: React.FC = () => {
                   </div>
                 )}
 
-                <div className="border-t border-wb-line py-4">
+                <div className="rounded-xl border border-wb-line bg-wb-bench/70 p-4">
                   <h3 className="font-key text-[11px] font-bold text-wb-ink-3">
                     Resumo Técnico
                   </h3>
@@ -353,7 +353,7 @@ export const ProjectsPage: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="border-t border-wb-line py-4">
+                <div className="rounded-xl border border-wb-line bg-wb-bench/70 p-4">
                   <h3 className="font-key text-[11px] font-bold text-wb-green">
                     Impacto no Campus Breves / Marajó
                   </h3>
@@ -364,7 +364,7 @@ export const ProjectsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-5 rounded-2xl border border-wb-line p-4 text-[13.5px] space-y-1.5">
+            <div className="mt-5 rounded-xl border border-wb-line bg-white p-4 text-[13.5px] space-y-1.5">
               <p>
                 <strong>Equipe / Autores:</strong> {selectedProject.authors.join(', ')}
               </p>

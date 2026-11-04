@@ -286,7 +286,7 @@ export const ScrollytellingSection: React.FC = () => {
                       x="340"
                       y="354"
                       textAnchor="middle"
-                      fontFamily="JetBrains Mono"
+                      fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
                       fontSize="11"
                       fontWeight="700"
                       fill="#141A17"
@@ -331,7 +331,7 @@ export const ScrollytellingSection: React.FC = () => {
                         x="340"
                         y="238"
                         textAnchor="middle"
-                        fontFamily="JetBrains Mono"
+                        fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
                         fontSize="10"
                         fontWeight="700"
                         fill="#FFF"
@@ -370,7 +370,7 @@ export const ScrollytellingSection: React.FC = () => {
                         x="229"
                         y="203"
                         textAnchor="middle"
-                        fontFamily="JetBrains Mono"
+                        fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
                         fontSize="9"
                         fontWeight="700"
                         fill="#FFF"
@@ -381,7 +381,7 @@ export const ScrollytellingSection: React.FC = () => {
                         x="451"
                         y="203"
                         textAnchor="middle"
-                        fontFamily="JetBrains Mono"
+                        fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
                         fontSize="9"
                         fontWeight="700"
                         fill="#FFF"
@@ -428,7 +428,7 @@ export const ScrollytellingSection: React.FC = () => {
                         x="340"
                         y="167"
                         textAnchor="middle"
-                        fontFamily="JetBrains Mono"
+                        fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
                         fontSize="10"
                         fontWeight="700"
                         fill="#FFF"
@@ -458,7 +458,7 @@ export const ScrollytellingSection: React.FC = () => {
                         x="318"
                         y="134"
                         textAnchor="middle"
-                        fontFamily="JetBrains Mono"
+                        fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
                         fontSize="10"
                         fontWeight="700"
                         fill="#FFF"
@@ -564,7 +564,7 @@ export const ScrollytellingSection: React.FC = () => {
             <div className="pointer-events-auto absolute left-4 right-4 bottom-20 sm:left-8 sm:right-auto top-auto lg:top-[96px] lg:bottom-auto lg:w-[390px]">
               {/* STEP 01 CARD: CAD 3D & LASER */}
               {activeStepIndex === 0 && (
-                <div className="rounded-[18px] bg-wb-canvas p-5 sm:p-6">
+                <div className="wb-modal p-5 sm:p-6">
                   <div className="flex items-center justify-between">
                     <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
                       01 / Prototipagem 3D & CNC
@@ -612,7 +612,7 @@ export const ScrollytellingSection: React.FC = () => {
 
               {/* STEP 02 CARD: ARDUINO & SENSORS WIRING */}
               {activeStepIndex === 1 && (
-                <div className="rounded-[18px] bg-wb-canvas p-5 sm:p-6">
+                <div className="wb-modal p-5 sm:p-6">
                   <div className="flex items-center justify-between">
                     <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-blue" />
                       02 / Eletrônica & Arduino
@@ -644,7 +644,7 @@ export const ScrollytellingSection: React.FC = () => {
                         x="52"
                         y="72"
                         textAnchor="middle"
-                        fontFamily="JetBrains Mono"
+                        fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
                         fontSize="10"
                         fontWeight="700"
                         fill="#FFF"
@@ -666,7 +666,7 @@ export const ScrollytellingSection: React.FC = () => {
                         x="327"
                         y="72"
                         textAnchor="middle"
-                        fontFamily="JetBrains Mono"
+                        fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
                         fontSize="10"
                         fontWeight="700"
                         fill="#FFF"
@@ -711,7 +711,7 @@ export const ScrollytellingSection: React.FC = () => {
 
               {/* STEP 03 CARD: CODE & SIMULATION */}
               {activeStepIndex === 2 && (
-                <div className="rounded-[18px] bg-wb-canvas p-5 sm:p-6">
+                <div className="wb-modal p-5 sm:p-6">
                   <div className="flex items-center justify-between">
                     <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-purple" />
                       03 / Robótica & código C++

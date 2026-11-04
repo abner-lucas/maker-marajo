@@ -677,7 +677,7 @@ export const Hero3DWorkbench: React.FC = () => {
           onClick={() => setTourModalOpen(false)}
         >
           <div
-            className="wb-pop relative max-h-[90vh] w-[min(980px,95vw)] overflow-y-auto border-t border-wb-line py-6 sm:py-8"
+            className="wb-modal wb-pop relative max-h-[90vh] w-[min(960px,95vw)] overflow-y-auto p-6 sm:p-9"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -718,8 +718,8 @@ export const Hero3DWorkbench: React.FC = () => {
                   canetas 3D, arena de <strong>Robot Soccer</strong> e bancadas de eletrônica.
                 </p>
 
-                <div className="mt-4 space-y-2.5">
-                  <div className="border-t border-wb-line py-3">
+                <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="rounded-xl border border-wb-line bg-wb-bench/70 p-4">
                     <p className="text-[13.5px] font-bold text-wb-ink">
                       🎯 Objetivo Institucional
                     </p>
@@ -730,7 +730,7 @@ export const Hero3DWorkbench: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="border-t border-wb-line py-3">
+                  <div className="rounded-xl border border-wb-line bg-wb-bench/70 p-4">
                     <p className="text-[13.5px] font-bold text-wb-ink">
                       🛠️ Tríade Ensino, Pesquisa e Extensão
                     </p>

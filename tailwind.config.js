@@ -4,14 +4,10 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        // Títulos: grotesca de traço editorial, menos "arredondada" que a anterior
-        brand: ['"Familjen Grotesk"', '"Hanken Grotesk Variable"', 'system-ui', 'sans-serif'],
-        // Texto corrido e interface
-        ui: ['"Hanken Grotesk Variable"', 'system-ui', 'sans-serif'],
-        // Rótulos e números: mesma família do texto, com algarismos tabulares (sem monoespaçada)
-        key: ['"Hanken Grotesk Variable"', 'system-ui', 'sans-serif'],
-        // Acento editorial em itálico
-        serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+        // Sistema tipográfico 100% sem serifa (Hanken Grotesk Variable)
+        brand: ['"Hanken Grotesk Variable"', 'system-ui', '-apple-system', 'sans-serif'],
+        ui: ['"Hanken Grotesk Variable"', 'system-ui', '-apple-system', 'sans-serif'],
+        key: ['"Hanken Grotesk Variable"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       spacing: {
         13: '3.25rem',

@@ -170,7 +170,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
                     x="205"
                     y="134"
                     textAnchor="middle"
-                    fontFamily="JetBrains Mono"
+                    fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
                     fontSize="11"
                     fontWeight="700"
                     fill="#FFF"

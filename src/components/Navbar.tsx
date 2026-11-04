@@ -133,35 +133,41 @@ export const Navbar: React.FC = () => {
               {eqOpen && (
                 <div
                   id="menu-equipamentos"
-                  className="wb-pop absolute -left-6 top-full z-50 w-[380px] pt-3"
+                  className="wb-pop absolute -left-6 top-full z-50 w-[390px] pt-3"
                 >
-                  <div className="rounded-2xl bg-wb-ink p-3 text-white">
+                  <div className="wb-modal p-3">
                     <ul>
                       {EQUIPMENTS.map((eq, i) => (
                         <li key={eq.id}>
                           <Link
                             to={`/equipamentos/${eq.slug}`}
-                            className="group flex items-baseline gap-4 rounded-xl px-3 py-2.5 transition-colors hover:bg-white/10"
+                            className="group flex items-baseline gap-3.5 rounded-xl px-3 py-2.5 transition-colors hover:bg-wb-bench"
                           >
-                            <span className="font-key text-[12px] text-white/45">0{i + 1}</span>
+                            <span
+                              className="h-2.5 w-2.5 shrink-0 self-center rounded-full"
+                              style={{ backgroundColor: eq.accentColor }}
+                            />
                             <span className="min-w-0 flex-1">
-                              <span className="block font-brand text-[17px] font-semibold leading-tight">
+                              <span className="block font-brand text-[16px] font-bold leading-tight text-wb-ink group-hover:text-wb-orange transition-colors">
                                 {eq.shortName}
                               </span>
-                              <span className="mt-0.5 block truncate text-[13px] text-white/60">
+                              <span className="mt-0.5 block truncate text-[12.5px] text-wb-ink-2">
                                 {eq.tagline}
                               </span>
                             </span>
-                            <ArrowUpRight className="h-4 w-4 shrink-0 self-center text-white/40 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-wb-orange" />
+                            <span className="font-key text-[11px] font-semibold text-wb-ink-3 shrink-0 self-center">
+                              0{i + 1}
+                            </span>
+                            <ArrowUpRight className="h-4 w-4 shrink-0 self-center text-wb-ink-3 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-wb-orange" />
                           </Link>
                         </li>
                       ))}
                     </ul>
                     <Link
                       to="/equipamentos"
-                      className="mt-1 flex items-center justify-between border-t border-white/15 px-3 pb-1 pt-3 text-[14px] font-medium text-white/80 hover:text-white"
+                      className="mt-1 flex items-center justify-between border-t border-wb-line px-3 pb-1 pt-3 text-[13.5px] font-bold text-wb-orange hover:text-wb-ink transition-colors"
                     >
-                      Ver o parque completo
+                      Ver o parque tecnológico completo
                       <ArrowUpRight className="h-4 w-4" />
                     </Link>
                   </div>
