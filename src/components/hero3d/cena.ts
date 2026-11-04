@@ -1,4 +1,13 @@
 import * as THREE from 'three';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import {
+  CHAO,
+  criarMateriais,
+  modeloBraco,
+  modeloImpressora,
+  modeloKitArduino,
+  modeloRobo,
+} from './modelos';
 
 /*
  * Cena 3D do hero (three.js). Fica num módulo separado para ser carregada sob demanda:
@@ -52,79 +61,96 @@ export function montarCena(
   };
   updateCameraLayout();
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const leve = container.clientWidth < 900 || (navigator.hardwareConcurrency ?? 8) <= 4;
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, leve ? 1.5 : 2));
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
   container.appendChild(renderer.domElement);
 
-  // Studio Workbench Lighting
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.35);
-  scene.add(ambientLight);
+  // Iluminação de estúdio: ambiente HDR procedural (reflexos nos metais) + luz principal com sombra
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const ambiente = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environment = ambiente;
+  scene.environmentIntensity = 0.55;
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 1.8);
-  keyLight.position.set(6, 12, 8);
+  const keyLight = new THREE.DirectionalLight(0xfff1e0, 2.4);
+  keyLight.position.set(4.5, 8, 5.5);
   keyLight.castShadow = true;
-  keyLight.shadow.mapSize.width = 1024;
-  keyLight.shadow.mapSize.height = 1024;
-  scene.add(keyLight);
+  keyLight.shadow.mapSize.set(leve ? 1024 : 2048, leve ? 1024 : 2048);
+  keyLight.shadow.camera.left = -3.2;
+  keyLight.shadow.camera.right = 3.2;
+  keyLight.shadow.camera.top = 3.2;
+  keyLight.shadow.camera.bottom = -3.2;
+  keyLight.shadow.camera.near = 1;
+  keyLight.shadow.camera.far = 20;
+  keyLight.shadow.bias = -0.0004;
+  keyLight.shadow.normalBias = 0.02;
+  keyLight.shadow.radius = 5;
+  scene.add(keyLight, keyLight.target);
 
-  const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.85);
-  fillLight.position.set(-7, 5, -5);
-  scene.add(fillLight);
+  const recorte = new THREE.DirectionalLight(0xcfe3ff, 0.9);
+  recorte.position.set(-6, 3.5, -5);
+  scene.add(recorte);
 
-  const rimLight = new THREE.DirectionalLight(0xffedd5, 0.7);
-  rimLight.position.set(0, -4, 6);
-  scene.add(rimLight);
-
-  // Shadow catcher ground disc
-  const shadowGeo = new THREE.CircleGeometry(3.8, 48);
-  const shadowMat = new THREE.MeshBasicMaterial({
-    color: 0x141a17,
-    transparent: true,
-    opacity: 0.08,
-  });
-  const shadowDisc = new THREE.Mesh(shadowGeo, shadowMat);
-  shadowDisc.rotation.x = -Math.PI / 2;
-  shadowDisc.position.y = -1.25;
+  // Chão: recebe a sombra real + sombra de contato suave logo abaixo da peça
+  const shadowDisc = new THREE.Group();
+  const chaoSombra = new THREE.Mesh(
+    new THREE.PlaneGeometry(14, 14),
+    new THREE.ShadowMaterial({ color: 0x2a1c10, opacity: 0.2 })
+  );
+  chaoSombra.rotation.x = -Math.PI / 2;
+  chaoSombra.receiveShadow = true;
+  const contato = document.createElement('canvas');
+  contato.width = contato.height = 128;
+  const gc = contato.getContext('2d')!;
+  const grad = gc.createRadialGradient(64, 64, 4, 64, 64, 64);
+  grad.addColorStop(0, 'rgba(30,20,10,0.55)');
+  grad.addColorStop(1, 'rgba(30,20,10,0)');
+  gc.fillStyle = grad;
+  gc.fillRect(0, 0, 128, 128);
+  const sombraContato = new THREE.Mesh(
+    new THREE.PlaneGeometry(3.6, 2.8),
+    new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(contato), transparent: true, depthWrite: false })
+  );
+  sombraContato.rotation.x = -Math.PI / 2;
+  sombraContato.position.y = 0.002;
+  shadowDisc.add(chaoSombra, sombraContato);
   scene.add(shadowDisc);
 
   // Root group positioned on the right side for desktop, centered lower on mobile
   const rootGroup = new THREE.Group();
   scene.add(rootGroup);
 
+  // Escala por modelo: peças pequenas (braço, kit) aparecem maiores; o chão acompanha
+  let escala = 1;
   const positionRootForViewport = () => {
     if (container.clientWidth < 900) {
       rootGroup.position.set(0, -0.35, 0);
-      shadowDisc.position.set(0, -1.55, 0);
+      shadowDisc.position.set(0, -0.35 + CHAO * escala, 0);
     } else {
       rootGroup.position.set(1.55, 0.1, 0);
-      shadowDisc.position.set(1.55, -1.25, 0);
+      shadowDisc.position.set(1.55, 0.1 + CHAO * escala, 0);
     }
+    keyLight.target.position.copy(rootGroup.position);
   };
   positionRootForViewport();
 
-  // Shared Materials (IF MAKER palette)
-  const mats = {
-    orange: new THREE.MeshStandardMaterial({ color: 0xff6b35, roughness: 0.32, metalness: 0.1 }),
-    green: new THREE.MeshStandardMaterial({ color: 0x23963c, roughness: 0.35, metalness: 0.12 }),
-    blue: new THREE.MeshStandardMaterial({ color: 0x0092d6, roughness: 0.32, metalness: 0.15 }),
-    purple: new THREE.MeshStandardMaterial({ color: 0x70388e, roughness: 0.35, metalness: 0.15 }),
-    red: new THREE.MeshStandardMaterial({ color: 0xdc1f26, roughness: 0.32, metalness: 0.1 }),
-    yellow: new THREE.MeshStandardMaterial({ color: 0xf5c518, roughness: 0.3, metalness: 0.1 }),
-    dark: new THREE.MeshStandardMaterial({ color: 0x1b2420, roughness: 0.45, metalness: 0.3 }),
-    silver: new THREE.MeshStandardMaterial({ color: 0xd4dce0, roughness: 0.25, metalness: 0.65 }),
-    mdf: new THREE.MeshStandardMaterial({ color: 0xd6a77a, roughness: 0.65, metalness: 0.05 }),
-    pcb: new THREE.MeshStandardMaterial({ color: 0x0f6b58, roughness: 0.35, metalness: 0.2 }),
-  };
+  const mats = criarMateriais();
 
   let parts: PartItem[] = [];
   let currentPhase: PhaseType = 'assembled';
   let rebuildTimer = 0;
 
   const clearParts = () => {
-    parts.forEach((p) => rootGroup.remove(p.mesh));
+    parts.forEach((p) => {
+      rootGroup.remove(p.mesh);
+      // geometrias são recriadas a cada troca de modelo; materiais são compartilhados
+      p.mesh.traverse((o) => (o as THREE.Mesh).geometry?.dispose());
+    });
     parts = [];
   };
 
@@ -148,6 +174,8 @@ export function montarCena(
     );
     if (dir.lengthSq() < 0.1) dir.set(0.5, 1, 0.5);
     dir.normalize().multiplyScalar(1.5 + Math.random() * 1.1);
+    // explode para cima e para os lados, nunca para dentro do chão
+    if (dir.y < 0.35) dir.y = 0.35 + Math.random() * 0.5;
 
     parts.push({
       mesh,
@@ -168,161 +196,16 @@ export function montarCena(
     currentPhase = 'assembled';
     setPhase('assembled');
 
-    if (model === 'rover') {
-      // 1. Main MDF/3D Printed Chassis Plate
-      const chassis = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.22, 1.65), mats.orange);
-      addPart(chassis, 0, -0.15, 0);
-
-      // 2. Upper Deck Acrylic Plate
-      const deck = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.12, 1.45), mats.dark);
-      addPart(deck, -0.1, 0.32, 0);
-
-      // 3. Arduino UNO Board on top
-      const arduino = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.1, 0.72), mats.blue);
-      addPart(arduino, -0.25, 0.44, 0);
-
-      // 4. Battery Pack
-      const battery = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.28, 0.9), mats.green);
-      addPart(battery, 0.5, 0.12, 0);
-
-      // 5. Four Wheels with tires + yellow hubs
-      const wheelPositions = [
-        [-0.85, -0.32, 0.95],
-        [0.85, -0.32, 0.95],
-        [-0.85, -0.32, -0.95],
-        [0.85, -0.32, -0.95],
-      ];
-      wheelPositions.forEach(([wx, wy, wz]) => {
-        const wheelGroup = new THREE.Group();
-        const tire = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.46, 0.46, 0.26, 24),
-          mats.dark
-        );
-        tire.rotation.x = Math.PI / 2;
-        const hub = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.24, 0.24, 0.28, 16),
-          mats.yellow
-        );
-        hub.rotation.x = Math.PI / 2;
-        wheelGroup.add(tire, hub);
-        addPart(wheelGroup, wx, wy, wz);
-      });
-
-      // 6. Ultrasonic Sensor HC-SR04 Head
-      const sensorGroup = new THREE.Group();
-      const sBoard = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.36, 0.78), mats.blue);
-      const eyeL = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.2, 16), mats.silver);
-      eyeL.rotation.z = Math.PI / 2;
-      eyeL.position.set(0.12, 0, 0.22);
-      const eyeR = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.2, 16), mats.silver);
-      eyeR.rotation.z = Math.PI / 2;
-      eyeR.position.set(0.12, 0, -0.22);
-      sensorGroup.add(sBoard, eyeL, eyeR);
-      addPart(sensorGroup, 1.15, 0.25, 0);
-
-      // 7. Robotic Mast / Antenna
-      const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.75, 12), mats.silver);
-      addPart(mast, -0.75, 0.72, -0.45);
-      const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 16), mats.red);
-      addPart(beacon, -0.75, 1.15, -0.45);
-    } else if (model === 'printer3d') {
-      // CoreXY 3D Printer Frame
-      const base = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.25, 2.1), mats.dark);
-      addPart(base, 0, -0.85, 0);
-
-      // Heated Build Plate
-      const bed = new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.08, 1.65), mats.silver);
-      addPart(bed, 0, -0.55, 0);
-
-      // 4 Pillars
-      const pillarCoords = [
-        [-1.0, 0.2, -0.9],
-        [1.0, 0.2, -0.9],
-        [-1.0, 0.2, 0.9],
-        [1.0, 0.2, 0.9],
-      ];
-      pillarCoords.forEach(([px, py, pz]) => {
-        const p = new THREE.Mesh(new THREE.BoxGeometry(0.14, 1.9, 0.14), mats.dark);
-        addPart(p, px, py, pz);
-      });
-
-      // Top Gantry X-Beam
-      const gantry = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.15, 0.2), mats.green);
-      addPart(gantry, 0, 0.75, 0.1);
-
-      // Extruder Print Head
-      const head = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.48, 0.38), mats.orange);
-      addPart(head, 0.15, 0.62, 0.22);
-
-      // 3D Printed Prototype Object on Bed (Gear/Vase)
-      const printObj = new THREE.Mesh(
-        new THREE.TorusKnotGeometry(0.32, 0.1, 64, 12),
-        mats.orange
-      );
-      addPart(printObj, 0, -0.1, 0);
-
-      // Filament Spool Holder on Side
-      const spool = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.16, 24), mats.yellow);
-      spool.rotation.z = Math.PI / 2;
-      addPart(spool, -1.22, 0.45, -0.2);
-    } else if (model === 'arm') {
-      // 6-DOF Robotic Arm
-      const basePedestal = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.75, 0.9, 0.3, 28),
-        mats.dark
-      );
-      addPart(basePedestal, 0, -0.8, 0);
-
-      const turret = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.55, 0.35, 24), mats.orange);
-      addPart(turret, 0, -0.48, 0);
-
-      const lowerArm = new THREE.Mesh(new THREE.BoxGeometry(0.32, 1.15, 0.28), mats.green);
-      addPart(lowerArm, -0.15, 0.15, 0, 0, 0, 0.28);
-
-      const elbowJoint = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.24, 0.24, 0.38, 20),
-        mats.purple
-      );
-      elbowJoint.rotation.x = Math.PI / 2;
-      addPart(elbowJoint, -0.32, 0.68, 0);
-
-      const foreArm = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.24, 0.24), mats.blue);
-      addPart(foreArm, 0.22, 0.85, 0, 0, 0, 0.22);
-
-      const wrist = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 16), mats.yellow);
-      addPart(wrist, 0.78, 0.98, 0);
-
-      const clawL = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.08, 0.08), mats.red);
-      addPart(clawL, 1.05, 1.08, 0.12, 0, 0, -0.2);
-      const clawR = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.08, 0.08), mats.red);
-      addPart(clawR, 1.05, 0.88, -0.12, 0, 0, 0.2);
-    } else {
-      // Arduino + Breadboard + Sensors Kit
-      const pcbBoard = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.16, 1.75), mats.pcb);
-      addPart(pcbBoard, 0, -0.35, 0);
-
-      const breadboard = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.15, 0.85), mats.silver);
-      addPart(breadboard, 0.35, -0.18, 0.25);
-
-      const mcuChip = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.14, 0.32), mats.dark);
-      addPart(mcuChip, -0.55, -0.18, -0.25);
-
-      const usbPort = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.24, 0.32), mats.silver);
-      addPart(usbPort, -1.08, -0.15, -0.35);
-
-      const oledDisplay = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.42, 0.08), mats.blue);
-      addPart(oledDisplay, 0.35, 0.22, -0.45, -0.25, 0, 0);
-
-      const servoBlock = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.45, 0.28), mats.orange);
-      addPart(servoBlock, -0.55, 0.12, 0.45);
-
-      const led1 = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 16), mats.red);
-      addPart(led1, 0.1, 0.05, 0.35);
-      const led2 = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 16), mats.green);
-      addPart(led2, 0.4, 0.05, 0.35);
-      const led3 = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 16), mats.yellow);
-      addPart(led3, 0.7, 0.05, 0.35);
-    }
+    escala = { rover: 1.3, printer3d: 1, arm: 1.3, arduino: 1.25 }[model];
+    rootGroup.scale.setScalar(escala);
+    positionRootForViewport();
+    const montar = {
+      rover: modeloRobo,
+      printer3d: modeloImpressora,
+      arm: modeloBraco,
+      arduino: modeloKitArduino,
+    }[model];
+    montar(mats).forEach(({ obj, pos, rot = [0, 0, 0] }) => addPart(obj, pos[0], pos[1], pos[2], rot[0], rot[1], rot[2]));
   };
 
   buildModel('rover');
@@ -425,8 +308,8 @@ export function montarCena(
     rootGroup.rotation.x = currentPitch;
 
     if (currentPhase === 'assembled') {
-      rootGroup.position.y =
-        (container.clientWidth < 900 ? -0.35 : 0.1) + Math.sin(elapsed * 1.8) * 0.06;
+      // apoiado no chão: sem "flutuar" sobre a própria sombra
+      rootGroup.position.y = container.clientWidth < 900 ? -0.35 : 0.1;
     } else if (currentPhase === 'floating') {
       parts.forEach((p, idx) => {
         p.mesh.position.addScaledVector(p.vel, dt);
@@ -476,6 +359,8 @@ export function montarCena(
     window.removeEventListener('pointermove', onPointerMove);
     window.removeEventListener('pointerup', onPointerUp);
     window.removeEventListener('resize', onResize);
+    pmrem.dispose();
+    ambiente.dispose();
     renderer.dispose();
     if (domEl.parentNode) domEl.parentNode.removeChild(domEl);
   };

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import {
   Box,
   Check,
@@ -14,6 +14,9 @@ import {
   Sparkles,
   Zap,
 } from 'lucide-react';
+
+// Remotion (Player + composição) só é baixado quando a seção monta
+const PalcoMontagem = lazy(() => import('./remotion/PalcoMontagem'));
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const rangeProgress = (v: number, a: number, b: number) => clamp01((v - a) / (b - a));
@@ -199,34 +202,32 @@ export const ScrollytellingSection: React.FC = () => {
 
           {/* === LAYER 2: INTERACTIVE WORKBENCH STAGE (Right / Center) === */}
           <div
-            className="absolute inset-0 z-10 flex items-center justify-center lg:pl-[380px] xl:pl-[420px] pt-[76px] pb-[70px] px-4"
+            className="absolute inset-0 z-10 flex items-start justify-center pt-[84px] lg:items-center lg:pl-[380px] xl:pl-[420px] lg:pt-[76px] pb-[70px] px-4"
             style={{
               opacity: hudFadeIn,
               transform: `scale(${0.95 + hudFadeIn * 0.05})`,
             }}
           >
-            <div className="relative w-full max-w-[760px] aspect-[16/11] border-t border-wb-line overflow-hidden flex flex-col">
+            <div className="relative w-full max-w-[820px] aspect-[16/11] overflow-hidden rounded-[22px] wb-grid-bg flex flex-col shadow-[0_40px_80px_-40px_rgba(42,28,16,0.35)]">
               {/* Workbench Stage Header Bar */}
-              <div className="flex items-center justify-between border-b border-wb-line bg-wb-bench/80 px-4 py-2.5">
-                <div className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-full bg-wb-red" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-wb-yellow" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-wb-green" />
-                  <span className="ml-2 font-key text-[11.5px] font-bold text-wb-ink">
+              <div className="relative z-10 flex items-center justify-between px-5 py-3.5">
+                <div className="flex min-w-0 items-center gap-2">
+                  <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
+                  <span className="ml-1 min-w-0 truncate font-key text-[11.5px] font-semibold tracking-[0.04em] text-wb-ink-2">
                     BANCADA_DIGITAL_IFMAKER_BREVES.CAD
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="wb-key text-[11px]">180 mm × 125 mm</span>
+                  <span className="hidden sm:inline"><span className="wb-key text-[11px]">180 mm × 125 mm</span></span>
                   <span
-                    className={`rounded-full px-2.5 py-0.5 font-key text-[11px] font-bold ${
+                    className={`inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-3 py-1 font-key text-[11px] font-semibold tracking-[0.03em] text-white transition-colors duration-500 ${
                       isSimulating
-                        ? 'bg-wb-green text-white animate-pulse'
+                        ? 'bg-wb-green'
                         : activeStepIndex === 0
-                        ? 'bg-wb-orange/15 text-wb-orange'
+                        ? 'bg-wb-ink'
                         : activeStepIndex === 1
-                        ? 'bg-wb-blue/15 text-wb-blue'
-                        : 'bg-wb-purple/15 text-wb-purple'
+                        ? 'bg-[#0b5c97]'
+                        : 'bg-[#4b2a63]'
                     }`}
                   >
                     {isSimulating
@@ -241,291 +242,20 @@ export const ScrollytellingSection: React.FC = () => {
               </div>
 
               {/* Interactive SVG Assembly Canvas */}
-              <div className="relative flex-1 wb-grid-bg flex items-center justify-center p-4 overflow-hidden">
-                {/* Coordinate Axes */}
-                <svg
-                  viewBox="0 0 680 400"
-                  className="w-full h-full max-h-[420px] select-none"
+              <div className="relative flex-1 flex items-center justify-center overflow-hidden">
+                {/* Palco renderizado com Remotion; o quadro segue a rolagem */}
+                <div
+                  role="img"
                   aria-label="Visualização interativa da montagem do protótipo no IF MAKER"
+                  className="absolute inset-0"
                 >
-                  <defs>
-                    <filter id="partShadow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feDropShadow dx="0" dy="8" stdDeviation="6" floodOpacity="0.16" />
-                    </filter>
-                  </defs>
-
-                  {/* Green CAD Axis Lines */}
-                  <line
-                    x1="40"
-                    y1="320"
-                    x2="640"
-                    y2="320"
-                    stroke="#2FB36B"
-                    strokeWidth="1.5"
-                    strokeDasharray="5 5"
-                    opacity="0.65"
-                  />
-                  <line
-                    x1="340"
-                    y1="30"
-                    x2="340"
-                    y2="370"
-                    stroke="#2FB36B"
-                    strokeWidth="1.5"
-                    strokeDasharray="5 5"
-                    opacity="0.45"
-                  />
-
-                  {/* Dimension Callouts (180 mm / 125 mm) */}
-                  <g opacity={0.85}>
-                    <line x1="170" y1="350" x2="510" y2="350" stroke="#141A17" strokeWidth="1.5" />
-                    <line x1="170" y1="344" x2="170" y2="356" stroke="#141A17" strokeWidth="1.5" />
-                    <line x1="510" y1="344" x2="510" y2="356" stroke="#141A17" strokeWidth="1.5" />
-                    <rect x="305" y="339" width="70" height="22" rx="6" fill="#FFFFFF" stroke="#E1E7E3" />
-                    <text
-                      x="340"
-                      y="354"
-                      textAnchor="middle"
-                      fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
-                      fontSize="11"
-                      fontWeight="700"
-                      fill="#141A17"
-                    >
-                      180 mm
-                    </text>
-                  </g>
-
-                  {/* Master Robot Assembly Group (moves when simulating in Step 3!) */}
-                  <g
-                    transform={`translate(${
-                      isSimulating ? Math.sin(pDrive * Math.PI * 4) * 38 : 0
-                    }, 0)`}
-                  >
-                    {/* Ground Shadow */}
-                    <ellipse
-                      cx="340"
-                      cy="312"
-                      rx={145 * Math.max(0.3, pChassis)}
-                      ry="14"
-                      fill="rgba(20,26,23,0.12)"
-                    />
-
-                    {/* PART 1: Laser-Cut MDF Chassis Plate */}
-                    <g
-                      opacity={pChassis}
-                      transform={`translate(0, ${(1 - pChassis) * -65})`}
-                      filter="url(#partShadow)"
-                    >
-                      <rect
-                        x="175"
-                        y="215"
-                        width="330"
-                        height="34"
-                        rx="10"
-                        fill="#D97742"
-                        stroke="#141A17"
-                        strokeWidth="2.5"
-                      />
-                      <rect x="175" y="215" width="330" height="10" rx="5" fill="#F0945E" />
-                      <text
-                        x="340"
-                        y="238"
-                        textAnchor="middle"
-                        fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
-                        fontSize="10"
-                        fontWeight="700"
-                        fill="#FFF"
-                      >
-                        CHASSI MDF CORTE LASER CNC · 6MM
-                      </text>
-                    </g>
-
-                    {/* PART 2: 3D Printed Orange Brackets & Motor Mounts */}
-                    <g
-                      opacity={pMounts}
-                      transform={`translate(0, ${(1 - pMounts) * -55})`}
-                      filter="url(#partShadow)"
-                    >
-                      <rect
-                        x="195"
-                        y="182"
-                        width="68"
-                        height="35"
-                        rx="7"
-                        fill="#FF6B35"
-                        stroke="#141A17"
-                        strokeWidth="2"
-                      />
-                      <rect
-                        x="417"
-                        y="182"
-                        width="68"
-                        height="35"
-                        rx="7"
-                        fill="#FF6B35"
-                        stroke="#141A17"
-                        strokeWidth="2"
-                      />
-                      <text
-                        x="229"
-                        y="203"
-                        textAnchor="middle"
-                        fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
-                        fontSize="9"
-                        fontWeight="700"
-                        fill="#FFF"
-                      >
-                        3D PLA+
-                      </text>
-                      <text
-                        x="451"
-                        y="203"
-                        textAnchor="middle"
-                        fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
-                        fontSize="9"
-                        fontWeight="700"
-                        fill="#FFF"
-                      >
-                        3D PLA+
-                      </text>
-                    </g>
-
-                    {/* PART 3: 4WD Wheels & Motors */}
-                    <g
-                      opacity={pWheels}
-                      transform={`translate(0, ${(1 - pWheels) * 50})`}
-                      filter="url(#partShadow)"
-                    >
-                      {[225, 455].map((cx) => (
-                        <g key={cx}>
-                          <circle
-                            cx={cx}
-                            cy="268"
-                            r="42"
-                            fill="#1B2420"
-                            stroke="#141A17"
-                            strokeWidth="3"
-                          />
-                          <circle cx={cx} cy="268" r="22" fill="#F5C518" />
-                          <circle cx={cx} cy="268" r="7" fill="#141A17" />
-                        </g>
-                      ))}
-                    </g>
-
-                    {/* PART 4: 3D Scanned Upper Structural Bridge */}
-                    <g
-                      opacity={pShell}
-                      transform={`translate(0, ${(1 - pShell) * -50})`}
-                      filter="url(#partShadow)"
-                    >
-                      <path
-                        d="M 220 182 L 245 142 L 435 142 L 460 182 Z"
-                        fill="#23963C"
-                        stroke="#141A17"
-                        strokeWidth="2.5"
-                      />
-                      <text
-                        x="340"
-                        y="167"
-                        textAnchor="middle"
-                        fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
-                        fontSize="10"
-                        fontWeight="700"
-                        fill="#FFF"
-                      >
-                        ESTRUTURA IF MAKER · BREVES
-                      </text>
-                    </g>
-
-                    {/* PART 5 (STEP 02): Arduino UNO + ESP32 Controller */}
-                    <g
-                      opacity={pArduinoBoard}
-                      transform={`translate(0, ${(1 - pArduinoBoard) * -45})`}
-                      filter="url(#partShadow)"
-                    >
-                      <rect
-                        x="255"
-                        y="94"
-                        width="125"
-                        height="48"
-                        rx="8"
-                        fill="#0092D6"
-                        stroke="#141A17"
-                        strokeWidth="2.5"
-                      />
-                      <rect x="268" y="106" width="44" height="16" rx="3" fill="#141A17" />
-                      <text
-                        x="318"
-                        y="134"
-                        textAnchor="middle"
-                        fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
-                        fontSize="10"
-                        fontWeight="700"
-                        fill="#FFF"
-                      >
-                        ARDUINO UNO R3
-                      </text>
-                    </g>
-
-                    {/* PART 6 (STEP 02): Ultrasonic Sensor HC-SR04 + Solar IoT */}
-                    <g
-                      opacity={pSensors}
-                      transform={`translate(${(1 - pSensors) * 45}, 0)`}
-                      filter="url(#partShadow)"
-                    >
-                      <rect
-                        x="458"
-                        y="112"
-                        width="42"
-                        height="54"
-                        rx="8"
-                        fill="#70388E"
-                        stroke="#141A17"
-                        strokeWidth="2.5"
-                      />
-                      <circle cx="502" cy="126" r="10" fill="#E1E7E3" stroke="#141A17" strokeWidth="2" />
-                      <circle cx="502" cy="150" r="10" fill="#E1E7E3" stroke="#141A17" strokeWidth="2" />
-                      {/* Ultrasonic Sonar Waves when in Step 2 or 3 */}
-                      {stepProgress > 0.5 && (
-                        <g stroke="#2FB36B" strokeWidth="2.5" fill="none">
-                          <path d="M 522 122 Q 535 138 522 154" opacity="0.9" />
-                          <path d="M 534 114 Q 552 138 534 162" opacity="0.6" />
-                          <path d="M 546 106 Q 568 138 546 170" opacity="0.35" />
-                        </g>
-                      )}
-                    </g>
-
-                    {/* PART 7 (STEP 02): Animated Pin-to-Pin Jumper Wires */}
-                    {pWires > 0 && (
-                      <g fill="none" strokeLinecap="round">
-                        <path
-                          d="M 380 110 C 415 80, 440 90, 462 124"
-                          stroke="#EF4444"
-                          strokeWidth="3.5"
-                          strokeDasharray="120"
-                          strokeDashoffset={120 * (1 - pWires)}
-                        />
-                        <path
-                          d="M 380 122 C 420 120, 435 140, 462 146"
-                          stroke="#FF6B35"
-                          strokeWidth="3.5"
-                          strokeDasharray="120"
-                          strokeDashoffset={120 * (1 - pWires)}
-                        />
-                        <path
-                          d="M 275 142 C 240 165, 225 180, 225 235"
-                          stroke="#23963C"
-                          strokeWidth="3.5"
-                          strokeDasharray="140"
-                          strokeDashoffset={140 * (1 - pWires)}
-                        />
-                      </g>
-                    )}
-                  </g>
-                </svg>
+                  <Suspense fallback={null}>
+                    <PalcoMontagem progresso={stepProgress} />
+                  </Suspense>
+                </div>
 
                 {/* Bottom CAD Quick Tools Dock (Exact Constructa CAD toolbar) */}
-                <div className="hidden sm:flex items-center gap-1.5 rounded-2xl border border-wb-line bg-white/95 px-3 py-2 shadow-md position absolute bottom-3 left-1/2 -translate-x-1/2">
+                <div className="hidden sm:flex items-center gap-1 rounded-full bg-wb-ink/92 p-1.5 backdrop-blur absolute bottom-4 left-1/2 -translate-x-1/2 shadow-[0_18px_40px_-18px_rgba(0,0,0,0.5)]">
                   {[
                     { icon: <Move className="h-3.5 w-3.5" />, label: 'Mover' },
                     { icon: <RotateCw className="h-3.5 w-3.5" />, label: 'Girar' },
@@ -536,12 +266,12 @@ export const ScrollytellingSection: React.FC = () => {
                   ].map((tool, i) => (
                     <div
                       key={tool.label}
-                      className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11.5px] font-semibold ${
+                      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11.5px] font-semibold transition-colors duration-500 ${
                         (activeStepIndex === 0 && i === 2) ||
                         (activeStepIndex === 1 && i === 4) ||
                         (activeStepIndex === 2 && i === 0)
-                          ? 'bg-wb-ink text-white'
-                          : 'text-wb-ink-2 bg-wb-bench/60'
+                          ? 'bg-wb-canvas text-wb-ink'
+                          : 'text-white/60'
                       }`}
                     >
                       {tool.icon}
@@ -632,47 +362,41 @@ export const ScrollytellingSection: React.FC = () => {
                   {/* Interactive SVG Pin-to-Pin Mini Widget */}
                   <div className="mt-4 border-t border-wb-line py-3">
                     <svg viewBox="0 0 380 125" className="w-full h-24">
-                      <rect
-                        x="10"
-                        y="25"
-                        width="85"
-                        height="85"
-                        rx="8"
-                        fill="#0092D6"
-                        stroke="#141A17"
-                        strokeWidth="2"
-                      />
-                      <text
-                        x="52"
-                        y="72"
-                        textAnchor="middle"
-                        fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
-                        fontSize="10"
-                        fontWeight="700"
-                        fill="#FFF"
-                      >
+                      <defs>
+                        <linearGradient id="pinoLata" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0" stopColor="#eef1f4" />
+                          <stop offset="1" stopColor="#7d858d" />
+                        </linearGradient>
+                      </defs>
+                      {/* Arduino UNO visto de cima: placa, chip DIP, USB e barra de pinos onde os fios chegam */}
+                      <rect x="4" y="22" width="94" height="92" rx="6" fill="#0b5c97" />
+                      <rect x="4" y="22" width="94" height="92" rx="6" fill="none" stroke="rgba(255,255,255,0.18)" />
+                      <rect x="-2" y="32" width="20" height="18" rx="2" fill="url(#pinoLata)" />
+                      <rect x="24" y="64" width="44" height="12" rx="2" fill="#141414" />
+                      {Array.from({ length: 8 }).map((_, i) => (
+                        <rect key={i} x={27 + i * 5.2} y="61" width="2" height="3" fill="#cfd2d6" />
+                      ))}
+                      <rect x="86" y="52" width="10" height="56" rx="1.5" fill="#141414" />
+                      {[62, 74, 88, 102].map((y) => (
+                        <rect key={y} x="89" y={y - 2} width="4" height="4" rx="0.8" fill="#5c5f63" />
+                      ))}
+                      <text x="46" y="100" textAnchor="middle" fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif" fontSize="9.5" fontWeight="700" letterSpacing="0.8" fill="rgba(255,255,255,0.85)">
                         ARDUINO
                       </text>
 
-                      <rect
-                        x="285"
-                        y="25"
-                        width="85"
-                        height="85"
-                        rx="8"
-                        fill="#70388E"
-                        stroke="#141A17"
-                        strokeWidth="2"
-                      />
-                      <text
-                        x="327"
-                        y="72"
-                        textAnchor="middle"
-                        fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
-                        fontSize="10"
-                        fontWeight="700"
-                        fill="#FFF"
-                      >
+                      {/* HC-SR04: placa, duas latas e os 4 pinos (VCC, Trig, Echo, GND) */}
+                      <rect x="285" y="28" width="90" height="80" rx="6" fill="#0b5c97" />
+                      {[52, 88].map((cy) => (
+                        <g key={cy}>
+                          <circle cx="335" cy={cy} r="15" fill="url(#pinoLata)" />
+                          <circle cx="335" cy={cy} r="10.5" fill="#2a2c30" />
+                        </g>
+                      ))}
+                      <rect x="283" y="52" width="8" height="56" rx="1.5" fill="#141414" />
+                      {[58, 70, 84, 104].map((y) => (
+                        <rect key={y} x="285" y={y - 2} width="4" height="4" rx="0.8" fill="#cfd2d6" />
+                      ))}
+                      <text x="335" y="121" textAnchor="middle" fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif" fontSize="9.5" fontWeight="700" letterSpacing="0.8" fill="#4a453e">
                         SENSORES
                       </text>
 

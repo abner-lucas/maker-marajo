@@ -28,7 +28,12 @@ export const Parallax: React.FC<{
   // Mola leve: suaviza o "degrau" da roda do mouse sem atrasar demais
   const y = useSpring(yBruto, { stiffness: 140, damping: 26, mass: 0.4 });
   return (
-    <motion.div ref={ref} className={className} style={reduzir ? undefined : { y }}>
+    <motion.div
+      ref={ref}
+      // useScroll precisa de um ancestral posicionado para medir o deslocamento
+      className={`${className ?? ''} ${/absolute/.test(className ?? '') ? '' : 'relative'}`}
+      style={reduzir ? undefined : { y }}
+    >
       {children}
     </motion.div>
   );
@@ -54,7 +59,7 @@ export const SecaoViva: React.FC<
   return (
     <motion.section
       ref={ref}
-      className={className}
+      className={`relative ${className ?? ''}`}
       style={reduzir ? style : { ...style, clipPath, y, opacity }}
       {...(rest as object)}
     >

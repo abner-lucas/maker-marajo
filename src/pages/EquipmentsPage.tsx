@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BracoVisual, ScannerVisual } from '../components/simuladores/visuais';
 import { Link, useParams } from 'react-router-dom';
 import {
   AlertTriangle,
@@ -315,40 +316,8 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
             </div>
           </div>
 
-          <div className="rounded-2xl border border-wb-line bg-[#0B1520] p-4 flex items-center justify-center h-48">
-            <svg viewBox="0 0 260 150" className="h-full w-auto">
-              {/* Simulated 3D Scanned Marajoara Vase Mesh */}
-              <ellipse
-                cx="130"
-                cy="132"
-                rx="65"
-                ry="10"
-                fill="none"
-                stroke="#0092D6"
-                strokeDasharray="4 4"
-              />
-              <path
-                d="M 95 25 C 75 55, 70 95, 95 128 L 165 128 C 190 95, 185 55, 165 25 Z"
-                fill={scanMode === 'solid' ? '#D97742' : 'none'}
-                stroke="#38BDF8"
-                strokeWidth={scanMode === 'points' ? '0' : '2'}
-                strokeDasharray={scanMode === 'wireframe' ? '3 2' : undefined}
-              />
-              {/* Horizontal scan lines */}
-              {[42, 62, 82, 102, 118].map((y) => (
-                <line
-                  key={y}
-                  x1="82"
-                  y1={y}
-                  x2="178"
-                  y2={y}
-                  stroke="#38BDF8"
-                  strokeWidth="1.2"
-                  strokeDasharray={scanMode === 'points' ? '2 6' : undefined}
-                  opacity="0.75"
-                />
-              ))}
-            </svg>
+          <div className="relative overflow-hidden rounded-[18px] bg-[radial-gradient(80%_70%_at_50%_30%,#123048,#070d14)] p-4 flex items-center justify-center h-56">
+            <ScannerVisual modo={scanMode} densidade={scanDensity} />
           </div>
         </div>
       </div>
@@ -412,39 +381,8 @@ const EquipmentInteractiveSimulator: React.FC<{ equipment: EquipmentItem }> = ({
             </button>
           </div>
 
-          <div className="border-t border-wb-line wb-grid-bg h-52 flex items-center justify-center">
-            <svg viewBox="0 0 280 190" className="h-full w-auto">
-              <rect x="85" y="155" width="90" height="18" rx="5" fill="#141A17" />
-              <g transform={`translate(130, 155) rotate(${shoulderDeg})`}>
-                <rect x="-8" y="-68" width="16" height="68" rx="6" fill="#23963C" />
-                <circle cx="0" cy="0" r="10" fill="#FF6B35" />
-                <g transform={`translate(0, -64) rotate(${elbowDeg})`}>
-                  <rect x="-6" y="-56" width="12" height="56" rx="5" fill="#0092D6" />
-                  <circle cx="0" cy="0" r="8" fill="#F5C518" />
-                  {/* Gripper */}
-                  <g transform="translate(0, -56)">
-                    <line
-                      x1="-4"
-                      y1="0"
-                      x2={gripperOpen ? -16 : -5}
-                      y2="-18"
-                      stroke="#E5484D"
-                      strokeWidth="5"
-                      strokeLinecap="round"
-                    />
-                    <line
-                      x1="4"
-                      y1="0"
-                      x2={gripperOpen ? 16 : 5}
-                      y2="-18"
-                      stroke="#E5484D"
-                      strokeWidth="5"
-                      strokeLinecap="round"
-                    />
-                  </g>
-                </g>
-              </g>
-            </svg>
+          <div className="rounded-[18px] wb-grid-bg h-56 flex items-center justify-center">
+            <BracoVisual ombro={shoulderDeg} cotovelo={elbowDeg} garraAberta={gripperOpen} />
           </div>
         </div>
       </div>

@@ -16,6 +16,8 @@ export const InteractiveBentoFeatures: React.FC = () => {
   const [simRunning, setSimRunning] = useState(true);
   const robotGroupRef = useRef<SVGGElement>(null);
   const shadowRef = useRef<SVGEllipseElement>(null);
+  // Pernas (perto e longe) redesenhadas a cada quadro por cinemática inversa de 2 elos
+  const pernasRef = useRef<(SVGPathElement | null)[]>([]);
   const simStateRef = useRef({ env: 'moon' as EnvKey, running: true });
   simStateRef.current = { env, running: simRunning };
 
@@ -37,7 +39,13 @@ export const InteractiveBentoFeatures: React.FC = () => {
     let rotAngle = 0;
     const start = performance.now();
 
+    // Só anima com a seção visível (economiza CPU/bateria fora da tela)
+    let visivel = false;
     const loop = (now: number) => {
+      if (!visivel) {
+        rafId = 0;
+        return;
+      }
       rafId = requestAnimationFrame(loop);
       const t = (now - start) / 1000;
       const { env: curEnv, running } = simStateRef.current;
@@ -71,6 +79,34 @@ export const InteractiveBentoFeatures: React.FC = () => {
           `translate(0 ${yPos.toFixed(2)}) rotate(${rotAngle.toFixed(2)} 210 150)`
         );
       }
+      // Visual derivado da mesma altura yPos: pés buscam o chão, joelho dobra no apoio e
+      // a perna estica quando o robô está no ar (cinemática inversa, não simulação de força)
+      pernasRef.current.forEach((el, i) => {
+        if (!el) return;
+        const quadril = i % 2 === 0 ? 150 : 270;
+        const longe = i >= 2;
+        const hx = quadril + (longe ? 12 : 0);
+        const hy = 150;
+        const fx = hx + (i % 2 === 0 ? -14 : 14);
+        const fy = 209 - yPos;
+        const L1 = 34;
+        const L2 = 36;
+        let dx = fx - hx;
+        let dy = fy - hy;
+        let d = Math.hypot(dx, dy);
+        const max = L1 + L2 - 0.5;
+        if (d > max) {
+          dx *= max / d;
+          dy *= max / d;
+          d = max;
+        }
+        const a = Math.atan2(dy, dx);
+        const b = Math.acos(Math.min(1, (L1 * L1 + d * d - L2 * L2) / (2 * L1 * d)));
+        const dobra = i % 2 === 0 ? 1 : -1;
+        const kx = hx + Math.cos(a + b * dobra) * L1;
+        const ky = hy + Math.sin(a + b * dobra) * L1;
+        el.setAttribute('d', `M${hx} ${hy} L${kx.toFixed(1)} ${ky.toFixed(1)} L${(hx + dx).toFixed(1)} ${(hy + dy).toFixed(1)}`);
+      });
       if (shadowRef.current) {
         const hRatio = Math.min(1, -yPos / 80);
         shadowRef.current.setAttribute('rx', String((92 - 44 * hRatio).toFixed(1)));
@@ -78,8 +114,15 @@ export const InteractiveBentoFeatures: React.FC = () => {
       }
     };
 
-    rafId = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(rafId);
+    const io = new IntersectionObserver(([e]) => {
+      visivel = e.isIntersecting;
+      if (visivel && !rafId) rafId = requestAnimationFrame(loop);
+    });
+    if (robotGroupRef.current) io.observe(robotGroupRef.current);
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const currentEnvObj = ENVS.find((e) => e.key === env) || ENVS[0];
@@ -117,77 +160,123 @@ export const InteractiveBentoFeatures: React.FC = () => {
         <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
           {/* === CARD 1 (2x2 Span): ROBOTICS & PHYSICS SIMULATOR === */}
           <article className="wb-panel flex flex-col overflow-hidden rounded-[22px] md:col-span-2 lg:row-span-2">
-            <div className="relative overflow-hidden border-b border-wb-line bg-wb-bench wb-grid-bg h-[460px] sm:h-[400px] lg:h-auto lg:min-h-[420px] lg:flex-1">
+            <div className="relative overflow-hidden rounded-[18px] bg-wb-bench wb-grid-bg h-[460px] sm:h-[400px] lg:h-auto lg:min-h-[420px] lg:flex-1">
               <svg
                 viewBox="0 0 420 250"
                 className="absolute inset-x-0 top-2 h-[54%] w-full sm:inset-y-0 sm:top-0 sm:h-full sm:w-[62%]"
                 aria-hidden="true"
               >
-                <line
-                  x1="0"
-                  y1="214"
-                  x2="420"
-                  y2="214"
-                  stroke="var(--wb-axis)"
-                  strokeOpacity="0.65"
-                  strokeWidth="2"
-                />
+                <defs>
+                  <linearGradient id="roverCasco" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stopColor="#f07a45" />
+                    <stop offset="1" stopColor="#c84a1a" />
+                  </linearGradient>
+                  <linearGradient id="roverMetal" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stopColor="#eef1f4" />
+                    <stop offset="0.5" stopColor="#a9b1b9" />
+                    <stop offset="1" stopColor="#6d757d" />
+                  </linearGradient>
+                  <linearGradient id="roverChao" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stopColor="rgba(42,28,16,0.10)" />
+                    <stop offset="1" stopColor="rgba(42,28,16,0)" />
+                  </linearGradient>
+                  <pattern id="roverCamadas" width="6" height="2.4" patternUnits="userSpaceOnUse">
+                    <rect width="6" height="1.2" fill="rgba(0,0,0,0.07)" />
+                  </pattern>
+                  <filter id="roverSombra" x="-50%" y="-200%" width="200%" height="500%">
+                    <feGaussianBlur stdDeviation="4" />
+                  </filter>
+                </defs>
+                {/* chão: só a sombra de contato, sobre o piso de estúdio do cartão */}
                 <ellipse
                   ref={shadowRef}
                   cx="210"
-                  cy="217"
+                  cy="216"
                   rx="92"
                   ry="6"
-                  fill="rgba(20,26,23,0.18)"
+                  fill="rgba(42,28,16,0.5)"
+                  filter="url(#roverSombra)"
                 />
                 <g ref={robotGroupRef}>
-                  {[150, 270].map((x, idx) => (
-                    <g key={x}>
-                      <line
-                        x1={x}
-                        y1="150"
-                        x2={x + (idx ? 18 : -18)}
-                        y2="182"
-                        stroke="#23963C"
-                        strokeWidth="11"
-                        strokeLinecap="round"
-                      />
-                      <line
-                        x1={x + (idx ? 18 : -18)}
-                        y1="182"
-                        x2={x + (idx ? 6 : -6)}
-                        y2="208"
-                        stroke="#23963C"
-                        strokeWidth="9"
-                        strokeLinecap="round"
-                      />
-                      <circle cx={x} cy="150" r="10" fill="#1A1F22" />
-                    </g>
+                  {/* pernas do lado de lá (mais escuras, atrás do corpo) */}
+                  {[2, 3].map((i) => (
+                    <path
+                      key={i}
+                      ref={(el) => {
+                        pernasRef.current[i] = el;
+                      }}
+                      d=""
+                      fill="none"
+                      stroke="#3b3f45"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   ))}
-                  <rect x="112" y="104" width="196" height="48" rx="9" fill="#FF6B35" />
-                  <rect x="112" y="104" width="196" height="10" rx="5" fill="#FF8559" />
+                  {/* chapa MDF cortada a laser */}
+                  <rect x="112" y="140" width="196" height="9" rx="2" fill="#c99c6c" stroke="#5b3a22" strokeWidth="1.2" />
+                  {/* casco impresso em PLA com linhas de camada */}
+                  <path d="M120 140 L128 106 Q130 101 136 101 L290 101 Q296 101 298 106 L304 140 Z" fill="url(#roverCasco)" />
+                  <path d="M120 140 L128 106 Q130 101 136 101 L290 101 Q296 101 298 106 L304 140 Z" fill="url(#roverCamadas)" />
+                  <path d="M132 103 L292 103" stroke="rgba(255,255,255,0.45)" strokeWidth="1.2" />
                   <text
-                    x="205"
-                    y="134"
+                    x="212"
+                    y="127"
                     textAnchor="middle"
                     fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif"
-                    fontSize="11"
+                    fontSize="10.5"
                     fontWeight="700"
-                    fill="#FFF"
+                    letterSpacing="0.6"
+                    fill="rgba(60,20,4,0.55)"
                   >
                     ROVER IFPA · BREVES
                   </text>
-                  <rect x="148" y="92" width="78" height="12" rx="3" fill="#0092D6" />
-                  <rect x="236" y="93" width="34" height="11" rx="3" fill="#70388E" />
-                  <path d="M168 92 L172 78 L186 78 L190 92 Z" fill="#141A17" />
-                  <rect x="306" y="114" width="8" height="30" rx="2" fill="#23963C" />
-                  <circle cx="324" cy="121" r="8" fill="#D9DEE2" stroke="#141A17" strokeWidth="1.5" />
-                  <circle cx="324" cy="138" r="8" fill="#D9DEE2" stroke="#141A17" strokeWidth="1.5" />
+                  {/* Arduino UNO sobre o casco */}
+                  <rect x="146" y="94" width="80" height="7" rx="1.5" fill="#0b5c97" />
+                  <rect x="152" y="89" width="34" height="5" rx="1" fill="#1a1b1d" />
+                  <rect x="192" y="89" width="28" height="5" rx="1" fill="#1a1b1d" />
+                  <rect x="140" y="88" width="12" height="9" rx="1" fill="url(#roverMetal)" />
+                  {/* célula 18650 */}
+                  <rect x="236" y="90" width="36" height="11" rx="5.5" fill="#2257b8" />
+                  <rect x="270" y="92" width="3" height="7" rx="1" fill="#d9dadc" />
+                  {/* suporte do sensor */}
+                  <path d="M168 89 L172 78 L186 78 L190 89 Z" fill="#2b2d31" />
+                  {/* HC-SR04 na frente: placa + duas latas metálicas */}
+                  <rect x="304" y="108" width="5" height="36" rx="1.5" fill="#0b5c97" />
+                  {[114, 130].map((y) => (
+                    <g key={y}>
+                      <rect x="309" y={y} width="14" height="13" rx="2" fill="url(#roverMetal)" />
+                      <rect x="321" y={y + 1.5} width="3" height="10" rx="1" fill="#2a2c30" />
+                    </g>
+                  ))}
+                  {/* pernas do lado de cá */}
+                  {[0, 1].map((i) => (
+                    <path
+                      key={i}
+                      ref={(el) => {
+                        pernasRef.current[i] = el;
+                      }}
+                      d=""
+                      fill="none"
+                      stroke="url(#roverMetal)"
+                      strokeWidth="9"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  ))}
+                  {/* servos do quadril com braço de alumínio */}
+                  {[150, 270].map((x) => (
+                    <g key={x}>
+                      <circle cx={x} cy="150" r="11" fill="#1a1b1d" />
+                      <circle cx={x} cy="150" r="5.5" fill="url(#roverMetal)" />
+                      <circle cx={x} cy="150" r="1.6" fill="#1a1b1d" />
+                    </g>
+                  ))}
                 </g>
               </svg>
 
               {/* Floating Control Panel inside Card 1 */}
-              <div className="absolute inset-x-3 bottom-3 rounded-[16px] border border-wb-line bg-white/95 p-4 shadow-[0_14px_30px_-16px_rgba(28,36,33,0.35)] backdrop-blur sm:inset-x-auto sm:bottom-auto sm:right-5 sm:top-5 sm:w-[252px]">
+              <div className="absolute inset-x-3 bottom-3 rounded-[16px] bg-wb-canvas/95 p-4 shadow-[0_24px_50px_-24px_rgba(42,28,16,0.45)] ring-1 ring-black/5 backdrop-blur sm:inset-x-auto sm:bottom-auto sm:right-5 sm:top-5 sm:w-[252px]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-[#FFF0E9] text-wb-orange">
@@ -269,7 +358,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
 
           {/* === CARD 2: ZERO COST FOR STUDENTS & PUBLIC SCHOOLS === */}
           <article className="wb-panel flex flex-col overflow-hidden rounded-[22px]">
-            <div className="relative overflow-hidden border-b border-wb-line bg-wb-bench wb-grid-bg h-[230px] p-4 flex items-center justify-center">
+            <div className="relative overflow-hidden rounded-[18px] bg-wb-bench wb-grid-bg h-[230px] p-4 flex items-center justify-center">
               <div className="w-full max-w-[290px] border-t border-wb-line py-3.5 text-[12px]">
                 <div className="flex items-center justify-between border-b border-wb-line pb-2">
                   <span className="font-bold text-wb-ink">Custo Comercial Externo</span>
@@ -312,7 +401,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
 
           {/* === CARD 3: INTERACTIVE ARDUINO ULTRASONIC SENSOR === */}
           <article className="wb-panel flex flex-col overflow-hidden rounded-[22px]">
-            <div className="relative overflow-hidden border-b border-wb-line bg-wb-bench wb-grid-bg h-[230px] p-4 flex flex-col justify-between">
+            <div className="relative overflow-hidden rounded-[18px] bg-wb-bench wb-grid-bg h-[230px] p-4 flex flex-col justify-between">
               <div className="flex items-center justify-between border-t border-wb-line py-2">
                 <div className="flex items-center gap-2">
                   <Cpu className="h-4 w-4 text-wb-purple" />
@@ -331,24 +420,57 @@ export const InteractiveBentoFeatures: React.FC = () => {
                 </span>
               </div>
 
-              {/* Visual Ultrasonic Beam */}
-              <div className="my-auto flex items-center gap-3 px-2">
-                <div className="rounded-xl bg-[#0092D6] px-3 py-3 text-white font-key text-[10px] font-bold shadow">
-                  Sonar
-                </div>
-                <div className="flex-1 relative h-3 rounded-full bg-wb-line overflow-hidden">
-                  <div
-                    className="h-full transition-all duration-100 rounded-full"
-                    style={{
-                      width: `${Math.min(100, (distanceCm / 100) * 100)}%`,
-                      backgroundColor: distanceCm < 20 ? '#E5484D' : '#2FB36B',
-                    }}
-                  />
-                </div>
-                <div className="rounded-lg border-2 border-wb-ink bg-wb-orange px-2.5 py-2 font-key text-[10px] font-bold text-white">
-                  Alvo
-                </div>
-              </div>
+              {/* HC-SR04 desenhado + frentes de onda até o obstáculo (posição = distanceCm) */}
+              {(() => {
+                const perto = distanceCm < 20;
+                const xAlvo = 78 + (Math.min(100, distanceCm) / 100) * 236;
+                const cor = perto ? '#e5484d' : '#23a35e';
+                return (
+                  <svg viewBox="0 0 340 96" className="my-auto h-[118px] w-full" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="sonarLata" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0" stopColor="#7a828a" />
+                        <stop offset="0.45" stopColor="#eef1f4" />
+                        <stop offset="1" stopColor="#8d959d" />
+                      </linearGradient>
+                      <clipPath id="sonarFeixe">
+                        <rect x="62" y="0" width={Math.max(0, xAlvo - 62)} height="96" />
+                      </clipPath>
+                    </defs>
+                    {/* módulo: placa azul, latas metálicas com tela */}
+                    <rect x="8" y="16" width="44" height="64" rx="4" fill="#0b5c97" />
+                    <rect x="12" y="44" width="10" height="8" rx="1" fill="#d9dadc" />
+                    {[30, 66].map((cy) => (
+                      <g key={cy}>
+                        <rect x="38" y={cy - 11} width="22" height="22" rx="3" fill="url(#sonarLata)" />
+                        <rect x="57" y={cy - 9} width="4" height="18" rx="1.5" fill="#2a2c30" />
+                      </g>
+                    ))}
+                    <text x="24" y="92" textAnchor="middle" fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif" fontSize="10" fontWeight="700" fill="#4a453e">
+                      Sonar
+                    </text>
+                    {/* frentes de onda (CSS), cortadas no obstáculo */}
+                    <g clipPath="url(#sonarFeixe)" fill="none" stroke={cor} strokeWidth="2">
+                      {[0, 1, 2].map((k) => (
+                        <path key={k} className="sonar-onda" style={{ animationDelay: `${k * 0.45}s` }} d="M66 18 Q86 48 66 78" />
+                      ))}
+                    </g>
+                    {/* cota de distância */}
+                    <line x1="62" y1="88" x2={xAlvo} y2="88" stroke="#16130f" strokeWidth="1" />
+                    <line x1="62" y1="84" x2="62" y2="92" stroke="#16130f" strokeWidth="1" />
+                    <line x1={xAlvo} y1="84" x2={xAlvo} y2="92" stroke="#16130f" strokeWidth="1" />
+                    {/* obstáculo com sombra */}
+                    <g style={{ transition: 'transform 160ms cubic-bezier(0.16,1,0.3,1)' }} transform={`translate(${xAlvo} 0)`}>
+                      <ellipse cx="13" cy="80" rx="16" ry="3" fill="rgba(42,28,16,0.25)" />
+                      <rect x="0" y="22" width="26" height="56" rx="4" fill={perto ? '#e5484d' : '#e25a24'} />
+                      <rect x="0" y="22" width="26" height="6" rx="3" fill="rgba(255,255,255,0.3)" />
+                      <text x="13" y="54" textAnchor="middle" fontFamily="'Hanken Grotesk Variable', system-ui, sans-serif" fontSize="9" fontWeight="700" fill="#fff" transform="rotate(-90 13 50)">
+                        Alvo
+                      </text>
+                    </g>
+                  </svg>
+                );
+              })()}
 
               <div className="border-t border-wb-line py-2">
                 <label className="flex items-center justify-between text-[11px] font-key text-wb-ink-2">
@@ -380,37 +502,58 @@ export const InteractiveBentoFeatures: React.FC = () => {
 
           {/* === CARD 4: 3D PRINTING SLICER & LASER PREVIEW === */}
           <article className="wb-panel flex flex-col overflow-hidden rounded-[22px]">
-            <div className="relative overflow-hidden border-b border-wb-line bg-wb-bench wb-grid-bg h-[230px] p-4 flex flex-col justify-between">
+            <div className="relative overflow-hidden rounded-[18px] bg-wb-bench wb-grid-bg h-[230px] p-4 flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <span className="wb-key bg-white">FATIADOR 3D · CAMADAS</span>
+                <span className="wb-key">FATIADOR 3D · CAMADAS</span>
                 <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-orange" />
                   Camada {layerPct}/100
                 </span>
               </div>
 
-              {/* Stacked 3D Layers Visual */}
-              <div className="my-auto flex flex-col-reverse items-center justify-center h-24 gap-[2px]">
+              {/* Peça em 3/4 sendo fatiada: camadas impressas (laranja), atual (verde) e por imprimir */}
+              <svg viewBox="0 0 220 104" className="my-auto h-[104px] w-full" aria-hidden="true">
+                <defs>
+                  <linearGradient id="fatiaLado" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stopColor="#b8441a" />
+                    <stop offset="0.4" stopColor="#f07a45" />
+                    <stop offset="1" stopColor="#a63b14" />
+                  </linearGradient>
+                </defs>
+                {/* mesa PEI em perspectiva */}
+                <ellipse cx="110" cy="92" rx="96" ry="10" fill="#b48a3c" opacity="0.35" />
                 {Array.from({ length: 10 }).map((_, idx) => {
                   const threshold = (idx + 1) * 10;
                   const active = layerPct >= threshold - 5;
-                  const widthPx = 140 - idx * 7;
+                  const atual = idx === Math.floor(layerPct / 10) - 1;
+                  const rx = 70 - idx * 3.5;
+                  const y = 86 - idx * 7.2;
                   return (
-                    <div
-                      key={idx}
-                      className="h-2 rounded-full transition-all duration-150"
-                      style={{
-                        width: `${widthPx}px`,
-                        backgroundColor: active
-                          ? idx === Math.floor(layerPct / 10) - 1
-                            ? '#23963C'
-                            : '#FF6B35'
-                          : '#E1E7E3',
-                        opacity: active ? 1 : 0.35,
-                      }}
-                    />
+                    <g key={idx} style={{ transition: 'opacity 150ms' }} opacity={active ? 1 : 0.28}>
+                      <path
+                        d={`M${110 - rx} ${y} L${110 - rx} ${y - 5} A${rx} ${rx * 0.16} 0 0 0 ${110 + rx} ${y - 5} L${110 + rx} ${y} A${rx} ${rx * 0.16} 0 0 1 ${110 - rx} ${y} Z`}
+                        fill={active ? (atual ? '#23a35e' : 'url(#fatiaLado)') : '#d8d2c6'}
+                      />
+                      <ellipse
+                        cx="110"
+                        cy={y - 5}
+                        rx={rx}
+                        ry={rx * 0.16}
+                        fill={active ? (atual ? '#3fc27a' : '#f4925f') : '#e8e3d9'}
+                      />
+                    </g>
                   );
                 })}
-              </div>
+                {/* bico acompanha a camada atual */}
+                {(() => {
+                  const y = 86 - (Math.max(1, Math.floor(layerPct / 10)) - 1) * 7.2 - 6;
+                  return (
+                    <g style={{ transition: 'transform 180ms cubic-bezier(0.16,1,0.3,1)' }} transform={`translate(0 ${y - 30})`}>
+                      <rect x="92" y="0" width="36" height="20" rx="4" fill="#2b2d31" />
+                      <path d="M104 20 L116 20 L112 28 L108 28 Z" fill="#c6a052" />
+                    </g>
+                  );
+                })()}
+              </svg>
 
               <div className="border-t border-wb-line py-2">
                 <input
@@ -439,7 +582,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
 
           {/* === CARD 5: BLOCKS TO REAL ARDUINO C++ === */}
           <article className="wb-panel flex flex-col overflow-hidden rounded-[22px]">
-            <div className="relative overflow-hidden border-b border-wb-line bg-wb-bench wb-grid-bg h-[230px] p-4 flex flex-col justify-between">
+            <div className="relative overflow-hidden rounded-[18px] bg-wb-bench wb-grid-bg h-[230px] p-4 flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <div className="inline-flex border-t border-wb-line py-0.5">
                   <button
@@ -501,7 +644,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
 
           {/* === CARD 6: 5TH LAB DELIVERED IN MARCH 2026 (ENSINO, PESQUISA, EXTENSÃO) === */}
           <article className="wb-panel flex flex-col overflow-hidden rounded-[22px]">
-            <div className="relative overflow-hidden border-b border-wb-line bg-wb-bench wb-grid-bg h-[230px] p-4 flex flex-col justify-between">
+            <div className="relative overflow-hidden rounded-[18px] bg-wb-bench wb-grid-bg h-[230px] p-4 flex flex-col justify-between">
               <div className="flex gap-1 border-t border-wb-line py-1">
                 {(['Ensino', 'Pesquisa', 'Extensão'] as const).map((pillar) => (
                   <button

@@ -194,13 +194,13 @@ p {
 
 /* 3D Perspective Workbench CAD Grid Floor */
 .wb-floor {
-  background-image:
-    linear-gradient(var(--wb-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--wb-grid) 1px, transparent 1px);
+  /* Piso de estúdio: poça de luz com queda suave, sem linhas de grade */
+  background:
+    radial-gradient(42% 38% at 50% 22%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 70%),
+    radial-gradient(70% 60% at 50% 30%, rgba(242, 98, 46, 0.05), rgba(242, 98, 46, 0) 75%),
+    linear-gradient(to bottom, rgba(22, 19, 15, 0.05), rgba(22, 19, 15, 0) 55%);
   transform-origin: top;
   pointer-events: none;
-  background-position: top;
-  background-size: 56px 56px;
   height: 120%;
   position: absolute;
   bottom: -62%;
@@ -213,11 +213,13 @@ p {
 
 /* 2D Technical Grid Background for Interactive Workbenches */
 .wb-grid-bg {
+  /* Superfície de bancada: grão fino + vinheta de luz (substitui a grade quadriculada) */
+  background-color: var(--wb-bench);
   background-image:
-    linear-gradient(var(--wb-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--wb-grid) 1px, transparent 1px);
-  background-size: 26px 26px;
-  background-position: center;
+    radial-gradient(120% 90% at 30% 0%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 60%),
+    radial-gradient(90% 80% at 100% 100%, rgba(22, 19, 15, 0.07), rgba(22, 19, 15, 0) 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.09 0 0 0 0 0.07 0 0 0 0 0.05 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: auto, auto, 160px 160px;
 }
 
 .halftone {
@@ -371,4 +373,30 @@ p {
   font-weight: 800;
   color: var(--wb-orange);
   letter-spacing: -0.025em;
+}
+
+/* Frentes de onda do sensor ultrassônico (cartão de eletrônica) */
+.sonar-onda {
+  animation: sonar-onda 1.35s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  transform-box: fill-box;
+  opacity: 0;
+}
+@keyframes sonar-onda {
+  0% { transform: translateX(0) scaleY(0.6); opacity: 0.9; }
+  100% { transform: translateX(240px) scaleY(1.25); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sonar-onda { animation: none; opacity: 0.5; }
+}
+
+/* Linha de luz estruturada do scanner 3D varrendo a peça */
+.scan-varre {
+  animation: scan-varre 2.8s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+@keyframes scan-varre {
+  from { transform: translateY(26px); }
+  to { transform: translateY(132px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scan-varre { animation: none; transform: translateY(80px); }
 }
