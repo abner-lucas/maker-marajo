@@ -140,7 +140,7 @@ export const ProjectsPage: React.FC = () => {
                           ? 'Produzido no lab'
                           : `Em andamento · ${proj.progress}%`}
                       </span>
-                      <span className="rounded-full bg-white/92 backdrop-blur px-3 py-1 font-key text-[11px] font-bold text-wb-ink">
+                      <span className="rounded-full bg-black/80 backdrop-blur-sm px-3 py-1 font-key text-[11px] font-semibold text-white shadow">
                         Pilar: {proj.pillar}
                       </span>
                     </div>

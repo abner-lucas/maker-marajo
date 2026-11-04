@@ -355,7 +355,7 @@ export const HomePage: React.FC = () => {
                     loading="lazy"
                     className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                   />
-                  <figcaption className="absolute bottom-3 left-3 right-3 w-fit rounded-[10px] bg-white/92 px-3 py-1.5 text-[12px] font-bold text-wb-ink backdrop-blur shadow-sm">
+                  <figcaption className="absolute bottom-3 left-3 right-3 w-fit rounded-md bg-black/80 px-2.5 py-1 font-key text-[11px] font-semibold text-white backdrop-blur-sm shadow-sm">
                     {item.caption}
                   </figcaption>
                 </figure>
@@ -370,7 +370,7 @@ export const HomePage: React.FC = () => {
                     loading="lazy"
                     className="h-full w-full scale-[1.03] object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  <span className="absolute bottom-2 left-2 rounded-md bg-black/75 px-2 py-0.5 font-key text-[10px] font-semibold text-white backdrop-blur-sm">
+                  <span className="absolute bottom-2 left-2 rounded-md bg-black/80 px-2.5 py-1 font-key text-[10.5px] font-semibold text-white backdrop-blur-sm shadow-sm">
                     {item.caption}
                   </span>
                 </div>
@@ -400,7 +400,7 @@ export const HomePage: React.FC = () => {
                   loading="lazy"
                   className="h-full w-full object-cover"
                 />
-                <span className="absolute bottom-2 left-2 right-2 truncate rounded-md bg-white/90 px-2 py-0.5 text-center font-key text-[10.5px] font-bold text-wb-ink">
+                <span className="absolute bottom-2 left-2 right-2 truncate rounded-md bg-black/80 px-2 py-1 text-center font-key text-[10.5px] font-semibold text-white backdrop-blur-sm">
                   {item.label}
                 </span>
               </li>
