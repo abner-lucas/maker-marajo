@@ -1,0 +1,31 @@
+{
+  "gaps": [
+    {
+      "segment": "react@src",
+      "file_count": 17,
+      "integrations": [
+        "react"
+      ],
+      "directory_prefix": "src",
+      "assigned_agent": "generalist-reviewer",
+      "score": 0,
+      "reason": "low score (0) \u2014 no specialist matched well",
+      "runners_up": []
+    },
+    {
+      "segment": "segment_1",
+      "file_count": 6,
+      "integrations": [],
+      "directory_prefix": "",
+      "assigned_agent": "generalist-reviewer",
+      "score": 0,
+      "reason": "low score (0) \u2014 no specialist matched well",
+      "runners_up": []
+    }
+  ],
+  "threshold": 1500,
+  "stats": {
+    "count": 2,
+    "total_segments": 2
+  }
+}

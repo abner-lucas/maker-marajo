@@ -132,9 +132,8 @@ export const BookingPage: React.FC = () => {
                 <WordRise text="Agendamento no Laboratório IF MAKER." />
               </h1>
               <p className="mt-3 max-w-[40em] text-[16.5px] leading-relaxed text-wb-ink-2">
-                Escolha o equipamento, selecione o dia e o bloco de horário e sincronize sua sessão
-                diretamente com o <strong>Google Agenda</strong> do IFPA Campus Breves.
-              </p>
+            Escolha a máquina, o dia e o horário. A reserva vai direto para o Google Agenda.
+          </p>
             </div>
 
             <Link

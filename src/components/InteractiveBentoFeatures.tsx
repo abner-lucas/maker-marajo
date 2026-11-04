@@ -105,12 +105,11 @@ export const InteractiveBentoFeatures: React.FC = () => {
                 letterSpacing: '-0.028em',
               }}
             >
-              Por que criar no IF MAKER Breves.
+              Por que criar <span className="acento text-wb-orange">aqui</span>.
             </h2>
           </div>
           <p className="text-[16px] leading-relaxed text-wb-ink-2 md:text-right max-w-[34em] md:ml-auto">
-            Não fique apenas na teoria. Cada card abaixo é uma demonstração interativa do que você
-            encontra nas bancadas do Laboratório IFPA MAKER Marajó. Clique e teste agora.
+            Cada bloco abaixo é interativo. Mexa e veja.
           </p>
         </div>
 
@@ -263,9 +262,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
                 Robótica e Física que contam a verdade.
               </h3>
               <p className="mt-2 text-[15px] leading-[1.55] text-wb-ink-2">
-                Alterne entre Solo Marajó, Arena OBR ou Gravidade Zero acima. No IF MAKER Breves,
-                você simula torque, atrito e cinemática antes mesmo de ligar os motores na arena
-                física.
+                Troque o ambiente acima e veja torque e atrito mudarem antes de ligar o robô.
               </p>
             </div>
           </article>
@@ -308,8 +305,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
                 Acesso público e gratuito.
               </h3>
               <p className="mt-2 text-[15px] leading-[1.55] text-wb-ink-2">
-                Estudantes, pesquisadores e projetos comunitários do Marajó contam com máquinas de
-                ponta sem custo para transformar ideias em protótipos reais.
+                Máquinas de ponta, sem custo, para estudantes e projetos do Marajó.
               </p>
             </div>
           </article>
@@ -377,8 +373,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
                 Eletrônica que você enxerga.
               </h3>
               <p className="mt-2 text-[15px] leading-[1.55] text-wb-ink-2">
-                Arraste o controle acima para testar o sensor ultrassônico. Nossas bancadas Arduino
-                e ESP32 têm +45 sensores prontos para ligar pino a pino.
+                Arraste o obstáculo e veja o sensor ultrassônico responder.
               </p>
             </div>
           </article>
@@ -437,8 +432,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
                 Impressão 3D e Laser ao vivo.
               </h3>
               <p className="mt-2 text-[15px] leading-[1.55] text-wb-ink-2">
-                Inspecione cada camada do seu arquivo .STL ou .DXF antes de produzir nas 6
-                Impressoras 3D e na Cortadora a Laser CNC de 100W.
+                Confira cada camada do arquivo antes de imprimir ou cortar.
               </p>
             </div>
           </article>
@@ -500,8 +494,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
                 Dos blocos ao código C++ real.
               </h3>
               <p className="mt-2 text-[15px] leading-[1.55] text-wb-ink-2">
-                Iniciantes começam com programação em blocos e avançam no seu ritmo para C++ e
-                Python embarcados.
+                Comece em blocos e avance para C++ no seu ritmo.
               </p>
             </div>
           </article>
@@ -560,8 +553,7 @@ export const InteractiveBentoFeatures: React.FC = () => {
                 Ensino, Pesquisa e Extensão.
               </h3>
               <p className="mt-2 text-[15px] leading-[1.55] text-wb-ink-2">
-                O laboratório integra sala de aula, iniciação científica e
-                soluções tecnológicas para os desafios reais de Breves e do Marajó.
+                Aulas, iniciação científica e soluções para Breves.
               </p>
             </div>
           </article>

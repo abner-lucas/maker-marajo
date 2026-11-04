@@ -539,12 +539,7 @@ export const Hero3DWorkbench: React.FC = () => {
                 lineHeight: 1.6,
               }}
             >
-              <span className="font-semibold text-wb-ink">
-                Fortalecendo a cultura do “aprender fazendo” (learning by doing) no coração do
-                Marajó.
-              </span>{' '}
-              Prototipagem em Impressoras 3D, Cortadora a Laser CNC, Scanners 3D, Robótica e
-              Arduino integrando Ensino, Pesquisa e Extensão no IFPA Campus Breves.
+              Impressão 3D, laser, scanners e robótica para estudantes do IFPA Campus Breves.
             </p>
 
             {/* Primary CTAs */}

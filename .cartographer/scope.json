@@ -1,0 +1,1 @@
+{"goal":"Auditoria de usabilidade (ações, funções, botões), animação/parallax em camadas, redução de texto (~50%) e segurança do SPA React estático na Hostinger","mode":"inline (sem subagentes)","skip_paths":["node_modules","dist","public/videos","public/images"],"publish":"push main → Hostinger","date":"2026-11-04"}

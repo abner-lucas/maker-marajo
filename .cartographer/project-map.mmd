@@ -1,0 +1,55 @@
+graph LR
+  n_src_App_tsx["src/App.tsx"]
+  n_src_components_Navbar_tsx["src/components/Navbar.tsx"]
+  n_src_App_tsx --> n_src_components_Navbar_tsx
+  n_src_components_Footer_tsx["src/components/Footer.tsx"]
+  n_src_App_tsx --> n_src_components_Footer_tsx
+  n_src_pages_HomePage_tsx["src/pages/HomePage.tsx"]
+  n_src_App_tsx --> n_src_pages_HomePage_tsx
+  n_src_pages_EquipmentsPage_tsx["src/pages/EquipmentsPage.tsx"]
+  n_src_App_tsx --> n_src_pages_EquipmentsPage_tsx
+  n_src_pages_ServicesPage_tsx["src/pages/ServicesPage.tsx"]
+  n_src_App_tsx --> n_src_pages_ServicesPage_tsx
+  n_src_pages_ProjectsPage_tsx["src/pages/ProjectsPage.tsx"]
+  n_src_App_tsx --> n_src_pages_ProjectsPage_tsx
+  n_src_pages_BookingPage_tsx["src/pages/BookingPage.tsx"]
+  n_src_App_tsx --> n_src_pages_BookingPage_tsx
+  n_src_pages_MonthlyCalendarPage_tsx["src/pages/MonthlyCalendarPage.tsx"]
+  n_src_App_tsx --> n_src_pages_MonthlyCalendarPage_tsx
+  n_src_pages_TeamPage_tsx["src/pages/TeamPage.tsx"]
+  n_src_App_tsx --> n_src_pages_TeamPage_tsx
+  n_src_pages_NotFoundPage_tsx["src/pages/NotFoundPage.tsx"]
+  n_src_App_tsx --> n_src_pages_NotFoundPage_tsx
+  n_src_main_tsx["src/main.tsx"]
+  n_src_main_tsx --> n_src_App_tsx
+  n_src_components_BrandLogo_tsx["src/components/BrandLogo.tsx"]
+  n_src_components_Footer_tsx --> n_src_components_BrandLogo_tsx
+  n_src_data_labData_ts["src/data/labData.ts"]
+  n_src_components_Footer_tsx --> n_src_data_labData_ts
+  n_src_components_Hero3DWorkbench_tsx["src/components/Hero3DWorkbench.tsx"]
+  n_src_components_Hero3DWorkbench_tsx --> n_src_components_BrandLogo_tsx
+  n_src_components_Hero3DWorkbench_tsx --> n_src_data_labData_ts
+  n_src_components_LabVideosSection_tsx["src/components/LabVideosSection.tsx"]
+  n_src_components_LabVideosSection_tsx --> n_src_data_labData_ts
+  n_src_components_Navbar_tsx --> n_src_components_BrandLogo_tsx
+  n_src_components_Navbar_tsx --> n_src_data_labData_ts
+  n_src_pages_BookingPage_tsx --> n_src_data_labData_ts
+  n_src_pages_BookingPage_tsx --> n_src_components_BrandLogo_tsx
+  n_src_pages_EquipmentsPage_tsx --> n_src_data_labData_ts
+  n_src_pages_EquipmentsPage_tsx --> n_src_components_BrandLogo_tsx
+  n_src_pages_HomePage_tsx --> n_src_components_Hero3DWorkbench_tsx
+  n_src_components_ScrollytellingSection_tsx["src/components/ScrollytellingSection.tsx"]
+  n_src_pages_HomePage_tsx --> n_src_components_ScrollytellingSection_tsx
+  n_src_components_InteractiveBentoFeatures_tsx["src/components/InteractiveBentoFeatures.tsx"]
+  n_src_pages_HomePage_tsx --> n_src_components_InteractiveBentoFeatures_tsx
+  n_src_pages_HomePage_tsx --> n_src_components_LabVideosSection_tsx
+  n_src_pages_HomePage_tsx --> n_src_data_labData_ts
+  n_src_pages_MonthlyCalendarPage_tsx --> n_src_components_BrandLogo_tsx
+  n_src_components_motion_tsx["src/components/motion.tsx"]
+  n_src_pages_NotFoundPage_tsx --> n_src_components_motion_tsx
+  n_src_pages_ProjectsPage_tsx --> n_src_data_labData_ts
+  n_src_pages_ProjectsPage_tsx --> n_src_components_BrandLogo_tsx
+  n_src_pages_ServicesPage_tsx --> n_src_data_labData_ts
+  n_src_pages_ServicesPage_tsx --> n_src_components_BrandLogo_tsx
+  n_src_pages_TeamPage_tsx --> n_src_data_labData_ts
+  n_src_pages_TeamPage_tsx --> n_src_components_BrandLogo_tsx

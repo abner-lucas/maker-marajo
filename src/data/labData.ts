@@ -1187,11 +1187,11 @@ export const CALENDAR_ACTIVITIES: CalendarActivity[] = [
 export const FAQ_ITEMS = [
   {
     q: 'O que já temos instalado e funcionando hoje no Laboratório IFPA MAKER Marajó?',
-    a: 'O Laboratório IFPA MAKER Marajó já conta com bancada de Impressoras 3D CoreXY fechadas ELEGOO Centauri Carbon, Cortadora a Laser CO2 Industrial (azul e branca com mesa colmeia), Gravadora Laser Diodo CNC de bancada, Scanners 3D, Arena própria de Futebol de Robôs (Robot Soccer) com 5 robôs impressos em 3D equipados com display LCD, mesa de Canetas 3D, estação CAD com monitor curvo Samsung, micro-retíficas, ferramentas de precisão e espaço de convivência com iluminação RGB.',
+    a: 'Impressoras 3D Elegoo Centauri Carbon, cortadora a laser CO2, gravadora a laser diodo, scanners 3D, arena de Robot Soccer com 5 robôs, canetas 3D e estação CAD.',
   },
   {
     q: 'Quais projetos e ações já foram produzidos no laboratório até o momento?',
-    a: 'Entre os destaques já realizados estão: (1) a produção completa em série das medalhas oficiais do IV JINs (IV Jogos dos Integrados — Campeão 2026) do IFPA Breves em MDF e acrílico cortados/gravados a laser; (2) a Arena Robot Soccer com 5 robôs jogadores impressos em 3D; e (3) a coleção de Ribeirinhos em Canoas Marajoaras impressos em 3D sobre bases cortadas a laser para a inauguração.',
+    a: 'As medalhas oficiais do IV JINs (MDF e acrílico a laser), a arena de Robot Soccer com robôs impressos em 3D e a coleção de ribeirinhos em canoas marajoaras.',
   },
   {
     q: 'O uso das impressoras Elegoo Centauri Carbon, das cortadoras a laser e da arena é gratuito?',

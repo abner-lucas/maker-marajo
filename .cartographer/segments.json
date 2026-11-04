@@ -1,0 +1,55 @@
+{
+  "segments": [
+    {
+      "name": "react@src",
+      "files": [
+        "src/App.tsx",
+        "src/components/BrandLogo.tsx",
+        "src/components/Footer.tsx",
+        "src/components/Hero3DWorkbench.tsx",
+        "src/components/InteractiveBentoFeatures.tsx",
+        "src/components/LabVideosSection.tsx",
+        "src/components/Navbar.tsx",
+        "src/components/ScrollytellingSection.tsx",
+        "src/components/motion.tsx",
+        "src/data/labData.ts",
+        "src/main.tsx",
+        "src/pages/BookingPage.tsx",
+        "src/pages/EquipmentsPage.tsx",
+        "src/pages/HomePage.tsx",
+        "src/pages/MonthlyCalendarPage.tsx",
+        "src/pages/NotFoundPage.tsx",
+        "src/pages/ProjectsPage.tsx",
+        "src/pages/ServicesPage.tsx",
+        "src/pages/TeamPage.tsx"
+      ],
+      "file_count": 19,
+      "loc": 7547,
+      "symbol_count": 37,
+      "integrations": [
+        "react"
+      ],
+      "endpoints": [],
+      "directory_prefix": "src",
+      "complexity_score": 29
+    },
+    {
+      "name": "segment_1",
+      "files": [
+        "postcss.config.js",
+        "postcss.config.js",
+        "tailwind.config.js",
+        "tailwind.config.js",
+        "vite.config.ts",
+        "vite.config.ts"
+      ],
+      "file_count": 6,
+      "loc": 122,
+      "symbol_count": 0,
+      "integrations": [],
+      "endpoints": [],
+      "directory_prefix": "",
+      "complexity_score": 6
+    }
+  ]
+}

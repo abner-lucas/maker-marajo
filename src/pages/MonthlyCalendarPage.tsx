@@ -83,10 +83,8 @@ export const MonthlyCalendarPage: React.FC = () => {
                 <WordRise text="Visualização Mensal de Ações e Atividades." />
               </h1>
               <p className="mt-3 max-w-[42em] text-[16.5px] leading-relaxed text-wb-ink-2">
-                Acompanhe todas as oficinas práticas, sessões de corte a laser e impressão 3D,
-                visitas de escolas públicas e Makeathons do{' '}
-                <strong>Laboratório IF MAKER — IFPA Campus Breves</strong>.
-              </p>
+            Oficinas, sessões de laser e impressão 3D, visitas e makeathons do mês.
+          </p>
             </div>
 
             <Link

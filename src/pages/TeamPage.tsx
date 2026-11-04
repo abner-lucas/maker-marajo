@@ -31,9 +31,7 @@ export const TeamPage: React.FC = () => {
             <WordRise text="Equipe do Laboratório IF MAKER Breves." />
           </h1>
           <p className="mt-4 max-w-[42em] text-[17px] leading-relaxed text-wb-ink-2">
-            Uma equipe multidisciplinar formada por coordenadores, professores pesquisadores,
-            técnicos de laboratório e estudantes monitores dedicados a fortalecer a cultura do{' '}
-            <strong className="font-semibold text-wb-ink">“aprender fazendo”</strong> no arquipélago do Marajó.
+            Professores, técnicos e estudantes monitores que fazem o laboratório funcionar.
           </p>
         </div>
       </section>

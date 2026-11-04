@@ -1,3 +1,4 @@
+# --- Roteamento do SPA (React Router) ---
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
@@ -5,6 +6,31 @@
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME} !-l
+  # Arquivos com extensão que não existem devolvem 404 de verdade (evita servir HTML como .js/.map)
+  RewriteCond %{REQUEST_URI} !\.[a-zA-Z0-9]{1,5}$
   RewriteRule . /index.html [L]
 </IfModule>
 
+# --- Cabeçalhos de segurança ---
+<IfModule mod_headers.c>
+  # Só scripts, estilos, fontes e mídia do próprio domínio; único iframe externo é o Google Agenda.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self'; font-src 'self' data:; connect-src 'self'; frame-src https://calendar.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+
+  # JS/CSS/fontes têm hash no nome (Vite): cache de 1 ano. Fotos e vídeos podem ser trocados
+  # mantendo o nome, então ficam só 7 dias. O index.html nunca fica em cache.
+  <FilesMatch "\.(js|css|woff2?)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(svg|png|jpe?g|webp|mp4)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+  <FilesMatch "^index\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

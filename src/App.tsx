@@ -9,6 +9,7 @@ import { ProjectsPage } from './pages/ProjectsPage';
 import { BookingPage } from './pages/BookingPage';
 import { MonthlyCalendarPage } from './pages/MonthlyCalendarPage';
 import { TeamPage } from './pages/TeamPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 
 export const App: React.FC = () => {
   return (
@@ -25,7 +26,7 @@ export const App: React.FC = () => {
             <Route path="/agendamento" element={<BookingPage />} />
             <Route path="/agenda-mensal" element={<MonthlyCalendarPage />} />
             <Route path="/equipe" element={<TeamPage />} />
-            <Route path="*" element={<HomePage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>
         <Footer />

@@ -1,202 +1,113 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  ArrowRight,
-  Calendar,
-  CheckCircle2,
-  ExternalLink,
-  Film,
-  Plus,
-  Users,
-  Wrench,
-} from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Calendar, Plus } from 'lucide-react';
 import { Hero3DWorkbench } from '../components/Hero3DWorkbench';
 import { ScrollytellingSection } from '../components/ScrollytellingSection';
 import { InteractiveBentoFeatures } from '../components/InteractiveBentoFeatures';
 import { LabVideosSection } from '../components/LabVideosSection';
-import { WordRise } from '../components/BrandLogo';
 import {
-  CALENDAR_ACTIVITIES,
-  EQUIPMENTS,
-  FAQ_ITEMS,
-  IMAGE_ASSETS,
-} from '../data/labData';
+  Cascata,
+  CascataItem,
+  MeandroVivo,
+  Parallax,
+  Revelar,
+  SecaoViva,
+  TituloPalavras,
+} from '../components/motion';
+import { CALENDAR_ACTIVITIES, EQUIPMENTS, FAQ_ITEMS, IMAGE_ASSETS } from '../data/labData';
 
-const GALLERY_MOSAIC = [
-  {
-    kind: 'photo',
-    src: IMAGE_ASSETS.real.canoasMarajoaras3d,
-    caption: 'Ribeirinhos em canoas marajoaras impressos em 3D + base cortada a laser',
-    span: 'col-span-2 row-span-2 lg:row-span-3',
-  },
-  {
-    kind: 'item',
-    src: IMAGE_ASSETS.real.elegooCentauriCarbon,
-    caption: 'Elegoo Centauri Carbon',
-    span: 'col-span-2 row-span-2',
-  },
-  {
-    kind: 'item',
-    src: IMAGE_ASSETS.real.laserCo2CortandoAcrilico,
-    caption: 'Laser CO2 em Acrílico',
-    span: '',
-  },
-  {
-    kind: 'item',
-    src: IMAGE_ASSETS.real.laserDiodoMdf,
-    caption: 'Laser Diodo em MDF',
-    span: '',
-  },
-  {
-    kind: 'item',
-    src: IMAGE_ASSETS.real.robotSoccerDisputa,
-    caption: 'Robot Soccer 3D + LCD',
-    span: '',
-  },
-  {
-    kind: 'item',
-    src: IMAGE_ASSETS.real.bancadaCanetas3dAcai,
-    caption: 'Canetas 3D & Eletrônica',
-    span: '',
-  },
-  {
-    kind: 'item',
-    src: IMAGE_ASSETS.real.alunosRetificaAcrilico,
-    caption: 'Acabamento Micro-Retífica',
-    span: '',
-  },
-  {
-    kind: 'item',
-    src: IMAGE_ASSETS.real.inauguracaoEspaco,
-    caption: 'Espaço Convivência RGB',
-    span: '',
-  },
-  {
-    kind: 'photo',
-    src: IMAGE_ASSETS.real.alunasMontagemMedalhas,
-    caption: 'Estudantes montando as medalhas do IV JINs no LabMaker Marajó',
-    span: 'col-span-2 row-span-2 lg:row-span-3',
-  },
-  {
-    kind: 'photo',
-    src: IMAGE_ASSETS.real.medalhaJinsPronta,
-    caption: 'Medalha Oficial IV JINs 2026 produzida em MDF e acrílico no laboratório',
-    span: 'col-span-2 row-span-2 lg:col-span-4',
-  },
+/* Galeria em 3 colunas que rolam em velocidades diferentes (parallax de camadas) */
+const GALERIA: { src: string; legenda: string; alto?: boolean }[][] = [
+  [
+    { src: IMAGE_ASSETS.real.canoasMarajoaras3d, legenda: 'Canoas marajoaras em 3D', alto: true },
+    { src: IMAGE_ASSETS.real.laserCo2CortandoAcrilico, legenda: 'Laser CO2 no acrílico' },
+    { src: IMAGE_ASSETS.real.bancadaCanetas3dAcai, legenda: 'Canetas 3D' },
+  ],
+  [
+    { src: IMAGE_ASSETS.real.elegooCentauriCarbon, legenda: 'Elegoo Centauri Carbon' },
+    { src: IMAGE_ASSETS.real.alunasMontagemMedalhas, legenda: 'Montagem das medalhas do IV JINs', alto: true },
+    { src: IMAGE_ASSETS.real.robotSoccerDisputa, legenda: 'Robot Soccer' },
+  ],
+  [
+    { src: IMAGE_ASSETS.real.laserDiodoMdf, legenda: 'Laser diodo em MDF' },
+    { src: IMAGE_ASSETS.real.alunosRetificaAcrilico, legenda: 'Acabamento' },
+    { src: IMAGE_ASSETS.real.medalhaJinsPronta, legenda: 'Medalha do IV JINs pronta', alto: true },
+  ],
 ];
+const VELOCIDADES = [40, -70, 90];
 
-const MARQUEE_IMAGES = [
-  { src: IMAGE_ASSETS.real.canoasMarajoaras3d, label: 'Canoas Marajoaras 3D' },
-  { src: IMAGE_ASSETS.real.medalhaJinsPronta, label: 'Medalhas IV JINs 2026' },
-  { src: IMAGE_ASSETS.real.robotSoccerDisputa, label: 'Robot Soccer Marajó' },
-  { src: IMAGE_ASSETS.real.elegooCentauriCarbon, label: 'Elegoo Centauri Carbon' },
-  { src: IMAGE_ASSETS.real.laserCo2CortandoAcrilico, label: 'Laser CO2 no Acrílico' },
-  { src: IMAGE_ASSETS.real.laserDiodoMdf, label: 'Laser Diodo CNC' },
-  { src: IMAGE_ASSETS.real.alunasMontagemMedalhas, label: 'Protagonismo Estudantil' },
-  { src: IMAGE_ASSETS.real.bancadaCanetas3dAcai, label: 'Mural Açaí & Canetas 3D' },
-  { src: IMAGE_ASSETS.real.estacaoCadSlicer, label: 'Estação CAD Monitor Curvo' },
-  { src: IMAGE_ASSETS.real.vitrine3d, label: 'Vitrine de Protótipos 3D' },
-];
+const Titulo: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
+  <h2
+    className={`font-brand font-semibold ${className}`}
+    style={{ fontSize: 'clamp(32px, 4.4vw, 60px)', lineHeight: 1.02, letterSpacing: '-0.028em' }}
+  >
+    {children}
+  </h2>
+);
+
+const Rotulo: React.FC<{ cor: string; children: React.ReactNode; claro?: boolean }> = ({ cor, children, claro }) => (
+  <p className={`rotulo ${claro ? '!text-white/70' : ''}`}>
+    <span aria-hidden="true" className={`marajo-glifo ${cor}`} />
+    {children}
+  </p>
+);
 
 export const HomePage: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
     <div>
-      {/* 1. Interactive Three.js 3D Hero Section */}
       <Hero3DWorkbench />
 
-      {/* 2. Institutional Presentation Banner: 5th Lab Delivered in March 2026 */}
-      <section
-        id="apresentacao"
-        className="bg-wb-bench border-b border-wb-line py-20 sm:py-28 font-ui text-wb-ink"
-      >
-        <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-14 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2">
-                <span className="rotulo">
-                  <span aria-hidden="true" className="marajo-glifo text-wb-green" />
-                  Sobre o laboratório · IFPA Campus Breves
-                </span>
-              </div>
-
-              <h2
-                className="mt-4 font-brand font-bold text-wb-ink"
-                style={{
-                  fontSize: 'clamp(30px, 3.8vw, 50px)',
-                  lineHeight: 1.06,
-                  letterSpacing: '-0.028em',
-                }}
-              >
-                Laboratório IFPA MAKER Marajó, <span className="acento">em plena produção</span> em Breves.
-              </h2>
-
-              <p className="mt-5 text-[16.5px] leading-[1.68] text-wb-ink-2">
-                Instalado pelo <strong>Instituto Federal do Pará (IFPA)</strong> no{' '}
-                <strong>Campus Breves</strong>, o{' '}
-                <strong>Laboratório IFPA MAKER Marajó</strong> fortalece a cultura do{' '}
-                <strong className="text-wb-ink">“aprender fazendo” (learning by doing)</strong> com
-                infraestrutura tecnológica de ponta.
+      {/* Sobre — texto curto + vídeo em camadas de parallax */}
+      <SecaoViva id="apresentacao" className="overflow-x-clip bg-wb-bench py-24 font-ui text-wb-ink sm:py-32">
+        <div className="mx-auto grid max-w-[1320px] grid-cols-1 items-center gap-14 px-5 sm:px-8 lg:grid-cols-[1fr_1.05fr] lg:gap-20">
+          <div>
+            <Rotulo cor="text-wb-green">Sobre o laboratório</Rotulo>
+            <Titulo className="mt-4 text-wb-ink">
+              <TituloPalavras texto="Aprender fazendo," />
+              <span className="acento text-wb-green">no coração do Marajó.</span>
+            </Titulo>
+            <Revelar atraso={0.1}>
+              <p className="mt-6 max-w-[30em] text-[18px] leading-[1.6] text-wb-ink-2">
+                O IFPA MAKER Marajó, no Campus Breves, já fabrica medalhas a laser, robôs de
+                futebol e peças da cultura marajoara em impressão 3D.
               </p>
+            </Revelar>
 
-              <p className="mt-3.5 text-[16px] leading-[1.68] text-wb-ink-2">
-                Aqui os estudantes já projetam e fabricam desde as{' '}
-                <strong>medalhas oficiais do IV JINs</strong> (em acrílico e MDF cortados a laser),
-                disputam partidas na <strong>Arena Robot Soccer</strong> (com 5 robôs impressos em
-                3D e display LCD) e materializam ícones culturais como os{' '}
-                <strong>ribeirinhos em canoas marajoaras</strong> nas impressoras{' '}
-                <strong>Elegoo Centauri Carbon</strong>.
-              </p>
+            <Cascata className="mt-9 grid max-w-[30em] grid-cols-3 gap-6 border-t border-wb-ink/80 pt-5">
+              {[
+                { n: '5', t: 'tipos de equipamento' },
+                { n: '3', t: 'vídeos reais' },
+                { n: '100%', t: 'gratuito no ensino e extensão' },
+              ].map((x) => (
+                <CascataItem key={x.t}>
+                  <p className="font-brand text-[40px] font-semibold leading-none">{x.n}</p>
+                  <p className="mt-2 text-[13.5px] text-wb-ink-3">{x.t}</p>
+                </CascataItem>
+              ))}
+            </Cascata>
 
-              <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {[
-                  {
-                    title: 'Parque Real em Operação',
-                    desc: 'Impressoras 3D Elegoo Centauri Carbon, Laser CO2 Industrial, Laser Diodo CNC, Canetas 3D e Arena Robot Soccer.',
-                  },
-                  {
-                    title: 'Protagonismo Estudantil no Marajó',
-                    desc: 'Estudantes operando CAD, corte a laser, micro-retíficas, pintura e robótica para demandas reais do campus.',
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.title}
-                    className="border-t border-wb-line py-4"
-                  >
-                    <div className="flex items-center gap-2 font-bold text-[15px] text-wb-ink">
-                      <CheckCircle2 className="h-4 w-4 text-wb-green shrink-0" />
-                      <span>{item.title}</span>
-                    </div>
-                    <p className="mt-1.5 text-[13.5px] text-wb-ink-2 leading-relaxed">
-                      {item.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a
-                  href="#videos-reais"
-                  className="wb-btn wb-btn-primary h-12 px-6 text-[15px]"
-                >
-                  <Film className="h-4 w-4" />
-                  <span>Assistir vídeos quadro a quadro</span>
-                </a>
-                <Link
-                  to="/projetos"
-                  className="wb-btn wb-btn-green h-12 px-6 text-[15px]"
-                >
-                  <span>Ver projetos produzidos</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Link to="/projetos" className="wb-btn wb-btn-dark h-12 px-6 text-[15px]">
+                Ver projetos
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <a href="#videos-reais" className="wb-btn h-12 px-4 text-[15px] text-wb-ink underline decoration-wb-line underline-offset-4 hover:decoration-wb-orange">
+                Assistir vídeos
+              </a>
             </div>
+          </div>
 
-            {/* Right: Real Video Loop + Official Poster Thumbnail */}
-            <div className="relative">
+          {/* Três camadas: meandro ao fundo, vídeo no meio, foto à frente */}
+          <div className="relative mx-auto w-full max-w-[600px] pb-16 lg:pb-0">
+            <Parallax velocidade={30} className="pointer-events-none absolute -top-10 right-0 w-[70%] text-wb-orange/50 lg:-right-6">
+              <MeandroVivo className="h-auto w-full" />
+              <MeandroVivo className="mt-2 h-auto w-full" />
+            </Parallax>
+            <Parallax velocidade={-20}>
               <figure>
-                <div className="relative overflow-hidden rounded-[20px] aspect-[4/3] bg-black">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[22px] bg-black">
                   <video
                     src="/videos/DWCiTZDEavR.mp4"
                     poster={IMAGE_ASSETS.real.canoasMarajoaras3d}
@@ -204,362 +115,226 @@ export const HomePage: React.FC = () => {
                     loop
                     muted
                     playsInline
+                    preload="metadata"
+                    aria-label="Tour pelo laboratório"
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <figcaption className="mt-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-[13.5px]">
-                  <span className="font-semibold text-wb-ink">Tour pelo laboratório — vídeo real</span>
-                  <span className="text-wb-ink-3">Elegoo Centauri Carbon · Laser CO2 · Canetas 3D</span>
-                </figcaption>
+                <figcaption className="mt-3 text-[13.5px] text-wb-ink-3">Tour pelo laboratório</figcaption>
               </figure>
-
-            </div>
+            </Parallax>
+            <Parallax
+              velocidade={-90}
+              className="absolute -bottom-2 left-0 w-[42%] sm:-left-10 lg:-bottom-14"
+            >
+              <img
+                src={IMAGE_ASSETS.real.medalhaJinsPronta}
+                alt="Medalha do IV JINs feita no laboratório"
+                loading="lazy"
+                className="aspect-square w-full rotate-[-4deg] rounded-[18px] object-cover ring-[6px] ring-wb-bench"
+              />
+            </Parallax>
           </div>
         </div>
-      </section>
+      </SecaoViva>
 
-      {/* 3. Interactive Videos & Frame-by-Frame Reel Analysis Section */}
       <LabVideosSection />
 
-      {/* 4. Dedicated Pages Showcase: Our 5 Equipment Categories */}
-      <section className="bg-wb-canvas py-24 sm:py-32 border-b border-wb-line">
+      {/* Equipamentos */}
+      <SecaoViva className="bg-wb-canvas py-24 sm:py-32">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
-              <p className="rotulo">
-                <span aria-hidden="true" className="marajo-glifo text-wb-green" />
-                Estrutura e máquinas · Equipamentos do laboratório
-              </p>
-              <h2
-                className="mt-3 font-brand font-bold text-wb-ink"
-                style={{
-                  fontSize: 'clamp(30px, 4vw, 54px)',
-                  lineHeight: 1.05,
-                  letterSpacing: '-0.028em',
-                }}
-              >
-                Nossos <span className="acento">equipamentos</span>.
-              </h2>
+              <Rotulo cor="text-wb-orange">Equipamentos</Rotulo>
+              <Titulo className="mt-3 text-wb-ink">
+                Cinco bancadas, <span className="acento text-wb-orange">um simulador cada</span>.
+              </Titulo>
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-              <p className="text-[15px] text-wb-ink-2 max-w-[28em]">
-                Acesse a página exclusiva de cada equipamento para ver fotos e vídeos reais da
-                bancada, simuladores interativos e especificações.
-              </p>
-              <Link
-                to="/equipamentos"
-                className="wb-btn wb-btn-dark h-11 px-5 text-[14px] shrink-0"
-              >
-                <span>Ver parque completo</span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
+            <Link to="/equipamentos" className="wb-btn wb-btn-dark h-11 px-5 text-[14px]">
+              Ver todos
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
 
-          {/* 5 Equipment Cards linking to their separate pages */}
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <Cascata className="mt-12 grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-5">
             {EQUIPMENTS.map((eq) => (
-              <Link
-                key={eq.id}
-                to={`/equipamentos/${eq.slug}`}
-                className="group flex flex-col"
-              >
-                <div className="relative aspect-[4/3] overflow-hidden rounded-[16px] bg-wb-bench">
-                  <img
-                    src={eq.image}
-                    alt={eq.name}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-
-                <div className="flex flex-1 flex-col justify-between pt-4">
-                  <div>
-                    <span className="flex items-center gap-2 font-key text-[12.5px] font-semibold text-wb-ink-3">
-                      <span aria-hidden="true" className="h-2.5 w-2.5 rotate-45" style={{ backgroundColor: eq.accentColor }} />
-                      {eq.badge.split('·')[0].trim()} · {eq.unitsAvailable} un.
+              <CascataItem key={eq.id}>
+                <Link to={`/equipamentos/${eq.slug}`} className="group block">
+                  <div className="relative aspect-[4/5] overflow-hidden rounded-[18px] bg-wb-bench">
+                    <img
+                      src={eq.image}
+                      alt=""
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-700 ease-out-soft group-hover:scale-[1.06]"
+                    />
+                    <span className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-wb-canvas text-wb-ink transition-all duration-300 group-hover:rotate-45 group-hover:bg-wb-orange group-hover:text-white">
+                      <ArrowUpRight className="h-4 w-4" />
                     </span>
-                    <h3 className="mt-1.5 font-brand text-[21px] font-semibold text-wb-ink group-hover:text-wb-orange transition-colors">
-                      {eq.shortName}
-                    </h3>
-                    <p className="mt-2 text-[13.5px] text-wb-ink-2 line-clamp-3 leading-relaxed">
-                      {eq.tagline}
-                    </p>
                   </div>
-
-                  <div className="mt-4 flex items-center gap-2 text-[14px] font-semibold text-wb-ink group-hover:text-wb-orange">
-                    <span>Abrir página e simulador</span>
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </div>
-                </div>
-              </Link>
+                  <p className="mt-4 flex items-center gap-2 text-[13px] text-wb-ink-3">
+                    <span aria-hidden="true" className="h-2 w-2 rotate-45" style={{ backgroundColor: eq.accentColor }} />
+                    {eq.unitsAvailable} unidades
+                  </p>
+                  <h3 className="mt-1 font-brand text-[22px] font-semibold leading-tight text-wb-ink transition-colors group-hover:text-wb-orange">
+                    {eq.shortName}
+                  </h3>
+                </Link>
+              </CascataItem>
             ))}
-          </div>
+          </Cascata>
         </div>
-      </section>
+      </SecaoViva>
 
-      {/* 5. Constructa-style Scrollytelling Section (460svh sticky scroll-driven animation) */}
       <ScrollytellingSection />
 
-      {/* 6. Constructa-style Interactive 6-Card Bento Grid */}
       <InteractiveBentoFeatures />
 
-      {/* 7. Constructathon-style Dense Real Photo Mosaic + Infinite Marquee */}
-      <section
-        id="vivencia-maker"
-        className="scroll-mt-20 bg-wb-canvas pb-12 pt-20 font-ui text-wb-ink sm:pt-28 border-t border-wb-line"
-      >
+      {/* Galeria em parallax de camadas */}
+      <SecaoViva id="vivencia-maker" className="scroll-mt-20 overflow-hidden bg-wb-canvas py-24 font-ui text-wb-ink sm:py-32">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-[1.3fr_1fr] md:items-end">
+          <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
-              <p className="rotulo">
-                <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
-                Galeria de fotos · Projetos e atividades
-              </p>
-              <h2
-                className="mt-3 font-brand font-bold text-wb-ink"
-                style={{
-                  fontSize: 'clamp(32px, 4.2vw, 54px)',
-                  lineHeight: 1.04,
-                  letterSpacing: '-0.028em',
-                }}
-              >
-                O que já fizemos <span className="acento">nas nossas bancadas</span>.
-              </h2>
+              <Rotulo cor="text-wb-orange">Galeria</Rotulo>
+              <Titulo className="mt-3 text-wb-ink">
+                Feito <span className="acento text-wb-orange">nas nossas bancadas</span>.
+              </Titulo>
             </div>
-            <div className="md:text-right">
-              <p className="text-[15.5px] text-wb-ink-2">
-                Das medalhas do IV JINs e canoas marajoaras 3D às partidas de Robot Soccer na nossa
-                arena.
-              </p>
-              <Link
-                to="/projetos"
-                className="mt-3 inline-flex items-center gap-1.5 font-bold text-[14.5px] text-wb-orange hover:underline"
-              >
-                <span>Ver todos os projetos</span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
+            <Link
+              to="/projetos"
+              className="inline-flex min-h-[44px] items-center gap-1.5 text-[15px] font-semibold text-wb-ink underline decoration-wb-line underline-offset-4 hover:text-wb-orange hover:decoration-wb-orange"
+            >
+              Todos os projetos
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
 
-          {/* Dense Bento Photo Mosaic with Real Lab Photos */}
-          <div className="mt-12 grid grid-flow-row-dense auto-rows-[136px] grid-cols-2 gap-3 sm:auto-rows-[152px] sm:grid-cols-4 lg:auto-rows-[140px] lg:grid-cols-6 lg:gap-4">
-            {GALLERY_MOSAIC.map((item, idx) =>
-              item.kind === 'photo' ? (
-                <figure
-                  key={idx}
-                  className={`group relative overflow-hidden rounded-[18px] bg-wb-bench border border-wb-line ${item.span}`}
-                >
-                  <img
-                    src={item.src}
-                    alt={item.caption}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                  />
-                  <figcaption className="absolute bottom-3 left-3 right-3 w-fit rounded-md bg-black/80 px-2.5 py-1 font-key text-[11px] font-semibold text-white backdrop-blur-sm shadow-sm">
-                    {item.caption}
-                  </figcaption>
-                </figure>
-              ) : (
-                <div
-                  key={idx}
-                  className={`group relative overflow-hidden rounded-[18px] border border-wb-line bg-white ${item.span}`}
-                >
-                  <img
-                    src={item.src}
-                    alt={item.caption}
-                    loading="lazy"
-                    className="h-full w-full scale-[1.03] object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <span className="absolute bottom-2 left-2 rounded-md bg-black/80 px-2.5 py-1 font-key text-[10.5px] font-semibold text-white backdrop-blur-sm shadow-sm">
-                    {item.caption}
-                  </span>
-                </div>
-              )
-            )}
-          </div>
-        </div>
-
-        {/* Infinite Auto-Scrolling Marquee Strip */}
-        <div
-          dir="ltr"
-          className="relative mt-12 overflow-hidden"
-          aria-label="Galeria contínua de equipamentos e projetos reais do IF MAKER Breves"
-        >
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent sm:w-32" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent sm:w-32" />
-          <ul className="wb-marquee flex w-max gap-3.5">
-            {[...MARQUEE_IMAGES, ...MARQUEE_IMAGES].map((item, idx) => (
-              <li
-                key={idx}
-                aria-hidden={idx >= MARQUEE_IMAGES.length}
-                className="relative h-[126px] w-[164px] shrink-0 overflow-hidden rounded-[15px] border border-wb-line bg-white sm:h-[144px] sm:w-[190px]"
+          <div className="mt-14 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
+            {GALERIA.map((coluna, ci) => (
+              <Parallax
+                key={ci}
+                velocidade={VELOCIDADES[ci]}
+                className={`flex flex-col gap-3 sm:gap-5 ${ci === 2 ? 'hidden lg:flex' : ''} ${ci === 1 ? 'pt-16' : ''}`}
               >
-                <img
-                  src={item.src}
-                  alt={item.label}
-                  loading="lazy"
-                  className="h-full w-full object-cover"
-                />
-                <span className="absolute bottom-2 left-2 right-2 truncate rounded-md bg-black/80 px-2 py-1 text-center font-key text-[10.5px] font-semibold text-white backdrop-blur-sm">
-                  {item.label}
-                </span>
-              </li>
+                {coluna.map((f) => (
+                  <figure key={f.src} className="group relative overflow-hidden rounded-[18px] bg-wb-bench">
+                    <img
+                      src={f.src}
+                      alt={f.legenda}
+                      loading="lazy"
+                      className={`w-full object-cover transition-transform duration-700 ease-out-soft group-hover:scale-[1.05] ${
+                        f.alto ? 'aspect-[3/4]' : 'aspect-[4/3]'
+                      }`}
+                    />
+                    <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-4 pb-3 pt-10 text-[13px] font-medium text-white opacity-100 transition-opacity duration-300 lg:opacity-0 lg:group-hover:opacity-100">
+                      {f.legenda}
+                    </figcaption>
+                  </figure>
+                ))}
+              </Parallax>
             ))}
-          </ul>
+          </div>
         </div>
-      </section>
+      </SecaoViva>
 
-      {/* 8. Dark-Mode Spotlight Card: Robot Soccer Live Video + Agenda Mensal (Constructa `#whats-new` style) */}
-      <section className="bg-wb-canvas pt-20 pb-24 font-ui text-wb-ink">
-        <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <article className="relative grid overflow-hidden rounded-[26px] bg-[#0C100E] text-white ring-1 ring-white/10 lg:grid-cols-[minmax(0,5.5fr)_minmax(0,6.5fr)]">
-            {/* Left Copy */}
-            <div className="relative z-10 flex flex-col justify-between p-7 sm:p-11">
+      {/* Robot Soccer + agenda (palco escuro) */}
+      <section className="bg-wb-canvas px-3 pb-24 sm:px-5">
+        <SecaoViva className="mx-auto max-w-[1380px] overflow-hidden rounded-[28px] bg-[#14110d] text-white">
+          <div className="grid lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]">
+            <div className="flex flex-col justify-between p-7 sm:p-12">
               <div>
-                <p className="rotulo !text-white/75">
-                  <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
-                  Robótica e agenda · Atividades do mês
-                </p>
+                <Rotulo cor="text-wb-orange" claro>
+                  Agenda do mês
+                </Rotulo>
+                <Titulo className="mt-4 text-white">
+                  Oficinas, treinos e <span className="acento text-wb-orange">futebol de robôs</span>.
+                </Titulo>
 
-                <h2
-                  className="mt-5 font-brand font-bold text-white"
-                  style={{
-                    fontSize: 'clamp(28px, 3.6vw, 46px)',
-                    lineHeight: 1.06,
-                    letterSpacing: '-0.028em',
-                  }}
-                >
-                  Robot Soccer, <span className="acento text-wb-orange">futebol de robôs</span> e oficinas do mês
-                </h2>
-
-                <p className="mt-4 text-[15.5px] leading-relaxed text-white/75">
-                  O{' '}
-                  <strong className="text-white">LabMaker Marajó</strong> já conta com sua própria{' '}
-                  <strong className="text-white">Arena Robot Soccer</strong> com 5 robôs impressos
-                  em 3D e display LCD! Confira os próximos eventos sincronizados via{' '}
-                  <strong className="text-white">Google Agenda</strong>:
-                </p>
-
-                {/* Next 3 Upcoming Events Mini List */}
-                <div className="mt-6 space-y-2.5">
+                <Cascata as="ul" className="mt-9">
                   {CALENDAR_ACTIVITIES.slice(0, 3).map((act) => (
-                    <div
-                      key={act.id}
-                      className="flex items-center justify-between gap-3 border-t border-white/10 py-2.5"
-                    >
-                      <div className="min-w-0">
-                        <p className="truncate text-[13.5px] font-bold text-white">{act.title}</p>
-                        <p className="font-key text-[11px] text-white/60">
-                          {act.date} · {act.startTime} às {act.endTime} · {act.equipment}
-                        </p>
-                      </div>
-                      <span className="shrink-0 rounded-lg bg-wb-green/20 px-2.5 py-1 font-key text-[10.5px] font-bold text-emerald-300">
-                        {act.spotsAvailable} vagas
-                      </span>
-                    </div>
+                    <CascataItem as="li" key={act.id}>
+                      <Link
+                        to="/agenda-mensal"
+                        className="group flex items-center justify-between gap-4 border-t border-white/15 py-4"
+                      >
+                        <span className="min-w-0">
+                          <span className="block truncate text-[16px] font-semibold">{act.title}</span>
+                          <span className="mt-0.5 block text-[13px] text-white/55">
+                            {act.date} · {act.startTime}
+                          </span>
+                        </span>
+                        <span className="shrink-0 text-[13px] font-semibold text-emerald-300">
+                          {act.spotsAvailable} vagas
+                        </span>
+                      </Link>
+                    </CascataItem>
                   ))}
-                </div>
+                </Cascata>
               </div>
 
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link
-                  to="/agenda-mensal"
-                  className="wb-btn wb-btn-primary h-12 px-6 text-[14.5px]"
-                >
+              <div className="mt-9 flex flex-wrap gap-3">
+                <Link to="/agenda-mensal" className="wb-btn wb-btn-primary h-12 px-6 text-[15px]">
                   <Calendar className="h-4 w-4" />
-                  <span>Ver agenda do mês</span>
+                  Ver agenda
                 </Link>
                 <Link
                   to="/agendamento"
-                  className="wb-btn border border-white/20 bg-white/10 h-12 px-6 text-[14.5px] text-white hover:bg-white/20"
+                  className="wb-btn h-12 px-5 text-[15px] text-white underline decoration-white/30 underline-offset-4 hover:decoration-wb-orange"
                 >
-                  <span>Agendar horário de bancada</span>
+                  Agendar bancada
                 </Link>
               </div>
             </div>
 
-            {/* Right: Live Robot Soccer Video inside 3D Perspective Grid Arena */}
-            <div className="relative min-h-[340px] sm:min-h-[420px] overflow-hidden flex items-center justify-center p-6">
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    'radial-gradient(55% 60% at 50% 58%, rgba(47,179,107,0.34), rgba(255,107,53,0.12) 45%, transparent 75%)',
-                }}
-              />
-              <div className="absolute inset-x-0 bottom-0 h-[52%] overflow-hidden [perspective:260px]">
+            <div className="relative flex min-h-[420px] items-center justify-center overflow-hidden p-6">
+              <Parallax velocidade={50} className="absolute inset-0">
                 <div
-                  className="absolute -inset-x-1/2 bottom-0 h-[220%] origin-bottom [transform:rotateX(62deg)]"
+                  className="absolute inset-[-10%]"
                   style={{
-                    backgroundImage:
-                      'linear-gradient(rgba(255,255,255,0.22) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.22) 1px, transparent 1px)',
-                    backgroundSize: '32px 32px',
-                    maskImage: 'linear-gradient(to top, black 30%, transparent 95%)',
-                    WebkitMaskImage: 'linear-gradient(to top, black 30%, transparent 95%)',
+                    background:
+                      'radial-gradient(50% 55% at 50% 55%, rgba(35,163,94,0.35), rgba(242,98,46,0.12) 50%, transparent 75%)',
                   }}
                 />
-              </div>
-
-              {/* Embedded Real Robot Soccer Video Card */}
-              <div className="relative z-10 w-full max-w-[300px] overflow-hidden rounded-[22px] border border-white/20 bg-black">
-                <video
-                  src="/videos/DYOI0SHRQBN.mp4"
-                  poster={IMAGE_ASSETS.real.robotSoccerDisputa}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  controls
-                  className="w-full aspect-[9/14] object-cover"
-                />
-                <div className="bg-black/90 px-4 py-2.5 flex items-center justify-between text-[11.5px]">
-                  <span className="font-key font-bold text-emerald-400">
-                    Robot Soccer · LabMaker Marajó
-                  </span>
-                  <a
-                    href="https://www.instagram.com/reel/DYOI0SHRQBN/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white/70 hover:text-white inline-flex items-center gap-1"
-                  >
-                    <span>Reel</span>
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
+              </Parallax>
+              <Parallax velocidade={-40} className="relative z-10 w-full max-w-[290px]">
+                <div className="overflow-hidden rounded-[22px] bg-black">
+                  <video
+                    src="/videos/DYOI0SHRQBN.mp4"
+                    poster={IMAGE_ASSETS.real.robotSoccerDisputa}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    controls
+                    preload="metadata"
+                    className="aspect-[9/14] w-full object-cover"
+                  />
                 </div>
-              </div>
+                <a
+                  href="https://www.instagram.com/reel/DYOI0SHRQBN/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-flex min-h-[44px] items-center gap-1.5 text-[13.5px] text-white/70 hover:text-white"
+                >
+                  Robot Soccer no Instagram
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </a>
+              </Parallax>
             </div>
-          </article>
-        </div>
+          </div>
+        </SecaoViva>
       </section>
 
-      {/* 9. Sticky Split-Layout FAQ Accordion */}
-      <section
-        id="faq"
-        className="scroll-mt-20 border-y border-wb-line bg-wb-bench py-24 font-ui text-wb-ink sm:py-32"
-      >
+      {/* FAQ */}
+      <SecaoViva id="faq" className="scroll-mt-20 bg-wb-bench py-24 font-ui text-wb-ink sm:py-32">
         <div className="mx-auto grid max-w-[1320px] gap-12 px-5 sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
           <div className="lg:sticky lg:top-28 lg:self-start">
-            <p className="rotulo">
-              <span aria-hidden="true" className="marajo-glifo text-wb-ink-3" />
-              Perguntas frequentes · Tire suas dúvidas
-            </p>
-            <h2
-              className="mt-4 font-brand font-bold text-wb-ink"
-              style={{
-                fontSize: 'clamp(32px, 4.2vw, 56px)',
-                lineHeight: 1.05,
-                letterSpacing: '-0.028em',
-              }}
-            >
+            <Rotulo cor="text-wb-ink-3">Dúvidas</Rotulo>
+            <Titulo className="mt-4 text-wb-ink">
               Perguntas, <span className="acento">respondidas</span>.
-            </h2>
-            <p className="mt-4 text-[15.5px] text-wb-ink-2 leading-relaxed">
-              Tudo o que você precisa saber sobre os equipamentos e produções do Laboratório IFPA
-              MAKER Marajó no Campus Breves.
-            </p>
+            </Titulo>
           </div>
 
-          <div className="wb-panel divide-y divide-wb-line overflow-hidden">
+          <div className="divide-y divide-wb-line border-y border-wb-ink/80">
             {FAQ_ITEMS.map((item, idx) => {
               const isOpen = openFaq === idx;
               return (
@@ -567,33 +342,34 @@ export const HomePage: React.FC = () => {
                   <h3>
                     <button
                       type="button"
+                      id={`faq-q-${idx}`}
                       aria-expanded={isOpen}
+                      aria-controls={`faq-a-${idx}`}
                       onClick={() => setOpenFaq(isOpen ? null : idx)}
-                      className="flex w-full items-center justify-between gap-6 px-6 py-5 text-start transition-colors hover:bg-wb-bench/60"
+                      className="group flex w-full items-center justify-between gap-6 py-6 text-start"
                     >
-                      <span className="text-[16px] font-bold text-wb-ink sm:text-[17px]">
+                      <span className="text-[17px] font-semibold text-wb-ink transition-colors group-hover:text-wb-orange sm:text-[19px]">
                         {item.q}
                       </span>
                       <span
                         aria-hidden="true"
-                        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ease-out-soft ${
-                          isOpen
-                            ? 'rotate-45 border-wb-ink bg-wb-ink text-white'
-                            : 'border-wb-line bg-white text-wb-ink-2'
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all duration-500 ease-out-soft ${
+                          isOpen ? 'rotate-45 bg-wb-orange text-white' : 'bg-wb-canvas text-wb-ink'
                         }`}
                       >
-                        <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
+                        <Plus className="h-4 w-4" strokeWidth={2.2} />
                       </span>
                     </button>
                   </h3>
                   <div
-                    className="grid transition-all duration-300 ease-out-soft"
-                    style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
+                    id={`faq-a-${idx}`}
+                    role="region"
+                    aria-labelledby={`faq-q-${idx}`}
+                    className="grid transition-all duration-500 ease-out-soft"
+                    style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
                   >
                     <div className="overflow-hidden">
-                      <p className="max-w-[46em] px-6 pb-6 text-[15px] leading-[1.7] text-wb-ink-2">
-                        {item.a}
-                      </p>
+                      <p className="max-w-[44em] pb-6 text-[15.5px] leading-[1.7] text-wb-ink-2">{item.a}</p>
                     </div>
                   </div>
                 </div>
@@ -601,53 +377,37 @@ export const HomePage: React.FC = () => {
             })}
           </div>
         </div>
-      </section>
+      </SecaoViva>
 
-      {/* 10. Bottom Perspective Grid CTA Panel */}
-      <section
-        id="cta"
-        className="relative overflow-hidden bg-wb-canvas py-24 font-ui text-wb-ink sm:py-32"
-      >
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <div className="wb-floor" style={{ bottom: '-70%' }} />
-        </div>
-        <div className="relative mx-auto max-w-[760px] px-5 sm:px-8">
-          <div className="wb-panel flex flex-col items-center px-6 py-10 text-center sm:px-12 sm:py-14 bg-white/95 backdrop-blur">
-            <p className="rotulo">
-              <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
-              Participe · Agende seu horário
+      {/* Chamada final */}
+      <section id="cta" className="relative overflow-hidden bg-wb-canvas py-28 text-center font-ui text-wb-ink sm:py-40">
+        <Parallax velocidade={80} className="pointer-events-none absolute inset-0" >
+          <div aria-hidden="true" className="wb-floor" style={{ bottom: '-70%' }} />
+        </Parallax>
+        <div className="relative mx-auto max-w-[900px] px-5 sm:px-8">
+          <Rotulo cor="text-wb-orange">Participe</Rotulo>
+          <h2
+            className="mt-5 font-brand font-semibold"
+            style={{ fontSize: 'clamp(38px, 6vw, 84px)', lineHeight: 0.98, letterSpacing: '-0.03em' }}
+          >
+            <TituloPalavras texto="Tire seu protótipo" />
+            <span className="acento text-wb-orange">do papel.</span>
+          </h2>
+          <Revelar atraso={0.2}>
+            <p className="mx-auto mt-6 max-w-[26em] text-[18px] leading-relaxed text-wb-ink-2">
+              Reserve uma máquina e construa com a gente — gratuito para ensino, pesquisa e extensão.
             </p>
-            <h2
-              className="mt-4 font-brand font-bold text-wb-ink"
-              style={{
-                fontSize: 'clamp(32px, 4.6vw, 58px)',
-                lineHeight: 1.03,
-                letterSpacing: '-0.028em',
-              }}
-            >
-              <WordRise text="Pronto para tirar seu protótipo do papel?" />
-            </h2>
-            <p className="mt-5 max-w-[32em] text-[17px] leading-relaxed text-wb-ink-2">
-              Reserve uma impressora Elegoo Centauri Carbon, a Cortadora a Laser CO2 ou a Arena
-              Robot Soccer pelo Google Agenda e construa conosco no IFPA Campus Breves.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3.5">
-              <Link
-                to="/agendamento"
-                className="wb-btn wb-btn-primary h-13 px-7 text-[16px]"
-              >
+            <div className="mt-9 flex flex-wrap justify-center gap-3">
+              <Link to="/agendamento" className="wb-btn wb-btn-primary h-13 px-7 text-[16px]">
                 <Calendar className="h-5 w-5" />
-                <span>Agendar pelo Google Agenda</span>
+                Agendar
               </Link>
-              <Link
-                to="/equipamentos"
-                className="wb-btn wb-btn-dark h-13 px-6 text-[15.5px]"
-              >
-                <Wrench className="h-4 w-4 text-wb-orange" />
-                <span>Explorar equipamentos</span>
+              <Link to="/equipamentos" className="wb-btn wb-btn-dark h-13 px-6 text-[16px]">
+                Ver equipamentos
+                <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
-          </div>
+          </Revelar>
         </div>
       </section>
     </div>

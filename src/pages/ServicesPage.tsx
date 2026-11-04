@@ -58,8 +58,7 @@ export const ServicesPage: React.FC = () => {
             <WordRise text="O que pode ser realizado no IF MAKER Breves." />
           </h1>
           <p className="mt-4 max-w-[40em] text-[17px] leading-relaxed text-wb-ink-2">
-            Da primeira modelagem 3D à fabricação de lotes didáticos para escolas do Marajó. Confira
-            os serviços técnicos e pedagógicos oferecidos gratuitamente pelo laboratório.
+            Da modelagem 3D a lotes didáticos para escolas do Marajó — de graça.
           </p>
 
           {/* Filter Pills */}

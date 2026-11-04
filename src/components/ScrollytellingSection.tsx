@@ -150,7 +150,7 @@ export const ScrollytellingSection: React.FC = () => {
 
   return (
     <section id="como-funciona" className="bg-wb-canvas font-ui text-wb-ink border-b border-wb-line">
-      <div ref={sectionRef} className="relative" style={{ height: '460svh' }}>
+      <div ref={sectionRef} className="relative" style={{ height: '340svh' }}>
         <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
           {/* Background 3D Workbench Grid Floor */}
           <div className="absolute inset-0 wb-grid-bg opacity-65 pointer-events-none" />

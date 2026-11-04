@@ -45,11 +45,7 @@ export const ProjectsPage: React.FC = () => {
             <WordRise text="Projetos Produzidos e em Andamento." />
           </h1>
           <p className="mt-4 max-w-[42em] text-[17px] leading-relaxed text-wb-ink-2">
-            Assista aos vídeos e veja as fotos reais do que já foi produzido no{' '}
-            <strong>Laboratório IFPA MAKER Marajó</strong> — como as{' '}
-            <strong>medalhas oficiais do IV JINs</strong>, o <strong>Robot Soccer</strong> e os{' '}
-            <strong>ribeirinhos em canoas marajoaras 3D</strong> — além dos projetos de pesquisa e
-            extensão em andamento.
+            Medalhas do IV JINs, Robot Soccer, canoas marajoaras em 3D e o que ainda está na bancada.
           </p>
 
           {/* Filters */}

@@ -96,14 +96,12 @@ export const LabVideosSection: React.FC = () => {
                 letterSpacing: '-0.028em',
               }}
             >
-              Assista ao que já foi produzido no laboratório.
+              Veja o laboratório <span className="acento text-wb-orange">em ação</span>.
             </h2>
           </div>
 
           <p className="text-[15.5px] text-wb-ink-2 max-w-[34em]">
-            Explore os vídeos oficiais da inauguração, do <strong>Robot Soccer</strong> e da{' '}
-            <strong>produção das medalhas do IV JINs</strong>. Clique nos quadros da linha do tempo
-            ou use os botões <code>-1 Quadro / +1 Quadro</code> para inspecionar cada detalhe.
+            Três vídeos reais. Avance quadro a quadro ou pule pelos capítulos.
           </p>
         </div>
 
@@ -255,7 +253,7 @@ export const LabVideosSection: React.FC = () => {
                 </a>
               </div>
 
-              <p className="mt-4 text-[15px] leading-relaxed text-wb-ink-2">
+              <p className="mt-4 line-clamp-2 text-[15px] leading-relaxed text-wb-ink-2">
                 {activeVideo.summary}
               </p>
 
@@ -263,7 +261,7 @@ export const LabVideosSection: React.FC = () => {
               <div className="mt-6">
                 <div className="flex items-center justify-between mb-3">
                   <span className="rotulo"><span aria-hidden="true" className="marajo-glifo text-wb-ink-3" />
-                    Clique em qualquer quadro abaixo para pular para o momento exato no vídeo:
+                    Capítulos — toque para pular
                   </span>
                 </div>
 
@@ -284,20 +282,17 @@ export const LabVideosSection: React.FC = () => {
                         <img
                           src={hl.thumbSrc}
                           alt={hl.title}
-                          className="h-16 w-16 rounded-lg object-cover shrink-0"
+                          className="h-12 w-12 rounded-lg object-cover shrink-0"
                         />
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
+                          <div className="flex flex-col gap-0.5">
                             <span className="font-key text-[12px] font-semibold text-wb-orange">
                               {hl.timeLabel}
                             </span>
-                            <span className="truncate text-[13px] font-bold text-wb-ink">
+                            <span className="line-clamp-2 text-[14px] font-semibold text-wb-ink">
                               {hl.title}
                             </span>
                           </div>
-                          <p className="mt-1 text-[12px] leading-snug text-wb-ink-2 line-clamp-2">
-                            {hl.detail}
-                          </p>
                         </div>
                       </button>
                     );
@@ -306,20 +301,6 @@ export const LabVideosSection: React.FC = () => {
               </div>
             </div>
 
-            {/* Bottom: Equipment & Tools Seen in this Video */}
-            <div className="mt-7 pt-5 border-t border-wb-line">
-              <div className="flex items-center gap-2 font-key text-[11px] font-bold text-wb-green">
-                <Wrench className="h-3.5 w-3.5" />
-                <span>Equipamentos e Bancadas Identificados neste Vídeo:</span>
-              </div>
-              <div className="mt-2.5 flex flex-wrap gap-1.5">
-                {activeVideo.equipmentsSeen.map((item) => (
-                  <span key={item} className="wb-key text-[11.5px] bg-wb-bench">
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>
