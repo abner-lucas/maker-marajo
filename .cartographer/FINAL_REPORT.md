@@ -35,9 +35,10 @@ graph LR
 | 7 | Movimento | Galeria + faixa infinita repetiam as mesmas fotos | Galeria única em 3 colunas com parallax em velocidades opostas |
 | 8 | Texto | Parágrafos longos e listas repetidas | Home, vídeos, cards interativos, FAQ e cabeçalhos das páginas internas reduzidos |
 | 9 | Ritmo | Scrollytelling com 460svh (rolagem longa) | 340svh |
+| 10 | Desempenho | JS inicial de 870 KB (231 KB gzip) com three.js e todas as páginas | three.js em `hero3d/cena.ts` carregado após a 1ª pintura; páginas internas com `lazy()` → 442 KB (138 KB gzip) |
+| 11 | Desempenho | Cena 3D renderizava sem parar, mesmo fora da tela | Loop pausa fora da tela (IntersectionObserver): 0 desenhos/s ao rolar para baixo |
 
 ## Pendências que dependem de vocês
 
 - **Agenda incorporada** (`GOOGLE_CALENDAR_CONFIG.publicEmbedUrl` em `labData.ts`) mostra o calendário de **feriados nacionais**, não o do laboratório. Trocar pelo ID da agenda pública do lab.
 - Números a confirmar: "+35 Kits" no topo (os dados somam 32) e "+45 sensores" no card de eletrônica.
-- `three.js` deixa o JS principal com ~900 KB; carregar o hero 3D sob demanda reduziria o tempo de abertura no celular.
