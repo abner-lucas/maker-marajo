@@ -5,7 +5,6 @@ import {
   CheckCircle2,
   Clock,
   Download,
-  ExternalLink,
   FileCode,
   Info,
   Sparkles,
@@ -52,9 +51,6 @@ const abrirSeletor = (e: React.MouseEvent<HTMLInputElement>) => {
 const OUTRA = 'Outra finalidade';
 const ehServicoListado = (t: string | null) => !!t && LAB_SERVICES.some((s) => s.title === t);
 
-/** Programação de horários "Reserva LabMaker" (Google Agenda da conta do LabMaker) */
-const PAGINA_RESERVA = GOOGLE_CALENDAR_CONFIG.bookingPageUrl;
-
 export const BookingPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [selectedEquipment, setSelectedEquipment] = useState<string>(
@@ -76,9 +72,10 @@ export const BookingPage: React.FC = () => {
   const [userEmail, setUserEmail] = useState<string>('');
   const [userProfile, setUserProfile] = useState<string>('Estudante IFPA Breves');
   const [projectDesc, setProjectDesc] = useState<string>('');
-  const [bookingConfirmed, setBookingConfirmed] = useState<boolean>(false);
   // estado do envio para a agenda do LabMaker
-  const [envio, setEnvio] = useState<'parado' | 'enviando' | 'ok' | 'conflito' | 'limite' | 'falha'>('parado');
+  const [envio, setEnvio] = useState<
+    'parado' | 'enviando' | 'ok' | 'conflito' | 'limite' | 'indisponivel' | 'falha'
+  >('parado');
   const [armadilha, setArmadilha] = useState('');
 
   useEffect(() => {
@@ -146,7 +143,6 @@ export const BookingPage: React.FC = () => {
     e.preventDefault();
     if (!horarioValido || !finalidadeValida || envio === 'enviando') return;
     setEnvio('enviando');
-    setBookingConfirmed(false);
     try {
       const r = await fetch('/api/reservar.php', {
         method: 'POST',
@@ -171,12 +167,8 @@ export const BookingPage: React.FC = () => {
       }
       if (dados.motivo === 'conflito') return setEnvio('conflito');
       if (dados.motivo === 'limite') return setEnvio('limite');
-      if (dados.motivo === 'nao-configurado') {
-        setEnvio('parado');
-        setBookingConfirmed(true);
-        window.open(PAGINA_RESERVA, '_blank', 'noopener,noreferrer');
-        return;
-      }
+      // nada é aberto: se o serviço não estiver ligado, só avisa
+      if (dados.motivo === 'nao-configurado') return setEnvio('indisponivel');
       setEnvio('falha');
     } catch {
       setEnvio('falha');
@@ -559,42 +551,23 @@ export const BookingPage: React.FC = () => {
                   Muitas reservas seguidas. Tente novamente mais tarde.
                 </p>
               )}
-              {envio === 'falha' && (
+              {(envio === 'falha' || envio === 'indisponivel') && (
                 <p className="rounded-2xl bg-wb-red/10 p-4 text-[14px] text-wb-ink">
-                  Não foi possível registrar agora.{' '}
+                  {envio === 'indisponivel'
+                    ? 'As reservas pelo site estão sendo ativadas.'
+                    : 'Não foi possível registrar a reserva agora.'}{' '}
+                  Tente de novo em instantes ou escreva para{' '}
                   <a
-                    href={PAGINA_RESERVA}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={`mailto:${GOOGLE_CALENDAR_CONFIG.calendarId}`}
                     className="font-bold text-wb-orange underline"
                   >
-                    Reservar pela página Reserva LabMaker
-                  </a>{' '}
-                  ou escreva para {GOOGLE_CALENDAR_CONFIG.calendarId}.
+                    {GOOGLE_CALENDAR_CONFIG.calendarId}
+                  </a>
+                  .
                 </p>
               )}
             </div>
 
-            {bookingConfirmed && (
-              <div className="rounded-2xl border border-wb-green bg-wb-green/10 p-4 text-[14px] text-wb-ink flex items-start gap-3">
-                <CheckCircle2 className="h-5 w-5 text-wb-green shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-bold">Falta um passo: confirme na página Reserva LabMaker</p>
-                  <p className="text-[13px] text-wb-ink-2 mt-0.5">
-                    Escolha lá o mesmo dia e horário e confirme. Se a página não abriu,{' '}
-                    <a
-                      href={PAGINA_RESERVA}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-bold text-wb-orange underline"
-                    >
-                      clique aqui para abrir a Reserva LabMaker
-                    </a>
-                    .
-                  </p>
-                </div>
-              </div>
-            )}
           </form>
 
           {/* Right: Live Booking Ticket Preview & Lab Rules */}

@@ -58,17 +58,34 @@ foreach ($campos as $c) {
     $dados[$c] = mb_substr(trim((string) ($entrada[$c] ?? '')), 0, $c === 'descricao' ? 1500 : 200);
 }
 
-$ctx = stream_context_create([
-    'http' => [
-        'method' => 'POST',
-        'header' => "Content-Type: application/json\r\n",
-        'content' => json_encode($dados, JSON_UNESCAPED_UNICODE),
-        'timeout' => 25,
-        'ignore_errors' => true,
-        'follow_location' => 1, // o Apps Script responde com redirecionamento
-    ],
-]);
-$resp = @file_get_contents(APPS_SCRIPT_URL, false, $ctx);
+$corpo = json_encode($dados, JSON_UNESCAPED_UNICODE);
+// O Apps Script responde ao POST com um redirecionamento (302) para buscar o resultado com GET
+if (function_exists('curl_init')) {
+    $ch = curl_init(APPS_SCRIPT_URL);
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $corpo,
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_MAXREDIRS => 5,
+        CURLOPT_TIMEOUT => 25,
+    ]);
+    $resp = curl_exec($ch);
+    curl_close($ch);
+} else {
+    $ctx = stream_context_create([
+        'http' => [
+            'method' => 'POST',
+            'header' => "Content-Type: application/json\r\n",
+            'content' => $corpo,
+            'timeout' => 25,
+            'ignore_errors' => true,
+            'follow_location' => 1,
+        ],
+    ]);
+    $resp = @file_get_contents(APPS_SCRIPT_URL, false, $ctx);
+}
 $json = is_string($resp) ? json_decode($resp, true) : null;
 if (!is_array($json)) {
     responder(502, ['ok' => false, 'motivo' => 'falha-google']);

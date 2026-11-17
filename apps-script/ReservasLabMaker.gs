@@ -58,7 +58,7 @@ function doPost(e) {
     });
     if (choques.length) return resposta({ ok: false, motivo: 'conflito' });
 
-    const titulo = 'Reserva: ' + limpar(d.alvo, 80);
+    const titulo = 'Reserva LabMaker: ' + limpar(d.alvo, 80);
     const descricao = [
       'Reserva feita pelo site makermarajo.com',
       '',
