@@ -8,7 +8,7 @@
 declare(strict_types=1);
 
 // URL do "App da Web" publicado a partir de apps-script/ReservasLabMaker.gs (termina em /exec)
-const APPS_SCRIPT_URL = '';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzhrMRbA872Lz1kTFQ1nl9fBUkZK0_4OMFEhplpMGzl1oOCO3OeXjmw_0dSfZ1U60EgFQ/exec';
 const MAX_POR_IP_HORA = 6;
 
 header('Content-Type: application/json; charset=utf-8');
