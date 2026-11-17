@@ -76,9 +76,10 @@ function doPost(e) {
       guests: d.email,
       sendInvites: true,
     });
-    evento.setVisibility(CalendarApp.Visibility.PRIVATE);
-    evento.setGuestsCanSeeOtherGuests(false);
-    evento.setGuestsCanInviteOthers(false);
+    // ajustes extras: se algum falhar, a reserva já está feita e não deve virar erro
+    tentar(function () { evento.setVisibility(CalendarApp.Visibility.PRIVATE); });
+    tentar(function () { evento.setGuestsCanSeeOtherGuests(false); });
+    tentar(function () { evento.setGuestsCanInviteOthers(false); });
 
     cache.put(chaveEmail, String(usosEmail + 1), 21600);
     cache.put('total', String(usosDia + 1), 21600);
@@ -112,6 +113,14 @@ function validar(d) {
   if (inicio.getTime() < agora - 5 * 60000) return 'Horário no passado';
   if (inicio.getTime() > agora + MAX_DIAS_ANTECEDENCIA * 86400000) return 'Data muito distante';
   return null;
+}
+
+function tentar(fn) {
+  try {
+    fn();
+  } catch (err) {
+    console.warn(err);
+  }
 }
 
 function limpar(v, max) {
