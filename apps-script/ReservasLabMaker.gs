@@ -153,9 +153,70 @@ function doPost(e) {
   }
 }
 
-/** Teste rápido no navegador: abrir a URL /exec deve mostrar {"ok":true,"servico":"reservas"} */
-function doGet() {
-  return resposta({ ok: true, servico: 'reservas' });
+/**
+ * GET sem parâmetros: teste rápido ({"ok":true,"servico":"reservas"}).
+ * GET ?acao=agenda&de=ISO&ate=ISO: horários da agenda para o calendário do site.
+ *   Só sai horário, título público e local — nunca descrição, nome ou e-mail.
+ *   Eventos privados que não vieram do site aparecem como "Ocupado".
+ */
+function doGet(e) {
+  const p = (e && e.parameter) || {};
+  if (p.acao !== 'agenda') return resposta({ ok: true, servico: 'reservas' });
+
+  const de = new Date(p.de);
+  const ate = new Date(p.ate);
+  if (isNaN(de) || isNaN(ate) || ate <= de || ate - de > 400 * DIA_MS) {
+    return resposta({ ok: false, motivo: 'invalido' });
+  }
+  const cache = CacheService.getScriptCache();
+  const chave = 'agenda:' + p.de.slice(0, 10) + ':' + p.ate.slice(0, 10);
+  const guardado = cache.get(chave);
+  if (guardado) return ContentService.createTextOutput(guardado).setMimeType(ContentService.MimeType.JSON);
+
+  const agenda = CalendarApp.getCalendarById(AGENDA_ID) || CalendarApp.getDefaultCalendar();
+  const eventos = [];
+  agenda.getEvents(de, ate).forEach(function (ev) {
+    let livre = false;
+    tentar(function () { livre = String(ev.getTransparency()).toUpperCase() === 'TRANSPARENT'; });
+    if (livre) return; // "disponível" e local de trabalho não ocupam o laboratório
+    const diaInteiro = ev.isAllDayEvent();
+    eventos.push({
+      id: hash(ev.getId() + ev.getStartTime().getTime()),
+      titulo: tituloPublico(ev),
+      local: ev.getLocation() || null,
+      inicio: iso(diaInteiro ? ev.getAllDayStartDate() : ev.getStartTime()),
+      fim: iso(diaInteiro ? ev.getAllDayEndDate() : ev.getEndTime()),
+      diaInteiro: diaInteiro,
+    });
+  });
+  eventos.sort(function (a, b) { return a.inicio < b.inicio ? -1 : 1; });
+  const json = JSON.stringify({ ok: true, eventos: eventos });
+  tentar(function () { cache.put(chave, json, 20); });
+  return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
+}
+
+/** Título que pode aparecer no site, sem dados pessoais */
+function tituloPublico(ev) {
+  const t = String(ev.getTitle() || '').trim();
+  if (t.indexOf('Reserva LabMaker: ') === 0) return t; // criado por este script: só espaço/equipamento
+  let privado = false;
+  tentar(function () { privado = ev.getVisibility() !== CalendarApp.Visibility.DEFAULT && ev.getVisibility() !== CalendarApp.Visibility.PUBLIC; });
+  if (privado || !t) return 'Ocupado';
+  // reservas da página de horários do Google levam o nome de quem reservou no título
+  let convidados = 0;
+  tentar(function () { convidados = ev.getGuestList().length; });
+  return convidados > 0 ? 'Reservado' : t;
+}
+
+function iso(d) {
+  return Utilities.formatDate(d, 'America/Belem', "yyyy-MM-dd'T'HH:mm:ssXXX");
+}
+
+function hash(s) {
+  return Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, s)
+    .slice(0, 8)
+    .map(function (b) { return ('0' + (b & 255).toString(16)).slice(-2); })
+    .join('');
 }
 
 function DIAS_APP() {

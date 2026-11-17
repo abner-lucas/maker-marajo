@@ -12,6 +12,8 @@
 
 declare(strict_types=1);
 
+require __DIR__ . '/config.php';
+
 const AGENDA_ID = 'labmaker.breves@ifpa.edu.br';
 const FUSO = 'America/Belem';
 const CACHE_SEG = 15;
@@ -35,6 +37,47 @@ if (is_file($cacheArq) && (time() - filemtime($cacheArq)) < CACHE_SEG) {
     exit;
 }
 
+/*
+ * 1º caminho: o Apps Script da própria conta do LabMaker. Ele enxerga também as reservas
+ * privadas (que o arquivo público do Google omite) e só devolve horário e título público.
+ */
+if (APPS_SCRIPT_URL !== '') {
+    $hojeAS = new DateTimeImmutable('today', $fuso);
+    $q = http_build_query([
+        'acao' => 'agenda',
+        'de' => $hojeAS->modify('-45 days')->format(DATE_ATOM),
+        'ate' => $hojeAS->modify('+181 days')->format(DATE_ATOM),
+    ]);
+    $resp = chamar_apps_script(APPS_SCRIPT_URL . '?' . $q, null, 12);
+    $dadosAS = is_string($resp) ? json_decode($resp, true) : null;
+    if (is_array($dadosAS) && !empty($dadosAS['ok']) && isset($dadosAS['eventos']) && is_array($dadosAS['eventos'])) {
+        $lista = [];
+        foreach ($dadosAS['eventos'] as $ev) {
+            if (!is_array($ev) || empty($ev['inicio']) || empty($ev['fim'])) {
+                continue;
+            }
+            $lista[] = [
+                'id' => substr((string) ($ev['id'] ?? md5($ev['inicio'])), 0, 16),
+                'titulo' => mb_substr((string) ($ev['titulo'] ?? 'Ocupado'), 0, 120),
+                'local' => isset($ev['local']) ? mb_substr((string) $ev['local'], 0, 160) : null,
+                'inicio' => (string) $ev['inicio'],
+                'fim' => (string) $ev['fim'],
+                'diaInteiro' => !empty($ev['diaInteiro']),
+            ];
+        }
+        $json = json_encode([
+            'ok' => true,
+            'agenda' => AGENDA_ID,
+            'atualizadoEm' => (new DateTimeImmutable('now', $fuso))->format(DATE_ATOM),
+            'eventos' => $lista,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        @file_put_contents($cacheArq, $json, LOCK_EX);
+        echo $json;
+        exit;
+    }
+}
+
+/* 2º caminho (reserva): arquivo público .ics do Google */
 $url = 'https://calendar.google.com/calendar/ical/' . rawurlencode(AGENDA_ID) . '/public/basic.ics';
 $ctx = stream_context_create([
     'http' => ['timeout' => 8, 'ignore_errors' => true, 'header' => "User-Agent: LabMakerMarajo-Agenda/1.0\r\n"],

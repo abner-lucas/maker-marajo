@@ -7,8 +7,8 @@
 
 declare(strict_types=1);
 
-// URL do "App da Web" publicado a partir de apps-script/ReservasLabMaker.gs (termina em /exec)
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzhrMRbA872Lz1kTFQ1nl9fBUkZK0_4OMFEhplpMGzl1oOCO3OeXjmw_0dSfZ1U60EgFQ/exec';
+require __DIR__ . '/config.php';
+
 const MAX_POR_IP_HORA = 6;
 
 header('Content-Type: application/json; charset=utf-8');
@@ -60,33 +60,7 @@ foreach ($campos as $c) {
 }
 
 $corpo = json_encode($dados, JSON_UNESCAPED_UNICODE);
-// O Apps Script responde ao POST com um redirecionamento (302) para buscar o resultado com GET
-if (function_exists('curl_init')) {
-    $ch = curl_init(APPS_SCRIPT_URL);
-    curl_setopt_array($ch, [
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => $corpo,
-        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_MAXREDIRS => 5,
-        CURLOPT_TIMEOUT => 25,
-    ]);
-    $resp = curl_exec($ch);
-    curl_close($ch);
-} else {
-    $ctx = stream_context_create([
-        'http' => [
-            'method' => 'POST',
-            'header' => "Content-Type: application/json\r\n",
-            'content' => $corpo,
-            'timeout' => 25,
-            'ignore_errors' => true,
-            'follow_location' => 1,
-        ],
-    ]);
-    $resp = @file_get_contents(APPS_SCRIPT_URL, false, $ctx);
-}
+$resp = chamar_apps_script(APPS_SCRIPT_URL, $corpo);
 $json = is_string($resp) ? json_decode($resp, true) : null;
 if (!is_array($json)) {
     responder(502, ['ok' => false, 'motivo' => 'falha-google']);
