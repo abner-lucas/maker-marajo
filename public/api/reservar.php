@@ -52,7 +52,8 @@ if (!is_array($entrada)) {
 }
 
 // Repassa só os campos esperados, com tamanho limitado
-$campos = ['alvo', 'servico', 'nome', 'email', 'vinculo', 'descricao', 'inicio', 'fim', 'site'];
+// dias = dias da semana da repetição ("3,4" = qua e qui); ate = último dia (AAAA-MM-DD)
+$campos = ['alvo', 'servico', 'nome', 'email', 'vinculo', 'descricao', 'inicio', 'fim', 'dias', 'ate', 'site'];
 $dados = [];
 foreach ($campos as $c) {
     $dados[$c] = mb_substr(trim((string) ($entrada[$c] ?? '')), 0, $c === 'descricao' ? 1500 : 200);

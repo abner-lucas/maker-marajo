@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import {
   Calendar,
@@ -12,7 +12,7 @@ import {
   Wrench,
 } from 'lucide-react';
 import { EQUIPMENTS, GOOGLE_CALENDAR_CONFIG, IMAGE_ASSETS, LAB_SERVICES } from '../data/labData';
-import { chaveDia, conflitos, faixaHorario, useAgendaAoVivo } from '../lib/agenda';
+import { chaveDia, conflitos, dataCurta, faixaHorario, useAgendaAoVivo } from '../lib/agenda';
 import { WordRise } from '../components/BrandLogo';
 
 // Atalhos de horário. A reserva aceita qualquer dia e qualquer horário.
@@ -47,6 +47,19 @@ const abrirSeletor = (e: React.MouseEvent<HTMLInputElement>) => {
   }
 };
 
+/** Reservas semanais (ex.: projeto de pesquisa toda quarta e quinta) */
+const DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+const MAX_ENCONTROS = 80;
+const diaDaSemana = (d: string) => {
+  const [a, m, dia] = d.split('-').map(Number);
+  return new Date(Date.UTC(a, m - 1, dia)).getUTCDay();
+};
+const somarDias = (d: string, n: number) => {
+  const [a, m, dia] = d.split('-').map(Number);
+  return new Date(Date.UTC(a, m - 1, dia + n)).toISOString().slice(0, 10);
+};
+const dataBR = (d: string) => d.split('-').reverse().join('/');
+
 /** Opção do seletor que libera um campo para digitar a finalidade */
 const OUTRA = 'Outra finalidade';
 const ehServicoListado = (t: string | null) => !!t && LAB_SERVICES.some((s) => s.title === t);
@@ -77,6 +90,11 @@ export const BookingPage: React.FC = () => {
     'parado' | 'enviando' | 'ok' | 'conflito' | 'limite' | 'indisponivel' | 'falha'
   >('parado');
   const [armadilha, setArmadilha] = useState('');
+  // repetição semanal
+  const [repetir, setRepetir] = useState(false);
+  const [diasSemana, setDiasSemana] = useState<number[]>([]);
+  const [repetirAte, setRepetirAte] = useState('');
+  const [datasOcupadas, setDatasOcupadas] = useState<string[]>([]);
 
   useEffect(() => {
     const eqParam = searchParams.get('equipamento');
@@ -101,7 +119,29 @@ export const BookingPage: React.FC = () => {
   // finalidade efetivamente enviada (lista ou texto digitado)
   const finalidade = selectedService === OUTRA ? outraFinalidade.trim() : selectedService;
   const finalidadeValida = finalidade.length > 0;
-  const choques = horarioValido ? conflitos(eventos, inicioEm, fimEm) : [];
+  // dias em que a reserva acontece (um só, ou todos os da repetição semanal)
+  const ocorrencias = useMemo(() => {
+    if (!repetir) return [bookingDate];
+    if (!repetirAte || repetirAte < bookingDate || !diasSemana.length) return [];
+    const lista: string[] = [];
+    for (let d = bookingDate; d <= repetirAte && lista.length <= MAX_ENCONTROS; d = somarDias(d, 1)) {
+      if (diasSemana.includes(diaDaSemana(d))) lista.push(d);
+    }
+    return lista;
+  }, [repetir, bookingDate, repetirAte, diasSemana]);
+  const repeticaoValida = !repetir || (ocorrencias.length > 0 && ocorrencias.length <= MAX_ENCONTROS);
+  const choques = horarioValido
+    ? ocorrencias.flatMap((d) =>
+        conflitos(eventos, new Date(`${d}T${horaInicio}:00-03:00`), new Date(`${d}T${horaFim}:00-03:00`))
+      )
+    : [];
+  const alternarRepeticao = (ligar: boolean) => {
+    setRepetir(ligar);
+    if (ligar) {
+      if (!diasSemana.length) setDiasSemana([diaDaSemana(bookingDate)]);
+      if (!repetirAte || repetirAte < bookingDate) setRepetirAte(somarDias(bookingDate, 28));
+    }
+  };
   const hhmmss = (h: string) => h.replace(':', '') + '00';
   const slotConflita = (sl: (typeof TIME_SLOTS)[number]) =>
     aoVivo &&
@@ -141,8 +181,9 @@ export const BookingPage: React.FC = () => {
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!horarioValido || !finalidadeValida || envio === 'enviando') return;
+    if (!horarioValido || !finalidadeValida || !repeticaoValida || envio === 'enviando') return;
     setEnvio('enviando');
+    setDatasOcupadas([]);
     try {
       const r = await fetch('/api/reservar.php', {
         method: 'POST',
@@ -154,18 +195,24 @@ export const BookingPage: React.FC = () => {
           email: userEmail,
           vinculo: userProfile,
           descricao: projectDesc,
-          inicio: inicioEm.toISOString(),
-          fim: fimEm.toISOString(),
+          // na repetição, começa no primeiro dia escolhido que cai num dos dias marcados
+          inicio: new Date(`${ocorrencias[0] ?? bookingDate}T${horaInicio}:00-03:00`).toISOString(),
+          fim: new Date(`${ocorrencias[0] ?? bookingDate}T${horaFim}:00-03:00`).toISOString(),
+          dias: repetir ? [...diasSemana].sort().join(',') : '',
+          ate: repetir ? repetirAte : '',
           site: armadilha,
         }),
       });
-      const dados = (await r.json().catch(() => ({}))) as { ok?: boolean; motivo?: string };
+      const dados = (await r.json().catch(() => ({}))) as { ok?: boolean; motivo?: string; datas?: string[] };
       if (dados.ok) {
         setEnvio('ok');
         atualizar();
         return;
       }
-      if (dados.motivo === 'conflito') return setEnvio('conflito');
+      if (dados.motivo === 'conflito') {
+        setDatasOcupadas(Array.isArray(dados.datas) ? dados.datas : []);
+        return setEnvio('conflito');
+      }
       if (dados.motivo === 'limite') return setEnvio('limite');
       // nada é aberto: se o serviço não estiver ligado, só avisa
       if (dados.motivo === 'nao-configurado') return setEnvio('indisponivel');
@@ -381,6 +428,73 @@ export const BookingPage: React.FC = () => {
                 })}
               </div>
 
+              {/* Repetição semanal */}
+              <div className="mt-5 rounded-xl border border-wb-line bg-white p-4">
+                <label className="flex cursor-pointer items-center gap-2.5 text-[14px] font-bold text-wb-ink">
+                  <input
+                    type="checkbox"
+                    checked={repetir}
+                    onChange={(e) => alternarRepeticao(e.target.checked)}
+                    className="h-4 w-4 accent-[#FF6B35]"
+                  />
+                  Repetir toda semana
+                </label>
+                {repetir && (
+                  <div className="mt-3 space-y-3">
+                    <div>
+                      <span className="mb-1.5 block text-[12.5px] font-bold text-wb-ink-3">Nos dias:</span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {DIAS_SEMANA.map((nome, i) => {
+                          const marcado = diasSemana.includes(i);
+                          return (
+                            <button
+                              key={nome}
+                              type="button"
+                              aria-pressed={marcado}
+                              onClick={() =>
+                                setDiasSemana((atual) =>
+                                  marcado ? atual.filter((x) => x !== i) : [...atual, i]
+                                )
+                              }
+                              className={`h-9 min-w-[48px] rounded-lg border px-2.5 text-[13px] font-bold transition-colors ${
+                                marcado
+                                  ? 'border-wb-orange bg-wb-orange text-white'
+                                  : 'border-wb-line bg-white text-wb-ink-2 hover:bg-wb-bench'
+                              }`}
+                            >
+                              {nome}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    <label className="block max-w-[240px]">
+                      <span className="mb-1.5 block text-[12.5px] font-bold text-wb-ink-3">Até o dia:</span>
+                      <input
+                        type="date"
+                        onClick={abrirSeletor}
+                        required
+                        min={bookingDate}
+                        value={repetirAte}
+                        onChange={(e) => setRepetirAte(e.target.value)}
+                        className="w-full rounded-xl border border-wb-line bg-white px-4 py-2.5 text-[14.5px] font-semibold text-wb-ink focus:border-wb-orange focus:outline-none"
+                      />
+                    </label>
+                    <p className={`text-[13px] ${repeticaoValida ? 'text-wb-ink-2' : 'font-semibold text-wb-red'}`}>
+                      {!diasSemana.length
+                        ? 'Marque pelo menos um dia da semana.'
+                        : !ocorrencias.length
+                          ? 'Nenhum encontro nesse período. Confira a data inicial e a final.'
+                          : ocorrencias.length > MAX_ENCONTROS
+                            ? `Muitos encontros (máximo ${MAX_ENCONTROS}). Encurte o período.`
+                            : `${ocorrencias.length} encontro${ocorrencias.length > 1 ? 's' : ''}, de ${dataBR(
+                                ocorrencias[0]
+                              )} a ${dataBR(ocorrencias[ocorrencias.length - 1])}.`}
+                    </p>
+                  </div>
+                )}
+              </div>
+
               {/* Situação do horário na agenda do LabMaker (ao vivo) */}
               <div role="status" aria-live="polite" className="mt-4 text-[13.5px]">
                 {!horarioValido ? (
@@ -393,8 +507,12 @@ export const BookingPage: React.FC = () => {
                       <p className="font-bold text-wb-red">Já há algo na agenda do LabMaker nesse horário:</p>
                       <ul className="mt-1 space-y-0.5">
                         {choques.slice(0, 4).map((c) => (
-                          <li key={c.id}>
-                            <span className="font-key font-semibold">{faixaHorario(c)}</span> · {c.titulo}
+                          <li key={`${c.id}-${c.inicio.getTime()}`}>
+                            <span className="font-key font-semibold">
+                              {repetir && `${dataCurta(c.inicio)} · `}
+                              {faixaHorario(c)}
+                            </span>{' '}
+                            · {c.titulo}
                           </li>
                         ))}
                       </ul>
@@ -404,7 +522,9 @@ export const BookingPage: React.FC = () => {
                     </div>
                   ) : (
                     <p className="rounded-xl bg-wb-green/10 px-4 py-3 font-semibold text-wb-green">
-                      Horário livre na agenda do LabMaker (atualizada ao vivo).
+                      {repetir && ocorrencias.length > 1
+                        ? `Horário livre em todos os ${ocorrencias.length} encontros (agenda atualizada ao vivo).`
+                        : 'Horário livre na agenda do LabMaker (atualizada ao vivo).'}
                     </p>
                   )
                 ) : (
@@ -510,7 +630,7 @@ export const BookingPage: React.FC = () => {
             <div className="border-t border-wb-line pt-6 flex flex-wrap items-center gap-3">
               <button
                 type="submit"
-                disabled={!horarioValido || !finalidadeValida || envio === 'enviando'}
+                disabled={!horarioValido || !finalidadeValida || !repeticaoValida || envio === 'enviando'}
                 className="wb-btn wb-btn-primary h-13 px-7 text-[15.5px] flex-1 sm:flex-initial disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Calendar className="h-5 w-5" />
@@ -543,7 +663,9 @@ export const BookingPage: React.FC = () => {
               )}
               {envio === 'conflito' && (
                 <p className="rounded-2xl bg-wb-red/10 p-4 text-[14px] font-semibold text-wb-red">
-                  Esse horário acabou de ser ocupado. Escolha outro e envie de novo.
+                  {datasOcupadas.length
+                    ? `Horário já ocupado em: ${datasOcupadas.map(dataBR).join(', ')}. Ajuste e envie de novo.`
+                    : 'Esse horário acabou de ser ocupado. Escolha outro e envie de novo.'}
                 </p>
               )}
               {envio === 'limite' && (
