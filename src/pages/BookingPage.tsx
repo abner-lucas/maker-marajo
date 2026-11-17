@@ -48,14 +48,23 @@ const abrirSeletor = (e: React.MouseEvent<HTMLInputElement>) => {
   }
 };
 
+/** Opção do seletor que libera um campo para digitar a finalidade */
+const OUTRA = 'Outra finalidade';
+const ehServicoListado = (t: string | null) => !!t && LAB_SERVICES.some((s) => s.title === t);
+
 export const BookingPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [selectedEquipment, setSelectedEquipment] = useState<string>(
     searchParams.get('equipamento') || SALA.slug
   );
-  const [selectedService, setSelectedService] = useState<string>(
-    searchParams.get('servico') || LAB_SERVICES[0].title
-  );
+  const [selectedService, setSelectedService] = useState<string>(() => {
+    const p = searchParams.get('servico');
+    return p ? (ehServicoListado(p) ? p : OUTRA) : LAB_SERVICES[0].title;
+  });
+  const [outraFinalidade, setOutraFinalidade] = useState<string>(() => {
+    const p = searchParams.get('servico');
+    return p && !ehServicoListado(p) ? p : '';
+  });
   const [bookingDate, setBookingDate] = useState<string>(() => chaveDia(new Date()));
   const [horaInicio, setHoraInicio] = useState<string>('14:00');
   const [horaFim, setHoraFim] = useState<string>('15:45');
@@ -73,7 +82,13 @@ export const BookingPage: React.FC = () => {
     const eqParam = searchParams.get('equipamento');
     const srvParam = searchParams.get('servico');
     if (eqParam) setSelectedEquipment(eqParam);
-    if (srvParam) setSelectedService(srvParam);
+    if (srvParam) {
+      if (ehServicoListado(srvParam)) setSelectedService(srvParam);
+      else {
+        setSelectedService(OUTRA);
+        setOutraFinalidade(srvParam);
+      }
+    }
   }, [searchParams]);
 
   const currentEq = ALVOS.find((e) => e.slug === selectedEquipment) || SALA;
@@ -83,6 +98,9 @@ export const BookingPage: React.FC = () => {
   const inicioEm = new Date(`${bookingDate}T${horaInicio}:00-03:00`);
   const fimEm = new Date(`${bookingDate}T${horaFim}:00-03:00`);
   const horarioValido = !Number.isNaN(inicioEm.getTime()) && fimEm > inicioEm;
+  // finalidade efetivamente enviada (lista ou texto digitado)
+  const finalidade = selectedService === OUTRA ? outraFinalidade.trim() : selectedService;
+  const finalidadeValida = finalidade.length > 0;
   const choques = horarioValido ? conflitos(eventos, inicioEm, fimEm) : [];
   const hhmmss = (h: string) => h.replace(':', '') + '00';
   const slotConflita = (sl: (typeof TIME_SLOTS)[number]) =>
@@ -100,7 +118,7 @@ export const BookingPage: React.FC = () => {
     const details = [
       `Laboratório IFPA MAKER Marajó — IFPA Campus Breves`,
       `Equipamento Reservado: ${currentEq.name}`,
-      `Serviço / Modalidade: ${selectedService}`,
+      `Serviço / Modalidade: ${finalidade}`,
       `Solicitante: ${userName || 'A preencher'} (${userProfile})`,
       `E-mail: ${userEmail || 'A preencher'}`,
       `Descrição do Projeto / Arquivo${formatos}: ${
@@ -135,7 +153,7 @@ export const BookingPage: React.FC = () => {
       `DTEND;TZID=America/Belem:${cleanDate}T${hhmmss(horaFim)}`,
       `SUMMARY:[LabMaker] Reserva: ${currentEq.shortName}`,
       `ORGANIZER:mailto:${GOOGLE_CALENDAR_CONFIG.calendarId}`,
-      `DESCRIPTION:Equipamento: ${currentEq.name}\\nServiço: ${selectedService}\\nPerfil: ${userProfile}\\nProjeto: ${projectDesc}`,
+      `DESCRIPTION:Equipamento: ${currentEq.name}\\nServiço: ${finalidade}\\nPerfil: ${userProfile}\\nProjeto: ${projectDesc}`,
       `LOCATION:${GOOGLE_CALENDAR_CONFIG.campusLocation}`,
       'END:VEVENT',
       'END:VCALENDAR',
@@ -155,7 +173,7 @@ export const BookingPage: React.FC = () => {
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!horarioValido || envio === 'enviando') return;
+    if (!horarioValido || !finalidadeValida || envio === 'enviando') return;
     setEnvio('enviando');
     setBookingConfirmed(false);
     try {
@@ -164,7 +182,7 @@ export const BookingPage: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           alvo: currentEq.name,
-          servico: selectedService,
+          servico: finalidade,
           nome: userName,
           email: userEmail,
           vinculo: userProfile,
@@ -317,7 +335,21 @@ export const BookingPage: React.FC = () => {
                         {s.title}
                       </option>
                     ))}
+                    <option value={OUTRA}>Outra finalidade (digitar)</option>
                   </select>
+                  {selectedService === OUTRA && (
+                    <input
+                      type="text"
+                      required
+                      autoFocus
+                      maxLength={160}
+                      value={outraFinalidade}
+                      onChange={(e) => setOutraFinalidade(e.target.value)}
+                      placeholder="Descreva a finalidade da reserva"
+                      aria-label="Outra finalidade"
+                      className="mt-2 w-full rounded-xl border border-wb-line bg-white px-4 py-2.5 text-[14px] font-semibold text-wb-ink placeholder:font-normal placeholder:text-wb-ink-3 focus:border-wb-orange focus:outline-none"
+                    />
+                  )}
                 </div>
               </div>
 
@@ -515,7 +547,7 @@ export const BookingPage: React.FC = () => {
             <div className="border-t border-wb-line pt-6 flex flex-wrap items-center gap-3">
               <button
                 type="submit"
-                disabled={!horarioValido || envio === 'enviando'}
+                disabled={!horarioValido || !finalidadeValida || envio === 'enviando'}
                 className="wb-btn wb-btn-primary h-13 px-7 text-[15.5px] flex-1 sm:flex-initial disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Calendar className="h-5 w-5" />
@@ -634,7 +666,7 @@ export const BookingPage: React.FC = () => {
                   <div className="flex justify-between">
                     <span className="text-wb-ink-3">Modalidade:</span>
                     <span className="font-bold text-wb-ink text-right max-w-[200px] truncate">
-                      {selectedService}
+                      {finalidade || '—'}
                     </span>
                   </div>
                   {currentEq.fileFormats.length > 0 && (
