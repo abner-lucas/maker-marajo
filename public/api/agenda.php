@@ -3,7 +3,7 @@
  * Leitor da Google Agenda pública do LabMaker Marajó.
  *
  * - Busca SOMENTE a agenda fixa abaixo (não aceita endereço vindo do navegador).
- * - Guarda em cache por 60 s para não sobrecarregar o Google.
+ * - Guarda em cache por 15 s para não sobrecarregar o Google.
  * - Devolve apenas título, horário, local e "dia inteiro". A descrição dos eventos
  *   NÃO é repassada, porque pode conter nome e e-mail de quem reservou.
  * - Expande eventos recorrentes (diário, semanal, mensal, anual) numa janela de
@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 const AGENDA_ID = 'labmaker.breves@ifpa.edu.br';
 const FUSO = 'America/Belem';
-const CACHE_SEG = 60;
+const CACHE_SEG = 15;
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: public, max-age=30');

@@ -54,10 +54,7 @@ const buildAddEventToGCalUrl = (e: EventoAgenda) => {
 };
 
 /** Selo que diz de onde vêm os eventos exibidos */
-const SeloFonte: React.FC<{ status: ReturnType<typeof useAgendaAoVivo>['status']; atualizadoEm: Date | null }> = ({
-  status,
-  atualizadoEm,
-}) => {
+const SeloFonte: React.FC<{ status: ReturnType<typeof useAgendaAoVivo>['status'] }> = ({ status }) => {
   if (status === 'ao-vivo')
     return (
       <span className="inline-flex items-center gap-2 text-[12.5px] font-semibold text-wb-green">
@@ -66,11 +63,6 @@ const SeloFonte: React.FC<{ status: ReturnType<typeof useAgendaAoVivo>['status']
           <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-wb-green" />
         </span>
         Ao vivo do Google Agenda
-        {atualizadoEm && (
-          <span className="font-normal text-wb-ink-3">
-            · atualizado às {atualizadoEm.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-          </span>
-        )}
       </span>
     );
   if (status === 'carregando') return <span className="text-[12.5px] text-wb-ink-3">Conectando à agenda do LabMaker…</span>;
@@ -82,7 +74,7 @@ const SeloFonte: React.FC<{ status: ReturnType<typeof useAgendaAoVivo>['status']
 };
 
 export const MonthlyCalendarPage: React.FC = () => {
-  const { eventos, status, atualizadoEm, aoVivo } = useAgendaAoVivo();
+  const { eventos, status, aoVivo, atualizar } = useAgendaAoVivo();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [typeFilter, setTypeFilter] = useState<string>('Todos');
   const [selecionadoId, setSelecionadoId] = useState<string | null>(null);
@@ -92,11 +84,20 @@ export const MonthlyCalendarPage: React.FC = () => {
     const [a, m] = hojeChave.split('-').map(Number);
     return { ano: a, mes: m - 1 };
   });
-  const irPara = (delta: number) =>
+  // Trocar de mês sempre busca a versão mais recente da agenda no Google
+  const irPara = (delta: number) => {
     setMesVisivel(({ ano, mes }) => {
       const d = new Date(Date.UTC(ano, mes + delta, 1));
       return { ano: d.getUTCFullYear(), mes: d.getUTCMonth() };
     });
+    atualizar();
+  };
+  const irParaHoje = () => {
+    const [a, m] = hojeChave.split('-').map(Number);
+    setMesVisivel({ ano: a, mes: m - 1 });
+    setSelecionadoId(eventosDoDia(eventos, hojeChave)[0]?.id ?? null);
+    atualizar();
+  };
 
   // Filtro por tipo só existe nas atividades de exemplo (eventos do Google não têm tipo)
   const filtrados = useMemo(
@@ -105,6 +106,7 @@ export const MonthlyCalendarPage: React.FC = () => {
   );
 
   const { ano, mes } = mesVisivel;
+  const noMesAtual = hojeChave.startsWith(`${ano}-${pad(mes + 1)}`);
   const diasNoMes = new Date(Date.UTC(ano, mes + 1, 0)).getUTCDate();
   const primeiroDiaSemana = new Date(Date.UTC(ano, mes, 1)).getUTCDay();
   const chaveDoDia = (d: number) => `${ano}-${pad(mes + 1)}-${pad(d)}`;
@@ -139,7 +141,7 @@ export const MonthlyCalendarPage: React.FC = () => {
                 Oficinas, sessões de laser e impressão 3D, visitas e makeathons do mês.
               </p>
               <div className="mt-3" aria-live="polite">
-                <SeloFonte status={status} atualizadoEm={atualizadoEm} />
+                <SeloFonte status={status} />
               </div>
             </div>
 
@@ -208,7 +210,16 @@ export const MonthlyCalendarPage: React.FC = () => {
                     </h2>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="wb-key mr-1 hidden text-[11px] sm:inline-flex">{doMes.length} atividades no mês</span>
+                    <span className="wb-key mr-1 hidden text-[11px] lg:inline-flex">{doMes.length} atividades no mês</span>
+                    <button
+                      type="button"
+                      onClick={irParaHoje}
+                      className={`h-10 rounded-full px-4 text-[13.5px] font-semibold transition-colors ${
+                        noMesAtual ? 'text-wb-ink-2 hover:bg-wb-bench' : 'bg-wb-orange text-white hover:bg-wb-orange/90'
+                      }`}
+                    >
+                      Hoje
+                    </button>
                     <button
                       type="button"
                       onClick={() => irPara(-1)}

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { CALENDAR_ACTIVITIES, type CalendarActivity } from '../data/labData';
 
 /*
@@ -55,6 +55,7 @@ export function useAgendaAoVivo() {
   const [status, setStatus] = useState<StatusAgenda>('carregando');
   const [atualizadoEm, setAtualizadoEm] = useState<Date | null>(null);
   const emAndamento = useRef(false);
+  const buscarRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     let cancelado = false;
@@ -95,6 +96,7 @@ export function useAgendaAoVivo() {
       }
     };
 
+    buscarRef.current = buscar;
     buscar();
     const id = window.setInterval(buscar, INTERVALO_ATUALIZACAO_MS);
     const aoVoltar = () => document.visibilityState === 'visible' && buscar();
@@ -108,7 +110,10 @@ export function useAgendaAoVivo() {
     };
   }, []);
 
-  return { eventos, status, atualizadoEm, aoVivo: status === 'ao-vivo' };
+  /** Força nova consulta ao Google (ex.: ao trocar de mês) */
+  const atualizar = useCallback(() => buscarRef.current(), []);
+
+  return { eventos, status, atualizadoEm, aoVivo: status === 'ao-vivo', atualizar };
 }
 
 /* ------------------------------------------------------------------ utilitários */
