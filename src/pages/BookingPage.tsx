@@ -39,6 +39,11 @@ const SALA = {
 
 const ALVOS = [SALA, ...EQUIPMENTS];
 
+/** Página de agendamento do Google em modo incorporável (gv=true) */
+const PAGINA_RESERVA = GOOGLE_CALENDAR_CONFIG.bookingPageUrl
+  ? `${GOOGLE_CALENDAR_CONFIG.bookingPageUrl}${GOOGLE_CALENDAR_CONFIG.bookingPageUrl.includes('?') ? '&' : '?'}gv=true`
+  : '';
+
 /** Abre o calendário/relógio nativo ao clicar em qualquer ponto do campo (Chrome, Edge, Firefox) */
 const abrirSeletor = (e: React.MouseEvent<HTMLInputElement>) => {
   try {
@@ -186,7 +191,33 @@ export const BookingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Main Booking Split Layout */}
+      {PAGINA_RESERVA ? (
+        /* Reserva oficial pela página de agendamento do Google ("Reserva LabMaker"):
+           horários livres, confirmações e cancelamentos são controlados no Google Agenda */
+        <section className="py-10 sm:py-16">
+          <div className="mx-auto max-w-[1100px] px-3 sm:px-8">
+            <div className="overflow-hidden rounded-[18px] border border-wb-line bg-white">
+              <iframe
+                title="Reserva LabMaker"
+                src={PAGINA_RESERVA}
+                className="h-[1460px] w-full border-0 sm:h-[860px]"
+                loading="lazy"
+              />
+            </div>
+            <p className="mt-4 text-center text-[13.5px] text-wb-ink-3">
+              Não carregou?{' '}
+              <a
+                href={GOOGLE_CALENDAR_CONFIG.bookingPageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-wb-orange underline underline-offset-4"
+              >
+                Abrir a página de reserva
+              </a>
+            </p>
+          </div>
+        </section>
+      ) : (
       <section className="py-14 sm:py-20">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8 grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-8 items-start">
           {/* Left: Interactive Booking Form */}
@@ -590,6 +621,7 @@ export const BookingPage: React.FC = () => {
           </div>
         </div>
       </section>
+      )}
     </div>
   );
 };

@@ -55,17 +55,8 @@ const buildAddEventToGCalUrl = (e: EventoAgenda) => {
 
 /** Selo que diz de onde vêm os eventos exibidos */
 const SeloFonte: React.FC<{ status: ReturnType<typeof useAgendaAoVivo>['status'] }> = ({ status }) => {
-  if (status === 'ao-vivo')
-    return (
-      <span className="inline-flex items-center gap-2 text-[12.5px] font-semibold text-wb-green">
-        <span className="relative flex h-2.5 w-2.5">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-wb-green opacity-60 motion-reduce:hidden" />
-          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-wb-green" />
-        </span>
-        Ao vivo do Google Agenda
-      </span>
-    );
-  if (status === 'carregando') return <span className="text-[12.5px] text-wb-ink-3">Conectando à agenda do LabMaker…</span>;
+  if (status === 'ao-vivo') return null;
+  if (status === 'carregando') return null;
   return (
     <span className="text-[12.5px] text-wb-ink-3">
       Atividades de exemplo — a agenda do LabMaker aparece aqui assim que for publicada no Google.

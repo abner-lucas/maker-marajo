@@ -376,7 +376,8 @@ export const GOOGLE_CALENDAR_CONFIG = {
    * Quando preenchida, o site mostra o botão "Reservar pela página do Google",
    * que grava a reserva direto na agenda do LabMaker, sem convite pendente.
    */
-  bookingPageUrl: '',
+  bookingPageUrl:
+    'https://calendar.google.com/calendar/appointments/schedules/AcZssZ2HGWq84cCX1A1LO4Uf1BcEGCVr70OQD_A5N9vA5JphwZKExiu_4ZeMzwOAkDAEj7bdomBnH3kJ',
   campusLocation: 'Laboratório IFPA MAKER Marajó — IFPA Campus Breves, PA, Brasil',
 };
 
