@@ -428,3 +428,13 @@ input[type='date']::-webkit-calendar-picker-indicator {
   opacity: 0;
   cursor: pointer;
 }
+
+/* Campos de hora no iOS: mesmo tratamento do campo de data */
+input[type='time'] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  min-height: 46px;
+  line-height: 1.4;
+  text-align: left;
+}

@@ -363,11 +363,20 @@ export const LAB_VIDEOS: LabVideoItem[] = [
   },
 ];
 
+const AGENDA_LABMAKER = 'labmaker.breves@ifpa.edu.br';
+
 export const GOOGLE_CALENDAR_CONFIG = {
-  calendarId: 'makermarajo@ifpa.edu.br',
-  publicEmbedUrl:
-    'https://calendar.google.com/calendar/embed?src=pt.brazilian%23holiday%40group.v.calendar.google.com&ctz=America%2FBelem&mode=MONTH&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=1&showCalendars=0',
-  appointmentScheduleUrl: 'https://calendar.google.com/calendar/u/0/r/eventedit',
+  /** Agenda oficial do LabMaker: recebe as reservas e alimenta a agenda ao vivo do site */
+  calendarId: AGENDA_LABMAKER,
+  publicEmbedUrl: `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(
+    AGENDA_LABMAKER
+  )}&ctz=America%2FBelem&mode=MONTH&showTitle=0&showPrint=0&showCalendars=0&hl=pt_BR`,
+  /**
+   * Página de agendamento do Google (Agenda → Criar → Programação de horários).
+   * Quando preenchida, o site mostra o botão "Reservar pela página do Google",
+   * que grava a reserva direto na agenda do LabMaker, sem convite pendente.
+   */
+  bookingPageUrl: '',
   campusLocation: 'Laboratório IFPA MAKER Marajó — IFPA Campus Breves, PA, Brasil',
 };
 

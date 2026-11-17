@@ -12,26 +12,45 @@ import {
   User,
   Wrench,
 } from 'lucide-react';
-import { EQUIPMENTS, GOOGLE_CALENDAR_CONFIG, LAB_SERVICES } from '../data/labData';
+import { EQUIPMENTS, GOOGLE_CALENDAR_CONFIG, IMAGE_ASSETS, LAB_SERVICES } from '../data/labData';
+import { chaveDia, conflitos, faixaHorario, useAgendaAoVivo } from '../lib/agenda';
 import { WordRise } from '../components/BrandLogo';
 
+// Atalhos de horário. A reserva aceita qualquer dia e qualquer horário.
 const TIME_SLOTS = [
-  { id: 'm1', label: '08:30 - 10:00', period: 'Manhã · Bloco 1', start: '083000', end: '100000', status: 'Disponível' },
-  { id: 'm2', label: '10:15 - 11:45', period: 'Manhã · Bloco 2', start: '101500', end: '114500', status: 'Disponível' },
-  { id: 't1', label: '14:00 - 15:45', period: 'Tarde · Bloco 1', start: '140000', end: '154500', status: 'Disponível' },
-  { id: 't2', label: '16:00 - 17:45', period: 'Tarde · Bloco 2', start: '160000', end: '174500', status: 'Últimas Vagas' },
+  { id: 'm1', label: '08:30 - 10:00', period: 'Manhã · Bloco 1', inicio: '08:30', fim: '10:00' },
+  { id: 'm2', label: '10:15 - 11:45', period: 'Manhã · Bloco 2', inicio: '10:15', fim: '11:45' },
+  { id: 't1', label: '14:00 - 15:45', period: 'Tarde · Bloco 1', inicio: '14:00', fim: '15:45' },
+  { id: 't2', label: '16:00 - 17:45', period: 'Tarde · Bloco 2', inicio: '16:00', fim: '17:45' },
 ];
+
+/** A sala de aula inteira também pode ser reservada, além de cada equipamento */
+const SALA = {
+  id: 'sala',
+  slug: 'sala-de-aula',
+  shortName: 'Sala de aula',
+  name: 'Sala de aula do LabMaker (espaço inteiro)',
+  tagline: 'Aulas, oficinas e reuniões',
+  accentColor: '#16130f',
+  unitsAvailable: 1,
+  image: IMAGE_ASSETS.real.inauguracaoEspaco,
+  fileFormats: [] as string[],
+};
+
+const ALVOS = [SALA, ...EQUIPMENTS];
 
 export const BookingPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [selectedEquipment, setSelectedEquipment] = useState<string>(
-    searchParams.get('equipamento') || EQUIPMENTS[0].slug
+    searchParams.get('equipamento') || SALA.slug
   );
   const [selectedService, setSelectedService] = useState<string>(
     searchParams.get('servico') || LAB_SERVICES[0].title
   );
-  const [bookingDate, setBookingDate] = useState<string>('2026-11-10');
-  const [selectedSlot, setSelectedSlot] = useState<string>('t1');
+  const [bookingDate, setBookingDate] = useState<string>(() => chaveDia(new Date()));
+  const [horaInicio, setHoraInicio] = useState<string>('14:00');
+  const [horaFim, setHoraFim] = useState<string>('15:45');
+  const { eventos, aoVivo, status } = useAgendaAoVivo();
   const [userName, setUserName] = useState<string>('');
   const [userEmail, setUserEmail] = useState<string>('');
   const [userProfile, setUserProfile] = useState<string>('Estudante IFPA Breves');
@@ -45,25 +64,34 @@ export const BookingPage: React.FC = () => {
     if (srvParam) setSelectedService(srvParam);
   }, [searchParams]);
 
-  const currentEq =
-    EQUIPMENTS.find((e) => e.slug === selectedEquipment) || EQUIPMENTS[0];
-  const currentSlot =
-    TIME_SLOTS.find((s) => s.id === selectedSlot) || TIME_SLOTS[2];
+  const currentEq = ALVOS.find((e) => e.slug === selectedEquipment) || SALA;
+  const formatos = currentEq.fileFormats.length ? ` (${currentEq.fileFormats.join(', ')})` : '';
+
+  // Intervalo escolhido no fuso de Belém (UTC-3, sem horário de verão)
+  const inicioEm = new Date(`${bookingDate}T${horaInicio}:00-03:00`);
+  const fimEm = new Date(`${bookingDate}T${horaFim}:00-03:00`);
+  const horarioValido = !Number.isNaN(inicioEm.getTime()) && fimEm > inicioEm;
+  const choques = horarioValido ? conflitos(eventos, inicioEm, fimEm) : [];
+  const hhmmss = (h: string) => h.replace(':', '') + '00';
+  const slotConflita = (sl: (typeof TIME_SLOTS)[number]) =>
+    aoVivo &&
+    conflitos(eventos, new Date(`${bookingDate}T${sl.inicio}:00-03:00`), new Date(`${bookingDate}T${sl.fim}:00-03:00`)).length > 0;
 
   /**
    * Builds the official Google Calendar Event Template URL
    */
   const buildGoogleCalendarUrl = () => {
     const cleanDate = bookingDate.replace(/-/g, '');
-    const datesParam = `${cleanDate}T${currentSlot.start}/${cleanDate}T${currentSlot.end}`;
-    const title = `[IF MAKER Breves] Reserva: ${currentEq.shortName} — ${userName || 'Protótipo'}`;
+    const datesParam = `${cleanDate}T${hhmmss(horaInicio)}/${cleanDate}T${hhmmss(horaFim)}`;
+    // O título fica público na agenda do LabMaker: sem nome de quem reservou
+    const title = `[LabMaker] Reserva: ${currentEq.shortName}`;
     const details = [
       `Laboratório IFPA MAKER Marajó — IFPA Campus Breves`,
       `Equipamento Reservado: ${currentEq.name}`,
       `Serviço / Modalidade: ${selectedService}`,
       `Solicitante: ${userName || 'A preencher'} (${userProfile})`,
       `E-mail: ${userEmail || 'A preencher'}`,
-      `Descrição do Projeto / Arquivo (${currentEq.fileFormats.join(', ')}): ${
+      `Descrição do Projeto / Arquivo${formatos}: ${
         projectDesc || 'Prototipagem prática no laboratório.'
       }`,
     ].join('\n');
@@ -91,9 +119,10 @@ export const BookingPage: React.FC = () => {
       'VERSION:2.0',
       'PRODID:-//IFPA Campus Breves//Laboratorio IF MAKER//PT',
       'BEGIN:VEVENT',
-      `DTSTART;TZID=America/Belem:${cleanDate}T${currentSlot.start}`,
-      `DTEND;TZID=America/Belem:${cleanDate}T${currentSlot.end}`,
-      `SUMMARY:[IF MAKER Breves] ${currentEq.shortName} - ${userName || 'Agendamento'}`,
+      `DTSTART;TZID=America/Belem:${cleanDate}T${hhmmss(horaInicio)}`,
+      `DTEND;TZID=America/Belem:${cleanDate}T${hhmmss(horaFim)}`,
+      `SUMMARY:[LabMaker] Reserva: ${currentEq.shortName}`,
+      `ORGANIZER:mailto:${GOOGLE_CALENDAR_CONFIG.calendarId}`,
       `DESCRIPTION:Equipamento: ${currentEq.name}\\nServiço: ${selectedService}\\nPerfil: ${userProfile}\\nProjeto: ${projectDesc}`,
       `LOCATION:${GOOGLE_CALENDAR_CONFIG.campusLocation}`,
       'END:VEVENT',
@@ -109,6 +138,7 @@ export const BookingPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!horarioValido) return;
     setBookingConfirmed(true);
     window.open(buildGoogleCalendarUrl(), '_blank', 'noopener,noreferrer');
   };
@@ -158,10 +188,10 @@ export const BookingPage: React.FC = () => {
                 1. Selecione o Equipamento ou Bancada
               </label>
               <p className="text-[13.5px] text-wb-ink-3 mt-0.5">
-                Escolha qual estação tecnológica do IF MAKER Breves você utilizará:
+                Reserve a sala de aula inteira ou uma estação específica:
               </p>
               <div className="mt-3.5 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {EQUIPMENTS.map((eq) => {
+                {ALVOS.map((eq) => {
                   const active = selectedEquipment === eq.slug;
                   return (
                     <button
@@ -194,7 +224,7 @@ export const BookingPage: React.FC = () => {
                             active ? 'text-white/75' : 'text-wb-ink-3'
                           }`}
                         >
-                          Formatos: {eq.fileFormats.join(', ')}
+                          {eq.fileFormats.length ? `Formatos: ${eq.fileFormats.join(', ')}` : eq.tagline}
                         </p>
                       </div>
                     </button>
@@ -206,12 +236,12 @@ export const BookingPage: React.FC = () => {
             {/* Step 2: Date & Time Slot */}
             <div className="border-t border-wb-line pt-6">
               <label className="block font-brand text-lg font-bold text-wb-ink">
-                2. Data e Bloco de Horário
+                2. Data e horário
               </label>
               <div className="mt-3.5 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <span className="block text-[13px] font-bold text-wb-ink-2 mb-1.5">
-                    Data da Sessão (Seg a Sex):
+                    Data da sessão (qualquer dia):
                   </span>
                   <input
                     type="date"
@@ -240,14 +270,45 @@ export const BookingPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div className="mt-4 grid grid-cols-2 gap-4">
+                <label className="block">
+                  <span className="block text-[13px] font-bold text-wb-ink-2 mb-1.5">Início:</span>
+                  <input
+                    type="time"
+                    required
+                    step={300}
+                    value={horaInicio}
+                    onChange={(e) => setHoraInicio(e.target.value)}
+                    className="w-full rounded-xl border border-wb-line bg-white px-4 py-2.5 text-[14.5px] font-semibold text-wb-ink focus:border-wb-orange focus:outline-none"
+                  />
+                </label>
+                <label className="block">
+                  <span className="block text-[13px] font-bold text-wb-ink-2 mb-1.5">Término:</span>
+                  <input
+                    type="time"
+                    required
+                    step={300}
+                    value={horaFim}
+                    onChange={(e) => setHoraFim(e.target.value)}
+                    className="w-full rounded-xl border border-wb-line bg-white px-4 py-2.5 text-[14.5px] font-semibold text-wb-ink focus:border-wb-orange focus:outline-none"
+                  />
+                </label>
+              </div>
+
+              <p className="mt-4 text-[12.5px] font-bold text-wb-ink-3">Atalhos de horário:</p>
+              <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {TIME_SLOTS.map((slot) => {
-                  const active = selectedSlot === slot.id;
+                  const active = horaInicio === slot.inicio && horaFim === slot.fim;
+                  const ocupado = slotConflita(slot);
                   return (
                     <button
                       key={slot.id}
                       type="button"
-                      onClick={() => setSelectedSlot(slot.id)}
+                      aria-pressed={active}
+                      onClick={() => {
+                        setHoraInicio(slot.inicio);
+                        setHoraFim(slot.fim);
+                      }}
                       className={`flex items-center justify-between rounded-xl border p-3 text-left transition-all ${
                         active
                           ? 'border-wb-orange bg-wb-orange/10 text-wb-ink ring-2 ring-wb-orange/30'
@@ -255,17 +316,56 @@ export const BookingPage: React.FC = () => {
                       }`}
                     >
                       <div>
-                        <div className="font-key text-[13.5px] font-bold text-wb-ink">
-                          {slot.label}
-                        </div>
+                        <div className="font-key text-[13.5px] font-bold text-wb-ink">{slot.label}</div>
                         <div className="text-[11.5px] text-wb-ink-3">{slot.period}</div>
                       </div>
-                      <span className="rounded-full bg-wb-green/15 px-2.5 py-0.5 font-key text-[10.5px] font-bold text-wb-green">
-                        {slot.status}
-                      </span>
+                      {aoVivo && (
+                        <span
+                          className={`rounded-full px-2.5 py-0.5 font-key text-[10.5px] font-bold ${
+                            ocupado ? 'bg-wb-red/15 text-wb-red' : 'bg-wb-green/15 text-wb-green'
+                          }`}
+                        >
+                          {ocupado ? 'Ocupado' : 'Livre'}
+                        </span>
+                      )}
                     </button>
                   );
                 })}
+              </div>
+
+              {/* Situação do horário na agenda do LabMaker (ao vivo) */}
+              <div role="status" aria-live="polite" className="mt-4 text-[13.5px]">
+                {!horarioValido ? (
+                  <p className="rounded-xl bg-wb-red/10 px-4 py-3 font-semibold text-wb-red">
+                    O término precisa ser depois do início.
+                  </p>
+                ) : aoVivo ? (
+                  choques.length ? (
+                    <div className="rounded-xl bg-wb-red/10 px-4 py-3 text-wb-ink">
+                      <p className="font-bold text-wb-red">Já há algo na agenda do LabMaker nesse horário:</p>
+                      <ul className="mt-1 space-y-0.5">
+                        {choques.slice(0, 4).map((c) => (
+                          <li key={c.id}>
+                            <span className="font-key font-semibold">{faixaHorario(c)}</span> · {c.titulo}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="mt-1 text-[12.5px] text-wb-ink-2">
+                        Você ainda pode enviar o pedido; a equipe confirma pela agenda.
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="rounded-xl bg-wb-green/10 px-4 py-3 font-semibold text-wb-green">
+                      Horário livre na agenda do LabMaker (atualizada ao vivo).
+                    </p>
+                  )
+                ) : (
+                  <p className="rounded-xl bg-wb-bench px-4 py-3 text-wb-ink-2">
+                    {status === 'carregando'
+                      ? 'Consultando a agenda do LabMaker…'
+                      : 'A disponibilidade ao vivo aparece aqui assim que a agenda do LabMaker for publicada no Google.'}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -334,7 +434,7 @@ export const BookingPage: React.FC = () => {
 
               <div>
                 <label className="block text-[13px] font-bold text-wb-ink-2 mb-1">
-                  Resumo do que será produzido / arquivos ({currentEq.fileFormats.join(', ')}):
+                  Resumo do que será produzido{formatos}:
                 </label>
                 <textarea
                   rows={3}
@@ -350,7 +450,8 @@ export const BookingPage: React.FC = () => {
             <div className="border-t border-wb-line pt-6 flex flex-wrap items-center gap-3">
               <button
                 type="submit"
-                className="wb-btn wb-btn-primary h-13 px-7 text-[15.5px] flex-1 sm:flex-initial"
+                disabled={!horarioValido}
+                className="wb-btn wb-btn-primary h-13 px-7 text-[15.5px] flex-1 sm:flex-initial disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Calendar className="h-5 w-5" />
                 <span>Confirmar e Abrir no Google Agenda</span>
@@ -365,6 +466,19 @@ export const BookingPage: React.FC = () => {
                 <Download className="h-4 w-4 text-wb-green" />
                 <span>Baixar Arquivo .ICS</span>
               </button>
+
+              {GOOGLE_CALENDAR_CONFIG.bookingPageUrl && (
+                <a
+                  href={GOOGLE_CALENDAR_CONFIG.bookingPageUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="wb-btn wb-btn-dark h-13 px-5 text-[14px]"
+                >
+                  <Calendar className="h-4 w-4 text-wb-orange" />
+                  <span>Reservar pela página do Google</span>
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+              )}
             </div>
 
             {bookingConfirmed && (
@@ -416,11 +530,15 @@ export const BookingPage: React.FC = () => {
                 <div className="space-y-2.5 text-[13.5px] border-t border-wb-line pt-4">
                   <div className="flex justify-between">
                     <span className="text-wb-ink-3">Data Selecionada:</span>
-                    <span className="font-key font-bold text-wb-ink">{bookingDate}</span>
+                    <span className="font-key font-bold text-wb-ink">
+                      {bookingDate.split('-').reverse().join('/')}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-wb-ink-3">Bloco de Horário:</span>
-                    <span className="font-key font-bold text-wb-orange">{currentSlot.label}</span>
+                    <span className="text-wb-ink-3">Horário:</span>
+                    <span className="font-key font-bold text-wb-orange">
+                      {horaInicio} - {horaFim}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-wb-ink-3">Modalidade:</span>
@@ -428,12 +546,14 @@ export const BookingPage: React.FC = () => {
                       {selectedService}
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-wb-ink-3">Formatos Aceitos:</span>
-                    <span className="font-key font-bold text-wb-green">
-                      {currentEq.fileFormats.join(', ')}
-                    </span>
-                  </div>
+                  {currentEq.fileFormats.length > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-wb-ink-3">Formatos Aceitos:</span>
+                      <span className="font-key font-bold text-wb-green">
+                        {currentEq.fileFormats.join(', ')}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-wb-ink-3">Agenda Destino:</span>
                     <span className="font-key text-[12px] text-wb-ink-2">
@@ -448,9 +568,9 @@ export const BookingPage: React.FC = () => {
                     Como funciona a integração Google Agenda:
                   </p>
                   <p className="mt-1 leading-relaxed">
-                    Ao confirmar, o evento é criado no seu Google Calendar já convidando o e-mail
-                    oficial do laboratório (<code>{GOOGLE_CALENDAR_CONFIG.calendarId}</code>) e
-                    registrando o local e as especificações da máquina.
+                    Ao confirmar, o evento é criado no seu Google Calendar já convidando a agenda
+                    oficial do LabMaker (<code>{GOOGLE_CALENDAR_CONFIG.calendarId}</code>). Assim
+                    que entra na agenda do laboratório, o horário aparece como ocupado neste site.
                   </p>
                 </div>
               </div>

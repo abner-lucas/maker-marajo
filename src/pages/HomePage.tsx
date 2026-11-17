@@ -13,7 +13,8 @@ import {
   SecaoViva,
   TituloPalavras,
 } from '../components/motion';
-import { CALENDAR_ACTIVITIES, EQUIPMENTS, FAQ_ITEMS, IMAGE_ASSETS } from '../data/labData';
+import { EQUIPMENTS, FAQ_ITEMS, IMAGE_ASSETS } from '../data/labData';
+import { dataCurta, faixaHorario, useAgendaAoVivo } from '../lib/agenda';
 
 /* Galeria em 3 colunas que rolam em velocidades diferentes (parallax de camadas) */
 const GALERIA: { src: string; legenda: string; alto?: boolean }[][] = [
@@ -53,6 +54,9 @@ const Rotulo: React.FC<{ cor: string; children: React.ReactNode; claro?: boolean
 
 export const HomePage: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const { eventos: agenda, aoVivo } = useAgendaAoVivo();
+  // Ao vivo: próximos 3 eventos da agenda do LabMaker; senão, as atividades de exemplo
+  const proximasAtividades = (aoVivo ? agenda.filter((e) => e.fim.getTime() >= Date.now()) : agenda).slice(0, 3);
 
   return (
     <div>
@@ -230,21 +234,23 @@ export const HomePage: React.FC = () => {
                 </Titulo>
 
                 <Cascata as="ul" className="mt-9">
-                  {CALENDAR_ACTIVITIES.slice(0, 3).map((act) => (
+                  {proximasAtividades.map((act) => (
                     <CascataItem as="li" key={act.id}>
                       <Link
                         to="/agenda-mensal"
                         className="group flex items-center justify-between gap-4 border-t border-white/15 py-4"
                       >
                         <span className="min-w-0">
-                          <span className="block truncate text-[16px] font-semibold">{act.title}</span>
+                          <span className="block truncate text-[16px] font-semibold">{act.titulo}</span>
                           <span className="mt-0.5 block text-[13px] text-white/55">
-                            {act.date} · {act.startTime}
+                            {dataCurta(act.inicio)} · {faixaHorario(act)}
                           </span>
                         </span>
-                        <span className="shrink-0 text-[13px] font-semibold text-emerald-300">
-                          {act.spotsAvailable} vagas
-                        </span>
+                        {act.vagas && (
+                          <span className="shrink-0 text-[13px] font-semibold text-emerald-300">
+                            {act.vagas.livres} vagas
+                          </span>
+                        )}
                       </Link>
                     </CascataItem>
                   ))}
