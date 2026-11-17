@@ -370,10 +370,10 @@ export const MonthlyCalendarPage: React.FC = () => {
                         <ExternalLink className="h-3.5 w-3.5" />
                       </a>
                       <Link
-                        to={`/agendamento?servico=${encodeURIComponent(selecionado.titulo)}`}
+                        to="/agendamento"
                         className="wb-btn wb-btn-dark w-full h-11 text-[13.5px]"
                       >
-                        <span>Inscrever-se / Participar</span>
+                        <span>Reservar um horário</span>
                       </Link>
                     </div>
                   </>
