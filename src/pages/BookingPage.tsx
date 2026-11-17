@@ -52,6 +52,9 @@ const abrirSeletor = (e: React.MouseEvent<HTMLInputElement>) => {
 const OUTRA = 'Outra finalidade';
 const ehServicoListado = (t: string | null) => !!t && LAB_SERVICES.some((s) => s.title === t);
 
+/** Programação de horários "Reserva LabMaker" (Google Agenda da conta do LabMaker) */
+const PAGINA_RESERVA = GOOGLE_CALENDAR_CONFIG.bookingPageUrl;
+
 export const BookingPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [selectedEquipment, setSelectedEquipment] = useState<string>(
@@ -108,38 +111,6 @@ export const BookingPage: React.FC = () => {
     conflitos(eventos, new Date(`${bookingDate}T${sl.inicio}:00-03:00`), new Date(`${bookingDate}T${sl.fim}:00-03:00`)).length > 0;
 
   /**
-   * Builds the official Google Calendar Event Template URL
-   */
-  const buildGoogleCalendarUrl = () => {
-    const cleanDate = bookingDate.replace(/-/g, '');
-    const datesParam = `${cleanDate}T${hhmmss(horaInicio)}/${cleanDate}T${hhmmss(horaFim)}`;
-    // O título fica público na agenda do LabMaker: sem nome de quem reservou
-    const title = `[LabMaker] Reserva: ${currentEq.shortName}`;
-    const details = [
-      `Laboratório IFPA MAKER Marajó — IFPA Campus Breves`,
-      `Equipamento Reservado: ${currentEq.name}`,
-      `Serviço / Modalidade: ${finalidade}`,
-      `Solicitante: ${userName || 'A preencher'} (${userProfile})`,
-      `E-mail: ${userEmail || 'A preencher'}`,
-      `Descrição do Projeto / Arquivo${formatos}: ${
-        projectDesc || 'Prototipagem prática no laboratório.'
-      }`,
-    ].join('\n');
-
-    const params = new URLSearchParams({
-      action: 'TEMPLATE',
-      text: title,
-      dates: datesParam,
-      details,
-      location: GOOGLE_CALENDAR_CONFIG.campusLocation,
-      add: GOOGLE_CALENDAR_CONFIG.calendarId,
-      ctz: 'America/Belem',
-    });
-
-    return `https://calendar.google.com/calendar/render?${params.toString()}`;
-  };
-
-  /**
    * Downloads an .ICS file compatible with Google Calendar / Outlook / Apple Calendar
    */
   const handleDownloadIcs = () => {
@@ -169,7 +140,7 @@ export const BookingPage: React.FC = () => {
   /**
    * Envia a reserva ao servidor do site, que cria o evento direto na Google Agenda
    * do LabMaker. Se o serviço ainda não estiver configurado, cai no modo antigo
-   * (abre o Google Agenda de quem está reservando, convidando o LabMaker).
+   * (abre a programação de horários "Reserva LabMaker" para concluir lá).
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -203,7 +174,7 @@ export const BookingPage: React.FC = () => {
       if (dados.motivo === 'nao-configurado') {
         setEnvio('parado');
         setBookingConfirmed(true);
-        window.open(buildGoogleCalendarUrl(), '_blank', 'noopener,noreferrer');
+        window.open(PAGINA_RESERVA, '_blank', 'noopener,noreferrer');
         return;
       }
       setEnvio('falha');
@@ -592,12 +563,12 @@ export const BookingPage: React.FC = () => {
                 <p className="rounded-2xl bg-wb-red/10 p-4 text-[14px] text-wb-ink">
                   Não foi possível registrar agora.{' '}
                   <a
-                    href={buildGoogleCalendarUrl()}
+                    href={PAGINA_RESERVA}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-bold text-wb-orange underline"
                   >
-                    Enviar pelo Google Agenda
+                    Reservar pela página Reserva LabMaker
                   </a>{' '}
                   ou escreva para {GOOGLE_CALENDAR_CONFIG.calendarId}.
                 </p>
@@ -608,18 +579,16 @@ export const BookingPage: React.FC = () => {
               <div className="rounded-2xl border border-wb-green bg-wb-green/10 p-4 text-[14px] text-wb-ink flex items-start gap-3">
                 <CheckCircle2 className="h-5 w-5 text-wb-green shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold">
-                    Evento gerado para o Google Agenda do IF MAKER Breves!
-                  </p>
+                  <p className="font-bold">Falta um passo: confirme na página Reserva LabMaker</p>
                   <p className="text-[13px] text-wb-ink-2 mt-0.5">
-                    Caso a aba do Google Calendar não tenha aberto automaticamente,{' '}
+                    Escolha lá o mesmo dia e horário e confirme. Se a página não abriu,{' '}
                     <a
-                      href={buildGoogleCalendarUrl()}
+                      href={PAGINA_RESERVA}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-bold text-wb-orange underline"
                     >
-                      clique aqui para salvar o agendamento na sua Google Agenda
+                      clique aqui para abrir a Reserva LabMaker
                     </a>
                     .
                   </p>

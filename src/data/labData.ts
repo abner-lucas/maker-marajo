@@ -376,12 +376,10 @@ export const GOOGLE_CALENDAR_CONFIG = {
     AGENDA_LABMAKER
   )}&ctz=America%2FBelem&mode=MONTH&showTitle=0&showPrint=0&showCalendars=0&hl=pt_BR`,
   /**
-   * Página de agendamento do Google (Agenda → Criar → Programação de horários).
-   * Quando preenchida, o site mostra o botão "Reservar pela página do Google",
-   * que grava a reserva direto na agenda do LabMaker, sem convite pendente.
+   * Programação de horários "Reserva LabMaker" (Agenda → Criar → Programação de horários).
+   * Reservas feitas nela ficam na agenda do LabMaker como evento próprio, sem convite pendente.
    */
-  bookingPageUrl:
-    'https://calendar.google.com/calendar/appointments/schedules/AcZssZ2HGWq84cCX1A1LO4Uf1BcEGCVr70OQD_A5N9vA5JphwZKExiu_4ZeMzwOAkDAEj7bdomBnH3kJ',
+  bookingPageUrl: 'https://calendar.app.google/zcBVZJ7T5C35USmz7',
   campusLocation: 'Laboratório IFPA MAKER Marajó — IFPA Campus Breves, PA, Brasil',
 };
 
