@@ -95,6 +95,10 @@ export interface TeamMember {
   avatarColor: string;
   initials: string;
   lattesOrEmail: string;
+  /** Foto em /public (opcional; sem foto, mostra as iniciais) */
+  photo?: string;
+  /** Site pessoal (opcional) */
+  site?: string;
 }
 
 export interface CalendarActivity {
@@ -1013,7 +1017,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     projectsCount: 18,
     avatarColor: '#FF6B35',
     initials: 'AL',
-    lattesOrEmail: 'labmaker.breves@ifpa.edu.br',
+    lattesOrEmail: 'abner.lucas@ifpa.edu.br',
+    photo: '/images/equipe/abner-lucas.png',
+    site: 'https://proabnerlucas.com',
   },
   {
     id: 'tm-2',

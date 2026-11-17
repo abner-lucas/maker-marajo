@@ -4,6 +4,7 @@ import {
   Award,
   BookOpen,
   Calendar,
+  Globe,
   GraduationCap,
   Mail,
   Sparkles,
@@ -47,12 +48,23 @@ export const TeamPage: React.FC = () => {
               >
                 <div>
                   <div className="flex items-center justify-between gap-3">
-                    <div
-                      className="flex h-14 w-14 items-center justify-center rounded-2xl font-brand text-lg font-bold text-white"
-                      style={{ backgroundColor: member.avatarColor }}
-                    >
-                      {member.initials}
-                    </div>
+                    {member.photo ? (
+                      <img
+                        src={member.photo}
+                        alt={`Foto de ${member.name.split(' (')[0]}`}
+                        width={56}
+                        height={56}
+                        loading="lazy"
+                        className="h-14 w-14 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div
+                        className="flex h-14 w-14 items-center justify-center rounded-2xl font-brand text-lg font-bold text-white"
+                        style={{ backgroundColor: member.avatarColor }}
+                      >
+                        {member.initials}
+                      </div>
+                    )}
                     <span className="wb-key font-bold">{member.badge}</span>
                   </div>
 
@@ -68,12 +80,28 @@ export const TeamPage: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-wb-line flex items-center justify-between text-[12.5px]">
-                  <span className="flex items-center gap-1.5 text-wb-ink-3 font-key">
-                    <Mail className="h-3.5 w-3.5 text-wb-green" />
-                    {member.lattesOrEmail}
-                  </span>
-                  <span className="wb-key">{member.projectsCount} projetos</span>
+                <div className="mt-6 pt-4 border-t border-wb-line flex items-end justify-between gap-3 text-[12.5px]">
+                  <div className="min-w-0 space-y-1.5 font-key">
+                    <a
+                      href={`mailto:${member.lattesOrEmail}`}
+                      className="flex items-center gap-1.5 text-wb-ink-3 hover:text-wb-orange"
+                    >
+                      <Mail className="h-3.5 w-3.5 shrink-0 text-wb-green" />
+                      <span className="truncate">{member.lattesOrEmail}</span>
+                    </a>
+                    {member.site && (
+                      <a
+                        href={member.site}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 text-wb-ink-3 hover:text-wb-orange"
+                      >
+                        <Globe className="h-3.5 w-3.5 shrink-0 text-wb-green" />
+                        <span className="truncate">{member.site.replace(/^https?:\/\//, '')}</span>
+                      </a>
+                    )}
+                  </div>
+                  <span className="wb-key shrink-0">{member.projectsCount} projetos</span>
                 </div>
               </article>
             ))}
