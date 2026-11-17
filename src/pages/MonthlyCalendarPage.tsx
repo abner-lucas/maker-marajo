@@ -9,7 +9,6 @@ import {
   LayoutGrid,
   List,
   MapPin,
-  Plus,
   User,
 } from 'lucide-react';
 import { CalendarActivity, GOOGLE_CALENDAR_CONFIG } from '../data/labData';
@@ -84,7 +83,7 @@ const SeloFonte: React.FC<{ status: ReturnType<typeof useAgendaAoVivo>['status']
 
 export const MonthlyCalendarPage: React.FC = () => {
   const { eventos, status, atualizadoEm, aoVivo } = useAgendaAoVivo();
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'gcal-embed'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [typeFilter, setTypeFilter] = useState<string>('Todos');
   const [selecionadoId, setSelecionadoId] = useState<string | null>(null);
 
@@ -152,7 +151,6 @@ export const MonthlyCalendarPage: React.FC = () => {
                 [
                   ['grid', 'Calendário Mensal', LayoutGrid],
                   ['list', 'Lista de Ações', List],
-                  ['gcal-embed', 'Google Agenda Embed (Iframe)', Calendar],
                 ] as const
               ).map(([modo, rotulo, Icone]) => (
                 <button
@@ -161,11 +159,7 @@ export const MonthlyCalendarPage: React.FC = () => {
                   aria-pressed={viewMode === modo}
                   onClick={() => setViewMode(modo)}
                   className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-[13px] font-bold transition-colors ${
-                    viewMode === modo
-                      ? modo === 'gcal-embed'
-                        ? 'bg-wb-orange text-white'
-                        : 'bg-wb-ink text-white'
-                      : 'text-wb-ink-2 hover:text-wb-ink'
+                    viewMode === modo ? 'bg-wb-ink text-white' : 'text-wb-ink-2 hover:text-wb-ink'
                   }`}
                 >
                   <Icone className="h-4 w-4" />
@@ -448,47 +442,6 @@ export const MonthlyCalendarPage: React.FC = () => {
             </div>
           )}
 
-          {/* === GOOGLE AGENDA INCORPORADA === */}
-          {viewMode === 'gcal-embed' && (
-            <div className="wb-panel p-6 sm:p-8 space-y-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-wb-line pb-5">
-                <div>
-                  <span className="rotulo">
-                    <span aria-hidden="true" className="marajo-glifo text-wb-orange" />
-                    Google Agenda · Calendário público
-                  </span>
-                  <h2 className="mt-1 font-brand text-2xl font-bold text-wb-ink">
-                    Google Agenda Incorporado — IF MAKER Campus Breves
-                  </h2>
-                  <p className="mt-1 text-[14px] text-wb-ink-2">
-                    Agenda oficial do LabMaker: <code className="font-key">{GOOGLE_CALENDAR_CONFIG.calendarId}</code>
-                  </p>
-                </div>
-                <a
-                  href={`https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(GOOGLE_CALENDAR_CONFIG.calendarId)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="wb-btn wb-btn-dark h-11 px-5 text-[13.5px]"
-                >
-                  <Plus className="h-4 w-4" />
-                  <span>Seguir esta agenda</span>
-                </a>
-              </div>
-              {status === 'nao-publica' && (
-                <p className="rounded-xl bg-wb-bench px-4 py-3 text-[13.5px] text-wb-ink-2">
-                  A agenda do LabMaker ainda não está pública no Google; até lá, a visualização abaixo pede login.
-                </p>
-              )}
-              <div className="overflow-hidden border-t border-wb-line">
-                <iframe
-                  title="Google Agenda Mensal do Laboratório IF MAKER Breves"
-                  src={GOOGLE_CALENDAR_CONFIG.publicEmbedUrl}
-                  className="w-full h-[640px] border-0"
-                  loading="lazy"
-                />
-              </div>
-            </div>
-          )}
         </div>
       </section>
     </div>
