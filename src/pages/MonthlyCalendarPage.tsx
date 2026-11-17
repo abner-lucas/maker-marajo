@@ -144,10 +144,6 @@ export const MonthlyCalendarPage: React.FC = () => {
               </div>
             </div>
 
-            <Link to="/agendamento" className="wb-btn wb-btn-primary h-12 px-6 text-[14.5px]">
-              <Plus className="h-4 w-4" />
-              <span>Agendar Nova Atividade</span>
-            </Link>
           </div>
 
           <div className="mt-8 flex flex-wrap items-center justify-between gap-4">

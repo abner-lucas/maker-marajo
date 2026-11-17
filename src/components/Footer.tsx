@@ -25,10 +25,10 @@ export const Footer: React.FC = () => {
             <p className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-wb-orange shrink-0" />
               <a
-                href="mailto:makermarajo@ifpa.edu.br"
+                href="mailto:labmaker.breves@ifpa.edu.br"
                 className="transition-colors hover:text-wb-orange"
               >
-                makermarajo@ifpa.edu.br
+                labmaker.breves@ifpa.edu.br
               </a>
             </p>
           </div>
@@ -148,9 +148,6 @@ export const Footer: React.FC = () => {
               <Sparkles className="h-3.5 w-3.5 text-wb-orange" />
               Cultura learning by doing
             </div>
-            <p className="mt-1 text-[12px] text-wb-ink-3 leading-snug">
-              Horário de funcionamento: Seg a Sex, das 08h às 12h e das 14h às 18h.
-            </p>
           </div>
         </nav>
       </div>

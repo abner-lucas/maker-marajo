@@ -1012,7 +1012,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     projectsCount: 18,
     avatarColor: '#FF6B35',
     initials: 'AL',
-    lattesOrEmail: 'makermarajo@ifpa.edu.br',
+    lattesOrEmail: 'labmaker.breves@ifpa.edu.br',
   },
   {
     id: 'tm-2',
@@ -1024,7 +1024,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     projectsCount: 12,
     avatarColor: '#23963C',
     initials: 'ER',
-    lattesOrEmail: 'makermarajo@ifpa.edu.br',
+    lattesOrEmail: 'labmaker.breves@ifpa.edu.br',
   },
   {
     id: 'tm-3',
@@ -1036,7 +1036,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     projectsCount: 25,
     avatarColor: '#0092D6',
     initials: 'MD',
-    lattesOrEmail: 'makermarajo@ifpa.edu.br',
+    lattesOrEmail: 'labmaker.breves@ifpa.edu.br',
   },
   {
     id: 'tm-4',
@@ -1048,7 +1048,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     projectsCount: 15,
     avatarColor: '#F9B814',
     initials: 'EM',
-    lattesOrEmail: 'makermarajo@ifpa.edu.br',
+    lattesOrEmail: 'labmaker.breves@ifpa.edu.br',
   },
   {
     id: 'tm-5',
@@ -1060,7 +1060,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     projectsCount: 14,
     avatarColor: '#70388E',
     initials: 'NE',
-    lattesOrEmail: 'makermarajo@ifpa.edu.br',
+    lattesOrEmail: 'labmaker.breves@ifpa.edu.br',
   },
 ];
 
