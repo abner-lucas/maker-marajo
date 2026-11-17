@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { MAKER_PROJECTS, MakerProject } from '../data/labData';
 import { WordRise } from '../components/BrandLogo';
+import { VisorFotos } from '../components/VisorFotos';
 
 export const ProjectsPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<'Todos' | 'Produzido' | 'Em Andamento'>('Todos');
@@ -17,6 +18,11 @@ export const ProjectsPage: React.FC = () => {
     'proj-jins-medalhas': true,
     'proj-robot-soccer': true,
   });
+
+  // visualizador de fotos em tela cheia
+  const [visor, setVisor] = useState<{ fotos: string[]; indice: number; titulo: string } | null>(null);
+  const abrirFotos = (fotos: string[], indice: number, titulo: string) =>
+    setVisor({ fotos, indice, titulo });
 
   const filtered = MAKER_PROJECTS.filter((p) => {
     const matchStatus = statusFilter === 'Todos' || p.status === statusFilter;
@@ -194,12 +200,14 @@ export const ProjectsPage: React.FC = () => {
                             <button
                               key={idx}
                               type="button"
-                              onClick={() => setSelectedProject(proj)}
+                              onClick={() => abrirFotos(proj.gallery ?? [], idx, proj.title)}
+                              aria-label={`Ampliar foto ${idx + 1} de ${proj.title}`}
                               className="h-12 w-14 shrink-0 overflow-hidden rounded-lg border border-wb-line hover:border-wb-orange"
                             >
                               <img
                                 src={gImg}
                                 alt=""
+                                loading="lazy"
                                 className="h-full w-full object-cover"
                               />
                             </button>
@@ -319,23 +327,43 @@ export const ProjectsPage: React.FC = () => {
                   />
                 </div>
               ) : (
-                <img
-                  src={selectedProject.image}
-                  alt={selectedProject.title}
-                  className="w-full rounded-2xl border border-wb-line object-cover"
-                />
+                <button
+                  type="button"
+                  aria-label={`Ampliar foto de ${selectedProject.title}`}
+                  onClick={() => {
+                    const fotos = [
+                      selectedProject.image,
+                      ...(selectedProject.gallery ?? []).filter((g) => g !== selectedProject.image),
+                    ];
+                    abrirFotos(fotos, 0, selectedProject.title);
+                  }}
+                  className="block w-full cursor-zoom-in overflow-hidden rounded-2xl border border-wb-line"
+                >
+                  <img
+                    src={selectedProject.image}
+                    alt={selectedProject.title}
+                    className="w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
+                  />
+                </button>
               )}
 
               <div className="space-y-4">
                 {selectedProject.gallery && selectedProject.gallery.length > 0 && (
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                     {selectedProject.gallery.map((g, i) => (
-                      <img
+                      <button
                         key={i}
-                        src={g}
-                        alt=""
-                        className="h-28 w-full rounded-xl object-cover border border-wb-line"
-                      />
+                        type="button"
+                        aria-label={`Ampliar foto ${i + 1} de ${selectedProject.title}`}
+                        onClick={() => abrirFotos(selectedProject.gallery ?? [], i, selectedProject.title)}
+                        className="group/foto block h-28 w-full cursor-zoom-in overflow-hidden rounded-xl border border-wb-line hover:border-wb-orange"
+                      >
+                        <img
+                          src={g}
+                          alt=""
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover/foto:scale-105"
+                        />
+                      </button>
                     ))}
                   </div>
                 )}
@@ -370,6 +398,15 @@ export const ProjectsPage: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {visor && (
+        <VisorFotos
+          fotos={visor.fotos}
+          inicial={visor.indice}
+          titulo={visor.titulo}
+          onFechar={() => setVisor(null)}
+        />
       )}
     </div>
   );
