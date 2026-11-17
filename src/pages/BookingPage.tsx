@@ -15,12 +15,25 @@ import { EQUIPMENTS, GOOGLE_CALENDAR_CONFIG, IMAGE_ASSETS, LAB_SERVICES } from '
 import { chaveDia, conflitos, dataCurta, faixaHorario, useAgendaAoVivo } from '../lib/agenda';
 import { WordRise } from '../components/BrandLogo';
 
-// Atalhos de horário. A reserva aceita qualquer dia e qualquer horário.
+// Mesmo funcionamento da programação "Reserva LabMaker": das 7h às 21h, de 30 em 30 min
+const ABRE = 7 * 60;
+const FECHA = 21 * 60;
+const PASSO = 30;
+const hhmm = (min: number) => `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
+const minutos = (h: string) => {
+  const [a, b] = h.split(':').map(Number);
+  return a * 60 + b;
+};
+const HORARIOS = Array.from({ length: (FECHA - ABRE) / PASSO + 1 }, (_, i) => hhmm(ABRE + i * PASSO));
+const OPCOES_INICIO = HORARIOS.slice(0, -1); // 07:00 … 20:30
+const OPCOES_FIM = HORARIOS.slice(1); // 07:30 … 21:00
+
+// Atalhos de horário (dentro da grade de 30 min)
 const TIME_SLOTS = [
-  { id: 'm1', label: '08:30 - 10:00', period: 'Manhã · Bloco 1', inicio: '08:30', fim: '10:00' },
-  { id: 'm2', label: '10:15 - 11:45', period: 'Manhã · Bloco 2', inicio: '10:15', fim: '11:45' },
-  { id: 't1', label: '14:00 - 15:45', period: 'Tarde · Bloco 1', inicio: '14:00', fim: '15:45' },
-  { id: 't2', label: '16:00 - 17:45', period: 'Tarde · Bloco 2', inicio: '16:00', fim: '17:45' },
+  { id: 'm1', label: '08:00 - 10:00', period: 'Manhã · Bloco 1', inicio: '08:00', fim: '10:00' },
+  { id: 'm2', label: '10:00 - 12:00', period: 'Manhã · Bloco 2', inicio: '10:00', fim: '12:00' },
+  { id: 't1', label: '14:00 - 16:00', period: 'Tarde · Bloco 1', inicio: '14:00', fim: '16:00' },
+  { id: 't2', label: '16:00 - 18:00', period: 'Tarde · Bloco 2', inicio: '16:00', fim: '18:00' },
 ];
 
 /** A sala de aula inteira também pode ser reservada, além de cada equipamento */
@@ -79,7 +92,7 @@ export const BookingPage: React.FC = () => {
   });
   const [bookingDate, setBookingDate] = useState<string>(() => chaveDia(new Date()));
   const [horaInicio, setHoraInicio] = useState<string>('14:00');
-  const [horaFim, setHoraFim] = useState<string>('15:45');
+  const [horaFim, setHoraFim] = useState<string>('16:00');
   const { eventos, aoVivo, status, atualizar } = useAgendaAoVivo();
   const [userName, setUserName] = useState<string>('');
   const [userEmail, setUserEmail] = useState<string>('');
@@ -115,7 +128,9 @@ export const BookingPage: React.FC = () => {
   // Intervalo escolhido no fuso de Belém (UTC-3, sem horário de verão)
   const inicioEm = new Date(`${bookingDate}T${horaInicio}:00-03:00`);
   const fimEm = new Date(`${bookingDate}T${horaFim}:00-03:00`);
-  const horarioValido = !Number.isNaN(inicioEm.getTime()) && fimEm > inicioEm;
+  const naGrade = (h: string) => minutos(h) >= ABRE && minutos(h) <= FECHA && minutos(h) % PASSO === 0;
+  const horarioValido =
+    !Number.isNaN(inicioEm.getTime()) && fimEm > inicioEm && naGrade(horaInicio) && naGrade(horaFim);
   // finalidade efetivamente enviada (lista ou texto digitado)
   const finalidade = selectedService === OUTRA ? outraFinalidade.trim() : selectedService;
   const finalidadeValida = finalidade.length > 0;
@@ -366,27 +381,38 @@ export const BookingPage: React.FC = () => {
               <div className="mt-4 grid grid-cols-2 gap-4">
                 <label className="block">
                   <span className="block text-[13px] font-bold text-wb-ink-2 mb-1.5">Início:</span>
-                  <input
-                    type="time"
-                    onClick={abrirSeletor}
+                  <select
                     required
-                    step={300}
                     value={horaInicio}
-                    onChange={(e) => setHoraInicio(e.target.value)}
+                    onChange={(e) => {
+                      const novo = e.target.value;
+                      setHoraInicio(novo);
+                      // mantém o término depois do início
+                      if (minutos(horaFim) <= minutos(novo)) setHoraFim(hhmm(Math.min(minutos(novo) + 60, FECHA)));
+                    }}
                     className="w-full rounded-xl border border-wb-line bg-white px-4 py-2.5 text-[14.5px] font-semibold text-wb-ink focus:border-wb-orange focus:outline-none"
-                  />
+                  >
+                    {OPCOES_INICIO.map((h) => (
+                      <option key={h} value={h}>
+                        {h}
+                      </option>
+                    ))}
+                  </select>
                 </label>
                 <label className="block">
                   <span className="block text-[13px] font-bold text-wb-ink-2 mb-1.5">Término:</span>
-                  <input
-                    type="time"
-                    onClick={abrirSeletor}
+                  <select
                     required
-                    step={300}
                     value={horaFim}
                     onChange={(e) => setHoraFim(e.target.value)}
                     className="w-full rounded-xl border border-wb-line bg-white px-4 py-2.5 text-[14.5px] font-semibold text-wb-ink focus:border-wb-orange focus:outline-none"
-                  />
+                  >
+                    {OPCOES_FIM.filter((h) => minutos(h) > minutos(horaInicio)).map((h) => (
+                      <option key={h} value={h}>
+                        {h}
+                      </option>
+                    ))}
+                  </select>
                 </label>
               </div>
 
@@ -499,7 +525,7 @@ export const BookingPage: React.FC = () => {
               <div role="status" aria-live="polite" className="mt-4 text-[13.5px]">
                 {!horarioValido ? (
                   <p className="rounded-xl bg-wb-red/10 px-4 py-3 font-semibold text-wb-red">
-                    O término precisa ser depois do início.
+                    Escolha um horário entre 07:00 e 21:00, com o término depois do início.
                   </p>
                 ) : aoVivo ? (
                   choques.length ? (

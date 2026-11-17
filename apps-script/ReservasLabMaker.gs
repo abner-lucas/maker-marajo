@@ -246,11 +246,22 @@ function validar(d) {
   if (isNaN(inicio) || isNaN(fim)) return 'Data inválida';
   if (fim <= inicio) return 'O término precisa ser depois do início';
   if (fim - inicio > MAX_HORAS * 3600000) return 'Reserva maior que ' + MAX_HORAS + ' horas';
+  // mesma grade da programação "Reserva LabMaker": 7h às 21h, de 30 em 30 min (horário de Belém)
+  const minIni = minutosBelem(inicio);
+  const minFim = minutosBelem(fim);
+  if (minIni % 30 || minFim % 30) return 'Use horários de 30 em 30 minutos';
+  if (minIni < 7 * 60 || minFim > 21 * 60 || minFim <= minIni) return 'Horário fora do funcionamento (7h às 21h)';
   const agora = Date.now();
   if (inicio.getTime() < agora - 5 * 60000) return 'Horário no passado';
   if (inicio.getTime() > agora + MAX_DIAS_ANTECEDENCIA * DIA_MS) return 'Data muito distante';
   if (d.dias && !/^\d{4}-\d{2}-\d{2}$/.test(String(d.ate || ''))) return 'Data final ausente';
   return null;
+}
+
+/** Minutos desde a meia-noite no horário de Belém */
+function minutosBelem(d) {
+  const b = new Date(d.getTime() + FUSO_MS);
+  return b.getUTCHours() * 60 + b.getUTCMinutes();
 }
 
 function tentar(fn) {
