@@ -80,7 +80,7 @@ export const HomePage: React.FC = () => {
 
             <Cascata className="mt-9 grid max-w-[30em] grid-cols-3 gap-6 border-t border-wb-ink/80 pt-5">
               {[
-                { n: '5', t: 'tipos de equipamento' },
+                { n: String(EQUIPMENTS.length), t: 'tipos de equipamento' },
                 { n: '3', t: 'vídeos reais' },
                 { n: '100%', t: 'gratuito no ensino e extensão' },
               ].map((x) => (

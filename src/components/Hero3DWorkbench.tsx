@@ -3,7 +3,11 @@ import { Link } from 'react-router-dom';
 import type { CenaApi, ModelType, PhaseType } from './hero3d/cena';
 import { Play, RotateCcw, Calendar, Sparkles, X, Layers, Cpu, Wrench } from 'lucide-react';
 import { WordRise, BrandLogo } from './BrandLogo';
-import { IMAGE_ASSETS } from '../data/labData';
+import { EQUIPMENTS, IMAGE_ASSETS } from '../data/labData';
+
+/** Unidades somadas dos equipamentos indicados (vem da lista oficial em labData) */
+const unidades = (...slugs: string[]) =>
+  EQUIPMENTS.filter((e) => slugs.includes(e.slug)).reduce((t, e) => t + e.unitsAvailable, 0);
 
 const MODEL_LABELS: Record<ModelType, string> = {
   rover: 'Robô Explorador 4WD',
@@ -162,10 +166,10 @@ export const Hero3DWorkbench: React.FC = () => {
             {/* Quick Pillar Counters */}
             <div className="pointer-events-auto mt-10 grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-4 max-w-[640px]">
               {[
-                { label: 'Impressão 3D & Resina', val: '6 Máquinas', color: '#FF6B35' },
+                { label: 'Impressão 3D & Resina', val: `${unidades('impressoras-3d')} Máquinas`, color: '#FF6B35' },
                 { label: 'Corte a Laser CNC', val: '100W CO2', color: '#E5484D' },
                 { label: 'Scanners 3D Ópticos', val: '0.05 mm', color: '#0092D6' },
-                { label: 'Robótica & Arduino', val: '+35 Kits', color: '#23963C' },
+                { label: 'Robótica & Arduino', val: `${unidades('kits-robotica', 'arduino-eletronica')} Kits`, color: '#23963C' },
               ].map((stat) => (
                 <div
                   key={stat.label}
