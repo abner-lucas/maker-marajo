@@ -39,11 +39,6 @@ const SALA = {
 
 const ALVOS = [SALA, ...EQUIPMENTS];
 
-/** Página de agendamento do Google em modo incorporável (gv=true) */
-const PAGINA_RESERVA = GOOGLE_CALENDAR_CONFIG.bookingPageUrl
-  ? `${GOOGLE_CALENDAR_CONFIG.bookingPageUrl}${GOOGLE_CALENDAR_CONFIG.bookingPageUrl.includes('?') ? '&' : '?'}gv=true`
-  : '';
-
 /** Abre o calendário/relógio nativo ao clicar em qualquer ponto do campo (Chrome, Edge, Firefox) */
 const abrirSeletor = (e: React.MouseEvent<HTMLInputElement>) => {
   try {
@@ -64,12 +59,15 @@ export const BookingPage: React.FC = () => {
   const [bookingDate, setBookingDate] = useState<string>(() => chaveDia(new Date()));
   const [horaInicio, setHoraInicio] = useState<string>('14:00');
   const [horaFim, setHoraFim] = useState<string>('15:45');
-  const { eventos, aoVivo, status } = useAgendaAoVivo();
+  const { eventos, aoVivo, status, atualizar } = useAgendaAoVivo();
   const [userName, setUserName] = useState<string>('');
   const [userEmail, setUserEmail] = useState<string>('');
   const [userProfile, setUserProfile] = useState<string>('Estudante IFPA Breves');
   const [projectDesc, setProjectDesc] = useState<string>('');
   const [bookingConfirmed, setBookingConfirmed] = useState<boolean>(false);
+  // estado do envio para a agenda do LabMaker
+  const [envio, setEnvio] = useState<'parado' | 'enviando' | 'ok' | 'conflito' | 'limite' | 'falha'>('parado');
+  const [armadilha, setArmadilha] = useState('');
 
   useEffect(() => {
     const eqParam = searchParams.get('equipamento');
@@ -150,11 +148,50 @@ export const BookingPage: React.FC = () => {
     link.click();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  /**
+   * Envia a reserva ao servidor do site, que cria o evento direto na Google Agenda
+   * do LabMaker. Se o serviço ainda não estiver configurado, cai no modo antigo
+   * (abre o Google Agenda de quem está reservando, convidando o LabMaker).
+   */
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!horarioValido) return;
-    setBookingConfirmed(true);
-    window.open(buildGoogleCalendarUrl(), '_blank', 'noopener,noreferrer');
+    if (!horarioValido || envio === 'enviando') return;
+    setEnvio('enviando');
+    setBookingConfirmed(false);
+    try {
+      const r = await fetch('/api/reservar.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          alvo: currentEq.name,
+          servico: selectedService,
+          nome: userName,
+          email: userEmail,
+          vinculo: userProfile,
+          descricao: projectDesc,
+          inicio: inicioEm.toISOString(),
+          fim: fimEm.toISOString(),
+          site: armadilha,
+        }),
+      });
+      const dados = (await r.json().catch(() => ({}))) as { ok?: boolean; motivo?: string };
+      if (dados.ok) {
+        setEnvio('ok');
+        atualizar();
+        return;
+      }
+      if (dados.motivo === 'conflito') return setEnvio('conflito');
+      if (dados.motivo === 'limite') return setEnvio('limite');
+      if (dados.motivo === 'nao-configurado') {
+        setEnvio('parado');
+        setBookingConfirmed(true);
+        window.open(buildGoogleCalendarUrl(), '_blank', 'noopener,noreferrer');
+        return;
+      }
+      setEnvio('falha');
+    } catch {
+      setEnvio('falha');
+    }
   };
 
   return (
@@ -191,33 +228,6 @@ export const BookingPage: React.FC = () => {
         </div>
       </section>
 
-      {PAGINA_RESERVA ? (
-        /* Reserva oficial pela página de agendamento do Google ("Reserva LabMaker"):
-           horários livres, confirmações e cancelamentos são controlados no Google Agenda */
-        <section className="py-10 sm:py-16">
-          <div className="mx-auto max-w-[1100px] px-3 sm:px-8">
-            <div className="overflow-hidden rounded-[18px] border border-wb-line bg-white">
-              <iframe
-                title="Reserva LabMaker"
-                src={PAGINA_RESERVA}
-                className="h-[1460px] w-full border-0 sm:h-[860px]"
-                loading="lazy"
-              />
-            </div>
-            <p className="mt-4 text-center text-[13.5px] text-wb-ink-3">
-              Não carregou?{' '}
-              <a
-                href={GOOGLE_CALENDAR_CONFIG.bookingPageUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-wb-orange underline underline-offset-4"
-              >
-                Abrir a página de reserva
-              </a>
-            </p>
-          </div>
-        </section>
-      ) : (
       <section className="py-14 sm:py-20">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8 grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-8 items-start">
           {/* Left: Interactive Booking Form */}
@@ -489,16 +499,27 @@ export const BookingPage: React.FC = () => {
               </div>
             </div>
 
+            {/* Campo invisível contra robôs (pessoas não veem nem preenchem) */}
+            <input
+              type="text"
+              name="site"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              value={armadilha}
+              onChange={(e) => setArmadilha(e.target.value)}
+              className="absolute -left-[9999px] h-0 w-0 opacity-0"
+            />
+
             {/* Submit & Google Calendar Actions */}
             <div className="border-t border-wb-line pt-6 flex flex-wrap items-center gap-3">
               <button
                 type="submit"
-                disabled={!horarioValido}
+                disabled={!horarioValido || envio === 'enviando'}
                 className="wb-btn wb-btn-primary h-13 px-7 text-[15.5px] flex-1 sm:flex-initial disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Calendar className="h-5 w-5" />
-                <span>Confirmar e Abrir no Google Agenda</span>
-                <ExternalLink className="h-4 w-4" />
+                <span>{envio === 'enviando' ? 'Enviando reserva…' : 'Confirmar reserva'}</span>
               </button>
 
               <button
@@ -510,17 +531,44 @@ export const BookingPage: React.FC = () => {
                 <span>Baixar Arquivo .ICS</span>
               </button>
 
-              {GOOGLE_CALENDAR_CONFIG.bookingPageUrl && (
-                <a
-                  href={GOOGLE_CALENDAR_CONFIG.bookingPageUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="wb-btn wb-btn-dark h-13 px-5 text-[14px]"
-                >
-                  <Calendar className="h-4 w-4 text-wb-orange" />
-                  <span>Reservar pela página do Google</span>
-                  <ExternalLink className="h-3.5 w-3.5" />
-                </a>
+            </div>
+
+            <div role="status" aria-live="polite">
+              {envio === 'ok' && (
+                <div className="rounded-2xl border border-wb-green bg-wb-green/10 p-4 text-[14px] text-wb-ink flex items-start gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-wb-green shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-bold">Reserva registrada na agenda do LabMaker!</p>
+                    <p className="text-[13px] text-wb-ink-2 mt-0.5">
+                      Você vai receber o convite no e-mail informado. O horário já aparece como ocupado
+                      na agenda do site.
+                    </p>
+                  </div>
+                </div>
+              )}
+              {envio === 'conflito' && (
+                <p className="rounded-2xl bg-wb-red/10 p-4 text-[14px] font-semibold text-wb-red">
+                  Esse horário acabou de ser ocupado. Escolha outro e envie de novo.
+                </p>
+              )}
+              {envio === 'limite' && (
+                <p className="rounded-2xl bg-wb-red/10 p-4 text-[14px] font-semibold text-wb-red">
+                  Muitas reservas seguidas. Tente novamente mais tarde.
+                </p>
+              )}
+              {envio === 'falha' && (
+                <p className="rounded-2xl bg-wb-red/10 p-4 text-[14px] text-wb-ink">
+                  Não foi possível registrar agora.{' '}
+                  <a
+                    href={buildGoogleCalendarUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-bold text-wb-orange underline"
+                  >
+                    Enviar pelo Google Agenda
+                  </a>{' '}
+                  ou escreva para {GOOGLE_CALENDAR_CONFIG.calendarId}.
+                </p>
               )}
             </div>
 
@@ -611,9 +659,9 @@ export const BookingPage: React.FC = () => {
                     Como funciona a integração Google Agenda:
                   </p>
                   <p className="mt-1 leading-relaxed">
-                    Ao confirmar, o evento é criado no seu Google Calendar já convidando a agenda
-                    oficial do LabMaker (<code>{GOOGLE_CALENDAR_CONFIG.calendarId}</code>). Assim
-                    que entra na agenda do laboratório, o horário aparece como ocupado neste site.
+                    Ao confirmar, a reserva é registrada direto na agenda oficial do LabMaker
+                    (<code>{GOOGLE_CALENDAR_CONFIG.calendarId}</code>) e você recebe o convite por
+                    e-mail. O horário passa a aparecer como ocupado neste site.
                   </p>
                 </div>
               </div>
@@ -621,7 +669,6 @@ export const BookingPage: React.FC = () => {
           </div>
         </div>
       </section>
-      )}
     </div>
   );
 };

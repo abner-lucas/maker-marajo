@@ -73,6 +73,13 @@ foreach ($linhas as $l) {
     }
 }
 
+/** Agenda publicada como "livre/ocupado" manda "Busy" no lugar do título */
+function titulo_publico(string $t): string
+{
+    $t = trim($t);
+    return ($t === '' || in_array(strtolower($t), ['busy', 'ocupado', 'ocupada'], true)) ? 'Ocupado' : $t;
+}
+
 function texto(string $v): string
 {
     return trim(str_replace(['\\n', '\\N', '\\,', '\\;', '\\\\'], ["\n", "\n", ',', ';', '\\'], $v));
@@ -143,7 +150,10 @@ foreach ($desdobradas as $l) {
             $atual['fim'] = data($params, $valor, $fuso);
             break;
         case 'ATTENDEE':
-            $atual['convidados']++;
+            // O Google lista a própria agenda como convidada; só conta gente de fora
+            if (stripos($valor, AGENDA_ID) === false) {
+                $atual['convidados']++;
+            }
             break;
         case 'RRULE':
             $atual['rrule'] = $valor;
@@ -264,7 +274,7 @@ foreach ($eventos as $e) {
             'id' => substr(md5(($e['uid'] ?? '') . $chave), 0, 16),
             // Reservas feitas pela página de agendamento têm convidados (nome/e-mail de quem
             // reservou): no site aparecem só como "Reservado"
-            'titulo' => $e['convidados'] > 0 ? 'Reservado' : ($e['titulo'] ?? 'Ocupado'),
+            'titulo' => $e['convidados'] > 0 ? 'Reservado' : titulo_publico($e['titulo'] ?? ''),
             'local' => $e['local'] ?? null,
             'inicio' => $oc->format(DATE_ATOM),
             'fim' => $fimOc->format(DATE_ATOM),
