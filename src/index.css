@@ -424,7 +424,18 @@ input[type='date']::-webkit-date-and-time-value {
   text-align: left;
   margin: 0;
 }
-input[type='date']::-webkit-calendar-picker-indicator {
+/* O botão nativo do seletor fica invisível e cobre o campo inteiro: qualquer clique abre o calendário */
+input[type='date'],
+input[type='time'] {
+  position: relative;
+  cursor: pointer;
+}
+input[type='date']::-webkit-calendar-picker-indicator,
+input[type='time']::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
   opacity: 0;
   cursor: pointer;
 }

@@ -106,7 +106,7 @@ $eventos = [];
 $atual = null;
 foreach ($desdobradas as $l) {
     if ($l === 'BEGIN:VEVENT') {
-        $atual = ['exdate' => []];
+        $atual = ['exdate' => [], 'convidados' => 0];
         continue;
     }
     if ($l === 'END:VEVENT') {
@@ -141,6 +141,9 @@ foreach ($desdobradas as $l) {
             break;
         case 'DTEND':
             $atual['fim'] = data($params, $valor, $fuso);
+            break;
+        case 'ATTENDEE':
+            $atual['convidados']++;
             break;
         case 'RRULE':
             $atual['rrule'] = $valor;
@@ -259,7 +262,9 @@ foreach ($eventos as $e) {
         }
         $saida[] = [
             'id' => substr(md5(($e['uid'] ?? '') . $chave), 0, 16),
-            'titulo' => $e['titulo'] ?? 'Ocupado',
+            // Reservas feitas pela página de agendamento têm convidados (nome/e-mail de quem
+            // reservou): no site aparecem só como "Reservado"
+            'titulo' => $e['convidados'] > 0 ? 'Reservado' : ($e['titulo'] ?? 'Ocupado'),
             'local' => $e['local'] ?? null,
             'inicio' => $oc->format(DATE_ATOM),
             'fim' => $fimOc->format(DATE_ATOM),

@@ -234,6 +234,11 @@ export const HomePage: React.FC = () => {
                 </Titulo>
 
                 <Cascata as="ul" className="mt-9">
+                  {proximasAtividades.length === 0 && (
+                    <li className="border-t border-white/15 py-4 text-[15px] text-white/60">
+                      Nenhuma atividade agendada nos próximos dias.
+                    </li>
+                  )}
                   {proximasAtividades.map((act) => (
                     <CascataItem as="li" key={act.id}>
                       <Link

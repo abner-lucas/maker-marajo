@@ -39,6 +39,15 @@ const SALA = {
 
 const ALVOS = [SALA, ...EQUIPMENTS];
 
+/** Abre o calendário/relógio nativo ao clicar em qualquer ponto do campo (Chrome, Edge, Firefox) */
+const abrirSeletor = (e: React.MouseEvent<HTMLInputElement>) => {
+  try {
+    e.currentTarget.showPicker?.();
+  } catch {
+    /* navegadores sem showPicker abrem pelo toque nativo */
+  }
+};
+
 export const BookingPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [selectedEquipment, setSelectedEquipment] = useState<string>(
@@ -245,6 +254,7 @@ export const BookingPage: React.FC = () => {
                   </span>
                   <input
                     type="date"
+                    onClick={abrirSeletor}
                     required
                     value={bookingDate}
                     onChange={(e) => setBookingDate(e.target.value)}
@@ -275,6 +285,7 @@ export const BookingPage: React.FC = () => {
                   <span className="block text-[13px] font-bold text-wb-ink-2 mb-1.5">Início:</span>
                   <input
                     type="time"
+                    onClick={abrirSeletor}
                     required
                     step={300}
                     value={horaInicio}
@@ -286,6 +297,7 @@ export const BookingPage: React.FC = () => {
                   <span className="block text-[13px] font-bold text-wb-ink-2 mb-1.5">Término:</span>
                   <input
                     type="time"
+                    onClick={abrirSeletor}
                     required
                     step={300}
                     value={horaFim}
