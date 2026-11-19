@@ -8,8 +8,19 @@ import type { CalendarActivity } from '../data/labData';
  * e sempre que o visitante volta para a aba.
  */
 
+/** Datas que não são atividades do laboratório (vêm do calendário de feriados) */
+export type DataEspecial = 'feriado' | 'ponto-facultativo' | 'comemorativa';
+
+export const ROTULO_ESPECIAL: Record<DataEspecial, string> = {
+  feriado: 'Feriado',
+  'ponto-facultativo': 'Ponto facultativo',
+  comemorativa: 'Data comemorativa',
+};
+
 export interface EventoAgenda {
   id: string;
+  /** Preenchido só para feriados, pontos facultativos e datas comemorativas */
+  especial?: DataEspecial;
   titulo: string;
   inicio: Date;
   fim: Date;
@@ -32,7 +43,15 @@ interface RespostaApi {
   motivo?: string;
   atualizadoEm?: string;
   desatualizado?: boolean;
-  eventos?: { id: string; titulo: string; local: string | null; inicio: string; fim: string; diaInteiro: boolean }[];
+  eventos?: {
+    id: string;
+    titulo: string;
+    local: string | null;
+    inicio: string;
+    fim: string;
+    diaInteiro: boolean;
+    tipo?: string;
+  }[];
 }
 
 export function useAgendaAoVivo() {
@@ -64,6 +83,10 @@ export function useAgendaAoVivo() {
               inicio: new Date(e.inicio),
               fim: new Date(e.fim),
               diaInteiro: e.diaInteiro,
+              especial:
+                e.tipo === 'feriado' || e.tipo === 'ponto-facultativo' || e.tipo === 'comemorativa'
+                  ? e.tipo
+                  : undefined,
             }))
           );
           setStatus('ao-vivo');
@@ -136,5 +159,11 @@ export function eventosDoDia(eventos: EventoAgenda[], dia: string) {
 
 /** Eventos que se sobrepõem ao intervalo [inicio, fim) */
 export function conflitos(eventos: EventoAgenda[], inicio: Date, fim: Date) {
-  return eventos.filter((e) => e.inicio < fim && e.fim > inicio);
+  // feriados e datas comemorativas não ocupam o laboratório (viram aviso, não bloqueio)
+  return eventos.filter((e) => !e.especial && e.inicio < fim && e.fim > inicio);
+}
+
+/** Feriados / pontos facultativos / datas comemorativas de um dia "AAAA-MM-DD" */
+export function datasEspeciaisDoDia(eventos: EventoAgenda[], dia: string) {
+  return eventos.filter((e) => e.especial && chaveDia(e.inicio) === dia);
 }

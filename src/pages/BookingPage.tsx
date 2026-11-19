@@ -12,7 +12,15 @@ import {
   Wrench,
 } from 'lucide-react';
 import { EQUIPMENTS, GOOGLE_CALENDAR_CONFIG, IMAGE_ASSETS, LAB_SERVICES } from '../data/labData';
-import { chaveDia, conflitos, dataCurta, faixaHorario, useAgendaAoVivo } from '../lib/agenda';
+import {
+  chaveDia,
+  conflitos,
+  dataCurta,
+  datasEspeciaisDoDia,
+  faixaHorario,
+  ROTULO_ESPECIAL,
+  useAgendaAoVivo,
+} from '../lib/agenda';
 import { WordRise } from '../components/BrandLogo';
 
 // Mesmo funcionamento da programação "Reserva LabMaker": das 7h às 21h, de 30 em 30 min
@@ -145,6 +153,10 @@ export const BookingPage: React.FC = () => {
     return lista;
   }, [repetir, bookingDate, repetirAte, diasSemana]);
   const repeticaoValida = !repetir || (ocorrencias.length > 0 && ocorrencias.length <= MAX_ENCONTROS);
+  // feriados / pontos facultativos nos dias escolhidos (aviso, não bloqueio)
+  const diasEspeciais = ocorrencias.flatMap((d) =>
+    datasEspeciaisDoDia(eventos, d).filter((e) => e.especial !== 'comemorativa')
+  );
   const choques = horarioValido
     ? ocorrencias.flatMap((d) =>
         conflitos(eventos, new Date(`${d}T${horaInicio}:00-03:00`), new Date(`${d}T${horaFim}:00-03:00`))
@@ -520,6 +532,24 @@ export const BookingPage: React.FC = () => {
                   </div>
                 )}
               </div>
+
+              {diasEspeciais.length > 0 && (
+                <div className="mt-4 rounded-xl border border-wb-orange/40 bg-wb-orange/10 px-4 py-3 text-[13.5px] text-wb-ink">
+                  <p className="font-bold">Atenção: data com feriado ou ponto facultativo</p>
+                  <ul className="mt-1 space-y-0.5 text-wb-ink-2">
+                    {diasEspeciais.slice(0, 6).map((d) => (
+                      <li key={d.id}>
+                        <span className="font-key font-semibold">{dataCurta(d.inicio)}</span> · {d.titulo} (
+                        {ROTULO_ESPECIAL[d.especial!].toLowerCase()})
+                      </li>
+                    ))}
+                    {diasEspeciais.length > 6 && <li>e mais {diasEspeciais.length - 6}.</li>}
+                  </ul>
+                  <p className="mt-1 text-[12.5px] text-wb-ink-3">
+                    O campus pode estar fechado. Confirme com a equipe antes de ir ao laboratório.
+                  </p>
+                </div>
+              )}
 
               {/* Situação do horário na agenda do LabMaker (ao vivo) */}
               <div role="status" aria-live="polite" className="mt-4 text-[13.5px]">

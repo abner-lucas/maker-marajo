@@ -56,7 +56,7 @@ export const HomePage: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const { eventos: agenda, aoVivo, carregando } = useAgendaAoVivo();
   // Ao vivo: próximos 3 eventos da agenda do LabMaker; senão, as atividades de exemplo
-  const proximasAtividades = (aoVivo ? agenda.filter((e) => e.fim.getTime() >= Date.now()) : agenda).slice(0, 3);
+  const proximasAtividades = (aoVivo ? agenda.filter((e) => !e.especial && e.fim.getTime() >= Date.now()) : agenda).slice(0, 3);
 
   return (
     <div>

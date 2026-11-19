@@ -13,6 +13,7 @@
 declare(strict_types=1);
 
 require __DIR__ . '/config.php';
+require __DIR__ . '/feriados.php';
 
 const AGENDA_ID = 'labmaker.breves@ifpa.edu.br';
 const FUSO = 'America/Belem';
@@ -65,6 +66,8 @@ if (APPS_SCRIPT_URL !== '') {
                 'diaInteiro' => !empty($ev['diaInteiro']),
             ];
         }
+        $lista = array_merge($lista, eventos_feriados($hojeAS->modify('-45 days'), $hojeAS->modify('+181 days'), $fuso));
+        usort($lista, fn($a, $b) => strcmp($a['inicio'], $b['inicio']));
         $json = json_encode([
             'ok' => true,
             'agenda' => AGENDA_ID,
@@ -326,6 +329,8 @@ foreach ($eventos as $e) {
     }
 }
 
+$hojeF = new DateTimeImmutable('today', $fuso);
+$saida = array_merge($saida, eventos_feriados($hojeF->modify('-45 days'), $hojeF->modify('+181 days'), $fuso));
 usort($saida, fn($a, $b) => strcmp($a['inicio'], $b['inicio']));
 
 $json = json_encode([

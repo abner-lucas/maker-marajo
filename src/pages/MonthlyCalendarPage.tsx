@@ -15,8 +15,11 @@ import { CalendarActivity, GOOGLE_CALENDAR_CONFIG } from '../data/labData';
 import { WordRise } from '../components/BrandLogo';
 import {
   chaveDia,
+  type DataEspecial,
+  ROTULO_ESPECIAL,
   dataCurta,
   dataLonga,
+  datasEspeciaisDoDia,
   eventosDoDia,
   type EventoAgenda,
   faixaHorario,
@@ -32,6 +35,13 @@ const TYPE_COLORS: Record<CalendarActivity['type'], { bg: string; text: string; 
 };
 const ESTILO_AO_VIVO = { bg: 'bg-wb-ink/[0.07]', text: 'text-wb-ink', dot: '#16130f' };
 const estilo = (e: EventoAgenda) => (e.tipo ? TYPE_COLORS[e.tipo] : ESTILO_AO_VIVO);
+
+/** Cores das datas especiais (feriado = vermelho, ponto facultativo = laranja, comemorativa = discreta) */
+const ESTILO_ESPECIAL: Record<DataEspecial, { celula: string; texto: string; ponto: string }> = {
+  feriado: { celula: 'bg-wb-red/[0.06]', texto: 'text-wb-red', ponto: 'bg-wb-red' },
+  'ponto-facultativo': { celula: 'bg-wb-orange/[0.06]', texto: 'text-wb-orange', ponto: 'bg-wb-orange' },
+  comemorativa: { celula: '', texto: 'text-wb-ink-3', ponto: 'bg-wb-ink-3' },
+};
 
 const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
@@ -69,6 +79,7 @@ export const MonthlyCalendarPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [typeFilter, setTypeFilter] = useState<string>('Todos');
   const [selecionadoId, setSelecionadoId] = useState<string | null>(null);
+  const [verComemorativas, setVerComemorativas] = useState(true);
 
   const hojeChave = chaveDia(new Date());
   const [mesVisivel, setMesVisivel] = useState(() => {
@@ -86,14 +97,20 @@ export const MonthlyCalendarPage: React.FC = () => {
   const irParaHoje = () => {
     const [a, m] = hojeChave.split('-').map(Number);
     setMesVisivel({ ano: a, mes: m - 1 });
-    setSelecionadoId(eventosDoDia(eventos, hojeChave)[0]?.id ?? null);
+    setSelecionadoId(eventosDoDia(atividades, hojeChave)[0]?.id ?? null);
     atualizar();
   };
 
+  // Atividades do laboratório e datas especiais (feriados etc.) ficam separadas
+  const especiais = useMemo(
+    () => eventos.filter((e) => e.especial && (verComemorativas || e.especial !== 'comemorativa')),
+    [eventos, verComemorativas]
+  );
+  const atividades = useMemo(() => eventos.filter((e) => !e.especial), [eventos]);
   // Filtro por tipo só existe nas atividades de exemplo (eventos do Google não têm tipo)
   const filtrados = useMemo(
-    () => (aoVivo || typeFilter === 'Todos' ? eventos : eventos.filter((e) => e.tipo === typeFilter)),
-    [eventos, typeFilter, aoVivo]
+    () => (aoVivo || typeFilter === 'Todos' ? atividades : atividades.filter((e) => e.tipo === typeFilter)),
+    [atividades, typeFilter, aoVivo]
   );
 
   const { ano, mes } = mesVisivel;
@@ -108,6 +125,11 @@ export const MonthlyCalendarPage: React.FC = () => {
 
   const proximos = filtrados.filter((e) => e.fim.getTime() >= Date.now());
   const listaVisivel = viewMode === 'list' ? (aoVivo ? proximos : filtrados) : doMes;
+  // na lista, as datas especiais entram como linhas discretas entre as atividades
+  const especiaisProximos = especiais.filter((e) => e.fim.getTime() >= Date.now());
+  const listaComDatas = [...listaVisivel, ...(viewMode === 'list' ? especiaisProximos : [])].sort(
+    (a, b) => a.inicio.getTime() - b.inicio.getTime()
+  );
   const selecionado =
     filtrados.find((e) => e.id === selecionadoId) ?? doMes.find((e) => e.fim.getTime() >= Date.now()) ?? doMes[0] ?? proximos[0];
 
@@ -245,12 +267,18 @@ export const MonthlyCalendarPage: React.FC = () => {
                   {Array.from({ length: diasNoMes }, (_, i) => i + 1).map((day) => {
                     const chave = chaveDoDia(day);
                     const dayActs = eventosDoDia(filtrados, chave);
+                    const datasDia = datasEspeciaisDoDia(especiais, chave);
+                    const principal = datasDia.find((d) => d.especial === 'feriado') ?? datasDia.find((d) => d.especial === 'ponto-facultativo');
                     const isToday = chave === hojeChave;
                     return (
                       <div
                         key={day}
                         className={`min-w-0 p-1.5 transition-colors sm:p-2 ${
-                          dayActs.length > 0 ? 'bg-white hover:bg-wb-bench/40' : 'bg-wb-bench/15'
+                          principal
+                            ? ESTILO_ESPECIAL[principal.especial!].celula
+                            : dayActs.length > 0
+                              ? 'bg-white hover:bg-wb-bench/40'
+                              : 'bg-wb-bench/15'
                         }`}
                       >
                         <div className="flex items-center justify-between">
@@ -265,6 +293,20 @@ export const MonthlyCalendarPage: React.FC = () => {
                             <span className="hidden sm:inline font-key text-[9px] font-bold text-wb-orange">Hoje</span>
                           )}
                         </div>
+
+                        {datasDia.map((d) => (
+                          <p
+                            key={d.id}
+                            title={`${ROTULO_ESPECIAL[d.especial!]}: ${d.titulo}`}
+                            className={`mt-1 flex items-start gap-1 text-[10px] font-semibold leading-tight sm:text-[10.5px] ${ESTILO_ESPECIAL[d.especial!].texto}`}
+                          >
+                            <span aria-hidden="true" className={`mt-[4px] h-1.5 w-1.5 shrink-0 rounded-full ${ESTILO_ESPECIAL[d.especial!].ponto}`} />
+                            <span className="line-clamp-2 break-words">
+                              <span className="sr-only">{ROTULO_ESPECIAL[d.especial!]}: </span>
+                              {d.titulo}
+                            </span>
+                          </p>
+                        ))}
 
                         <div className="mt-1.5 space-y-1">
                           {dayActs.slice(0, 3).map((act) => {
@@ -293,6 +335,29 @@ export const MonthlyCalendarPage: React.FC = () => {
                       </div>
                     );
                   })}
+                </div>
+
+                {/* Legenda */}
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-wb-line bg-wb-bench/40 px-4 py-3 text-[12px] font-semibold text-wb-ink-2 sm:px-6">
+                  <span className="flex items-center gap-1.5">
+                    <span aria-hidden="true" className="h-2.5 w-2.5 rounded-sm bg-wb-ink/[0.15]" />
+                    Atividade / reserva
+                  </span>
+                  {(['feriado', 'ponto-facultativo'] as const).map((t) => (
+                    <span key={t} className="flex items-center gap-1.5">
+                      <span aria-hidden="true" className={`h-2.5 w-2.5 rounded-full ${ESTILO_ESPECIAL[t].ponto}`} />
+                      {ROTULO_ESPECIAL[t]}
+                    </span>
+                  ))}
+                  <label className="flex cursor-pointer items-center gap-1.5">
+                    <input
+                      type="checkbox"
+                      checked={verComemorativas}
+                      onChange={(e) => setVerComemorativas(e.target.checked)}
+                      className="h-3.5 w-3.5 accent-[#16130f]"
+                    />
+                    Datas comemorativas
+                  </label>
                 </div>
               </div>
 
@@ -397,12 +462,26 @@ export const MonthlyCalendarPage: React.FC = () => {
           {/* === LISTA === */}
           {viewMode === 'list' && (
             <div className="space-y-4">
-              {listaVisivel.length === 0 && (
+              {listaComDatas.length === 0 && (
                 <p className="text-[15px] text-wb-ink-2">
                   {carregando ? 'Carregando a agenda…' : 'Nenhuma atividade agendada a partir de hoje.'}
                 </p>
               )}
-              {listaVisivel.map((act) => {
+              {listaComDatas.map((act) => {
+                if (act.especial) {
+                  const es = ESTILO_ESPECIAL[act.especial];
+                  return (
+                    <div
+                      key={act.id}
+                      className={`flex items-center gap-3 rounded-2xl border border-wb-line px-5 py-3 text-[14px] ${es.celula}`}
+                    >
+                      <span aria-hidden="true" className={`h-2 w-2 shrink-0 rounded-full ${es.ponto}`} />
+                      <span className="wb-key shrink-0 text-[11px] capitalize">{dataLonga(act.inicio)}</span>
+                      <span className={`font-bold ${es.texto}`}>{act.titulo}</span>
+                      <span className="text-[12.5px] text-wb-ink-3">· {ROTULO_ESPECIAL[act.especial]}</span>
+                    </div>
+                  );
+                }
                 const st = estilo(act);
                 const [diaTxt, mesTxt] = dataCurta(act.inicio).split(' de ');
                 return (
