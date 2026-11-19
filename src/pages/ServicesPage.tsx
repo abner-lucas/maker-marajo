@@ -254,7 +254,7 @@ export const ServicesPage: React.FC = () => {
                   className="mt-6 wb-btn wb-btn-primary w-full h-12 text-[14.5px]"
                 >
                   <Calendar className="h-4 w-4" />
-                  <span>Ir para Agendamento no Google Agenda</span>
+                  <span>Ir para Agendamento</span>
                 </Link>
               </div>
             </div>
