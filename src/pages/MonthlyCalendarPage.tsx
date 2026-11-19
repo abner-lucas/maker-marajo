@@ -340,7 +340,7 @@ export const MonthlyCalendarPage: React.FC = () => {
                 {/* Legenda */}
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-wb-line bg-wb-bench/40 px-4 py-3 text-[12px] font-semibold text-wb-ink-2 sm:px-6">
                   <span className="flex items-center gap-1.5">
-                    <span aria-hidden="true" className="h-2.5 w-2.5 rounded-sm bg-wb-ink/[0.15]" />
+                    <span aria-hidden="true" className="h-2.5 w-2.5 rounded-sm bg-wb-ink/[0.3]" />
                     Atividade / reserva
                   </span>
                   {(['feriado', 'ponto-facultativo'] as const).map((t) => (
