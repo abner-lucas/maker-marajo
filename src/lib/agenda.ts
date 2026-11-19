@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { CALENDAR_ACTIVITIES, type CalendarActivity } from '../data/labData';
+import type { CalendarActivity } from '../data/labData';
 
 /*
  * Agenda ao vivo do LabMaker Marajó.
@@ -27,21 +27,6 @@ export type StatusAgenda = 'carregando' | 'ao-vivo' | 'nao-publica' | 'indisponi
 
 export const INTERVALO_ATUALIZACAO_MS = 60_000;
 
-/** Atividades de exemplo usadas enquanto a agenda do Google não estiver pública */
-export const EVENTOS_EXEMPLO: EventoAgenda[] = CALENDAR_ACTIVITIES.map((a) => ({
-  id: a.id,
-  titulo: a.title,
-  inicio: new Date(`${a.date}T${a.startTime}:00-03:00`),
-  fim: new Date(`${a.date}T${a.endTime}:00-03:00`),
-  diaInteiro: false,
-  local: a.location,
-  descricao: a.description,
-  tipo: a.type,
-  equipamento: a.equipment,
-  responsavel: a.instructorOrResponsible,
-  vagas: { livres: a.spotsAvailable, total: a.totalSpots },
-}));
-
 interface RespostaApi {
   ok: boolean;
   motivo?: string;
@@ -51,7 +36,8 @@ interface RespostaApi {
 }
 
 export function useAgendaAoVivo() {
-  const [eventos, setEventos] = useState<EventoAgenda[]>(EVENTOS_EXEMPLO);
+  // começa vazia: só mostra o que vier da agenda real do LabMaker (nada de exemplos)
+  const [eventos, setEventos] = useState<EventoAgenda[]>([]);
   const [status, setStatus] = useState<StatusAgenda>('carregando');
   const [atualizadoEm, setAtualizadoEm] = useState<Date | null>(null);
   const emAndamento = useRef(false);
@@ -83,7 +69,6 @@ export function useAgendaAoVivo() {
           setStatus('ao-vivo');
           setAtualizadoEm(dados.atualizadoEm ? new Date(dados.atualizadoEm) : new Date());
         } else {
-          setEventos(EVENTOS_EXEMPLO);
           setStatus(dados.motivo === 'agenda-nao-publica' ? 'nao-publica' : 'indisponivel');
         }
       } catch {
@@ -113,7 +98,14 @@ export function useAgendaAoVivo() {
   /** Força nova consulta ao Google (ex.: ao trocar de mês) */
   const atualizar = useCallback(() => buscarRef.current(), []);
 
-  return { eventos, status, atualizadoEm, aoVivo: status === 'ao-vivo', atualizar };
+  return {
+    eventos,
+    status,
+    atualizadoEm,
+    aoVivo: status === 'ao-vivo',
+    carregando: status === 'carregando',
+    atualizar,
+  };
 }
 
 /* ------------------------------------------------------------------ utilitários */

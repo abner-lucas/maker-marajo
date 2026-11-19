@@ -59,13 +59,13 @@ const SeloFonte: React.FC<{ status: ReturnType<typeof useAgendaAoVivo>['status']
   if (status === 'carregando') return null;
   return (
     <span className="text-[12.5px] text-wb-ink-3">
-      Atividades de exemplo — a agenda do LabMaker aparece aqui assim que for publicada no Google.
+      Não foi possível carregar a agenda agora. Tente de novo em instantes.
     </span>
   );
 };
 
 export const MonthlyCalendarPage: React.FC = () => {
-  const { eventos, status, aoVivo, atualizar } = useAgendaAoVivo();
+  const { eventos, status, aoVivo, carregando, atualizar } = useAgendaAoVivo();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [typeFilter, setTypeFilter] = useState<string>('Todos');
   const [selecionadoId, setSelecionadoId] = useState<string | null>(null);
@@ -378,6 +378,9 @@ export const MonthlyCalendarPage: React.FC = () => {
                     </div>
                   </>
                 ) : (
+                  carregando ? (
+                  <p className="text-[14px] text-wb-ink-3">Carregando a agenda…</p>
+                  ) : (
                   <p className="text-[14px] text-wb-ink-2">
                     Nenhuma atividade neste mês. Use as setas para ver outros meses ou{' '}
                     <Link to="/agendamento" className="font-semibold text-wb-orange underline underline-offset-4">
@@ -385,6 +388,7 @@ export const MonthlyCalendarPage: React.FC = () => {
                     </Link>
                     .
                   </p>
+                  )
                 )}
               </div>
             </div>
@@ -394,7 +398,9 @@ export const MonthlyCalendarPage: React.FC = () => {
           {viewMode === 'list' && (
             <div className="space-y-4">
               {listaVisivel.length === 0 && (
-                <p className="text-[15px] text-wb-ink-2">Nenhuma atividade agendada a partir de hoje.</p>
+                <p className="text-[15px] text-wb-ink-2">
+                  {carregando ? 'Carregando a agenda…' : 'Nenhuma atividade agendada a partir de hoje.'}
+                </p>
               )}
               {listaVisivel.map((act) => {
                 const st = estilo(act);

@@ -54,7 +54,7 @@ const Rotulo: React.FC<{ cor: string; children: React.ReactNode; claro?: boolean
 
 export const HomePage: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const { eventos: agenda, aoVivo } = useAgendaAoVivo();
+  const { eventos: agenda, aoVivo, carregando } = useAgendaAoVivo();
   // Ao vivo: próximos 3 eventos da agenda do LabMaker; senão, as atividades de exemplo
   const proximasAtividades = (aoVivo ? agenda.filter((e) => e.fim.getTime() >= Date.now()) : agenda).slice(0, 3);
 
@@ -236,7 +236,7 @@ export const HomePage: React.FC = () => {
                 <Cascata as="ul" className="mt-9">
                   {proximasAtividades.length === 0 && (
                     <li className="border-t border-white/15 py-4 text-[15px] text-white/60">
-                      Nenhuma atividade agendada nos próximos dias.
+                      {carregando ? 'Carregando a agenda…' : 'Nenhuma atividade agendada nos próximos dias.'}
                     </li>
                   )}
                   {proximasAtividades.map((act) => (
